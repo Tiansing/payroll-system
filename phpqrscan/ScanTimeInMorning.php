@@ -16,17 +16,13 @@ $set_timezone = date_default_timezone_set("Asia/Manila");
 $model = new Dashboard();
 $session = new AdministratorSession();
 $session->LoginSession();
-
+$today = date('Y-m-d');
 // get the q parameter from URL
 $q = $_REQUEST["q"];
 
 
 
 if (isset($q)) {
-
-
-
-
 
   // lookup all hints from array if $q is different from ""
   if ($q != "") {
@@ -43,12 +39,9 @@ if (isset($q)) {
   }*/
     // $result = mysqli_query($con, "SELECT * FROM attendance WHERE name='$q'");
 
-
     // $rowcount = mysqli_num_rows($result);
 
-
     $model = new Dashboard();
-
 
     $content = $q;
 
@@ -72,19 +65,42 @@ if (isset($q)) {
       $queryResult = mysqli_query($connection, $queryEmployeeId);
       $rowQuery = mysqli_fetch_assoc($queryResult);
 
-      $employee_id = $rowQuery['id'];
 
 
-      $sql2 = "SELECT * FROM attendance WHERE employee_id = '$employee_id' AND `date` = '$date'";
-      $query2 = mysqli_query($connection, $sql2);
-      $row2 = mysqli_fetch_assoc($query2);
+      if ($rowQuery) {
+        $employee_id = $rowQuery['id'];
+        $empName = $rowQuery['fullname'];
+        $empImg = $rowQuery['photo'];
+
+        $sql2 = "SELECT * FROM attendance WHERE employee_id = '$employee_id' AND `date` = '$date'";
+        $query2 = mysqli_query($connection, $sql2);
+        $row2 = mysqli_fetch_assoc($query2);
+      } else {
+        $employee_id = "";
+      }
+
+
+
+
 
 
       if ($employee_id != 0) {
 
 
         if (mysqli_affected_rows($connection) > 0) {
-          echo '<div class="alert alert-success"><strong>Success!</strong> Employee successfully logged in</div>';
+          // Generate your image URL here
+
+
+          // Set appropriate headers for image content
+
+
+
+
+          $imageUrl = '<img height="100" width="100" src="image/' . $empImg . '" alt="" > ';
+
+          echo $imageUrl;
+
+          echo '<div style="margin-top: 10px;" class="alert alert-success"><strong>' . $empName . '</strong> successfully logged in  </div>';
         } else {
 
           $queryEmployeeId = "SELECT * FROM `employees` WHERE `employee_id` = '$content';";
@@ -104,7 +120,7 @@ if (isset($q)) {
 
           $query = mysqli_query($connection, $insertAttendance) or die(mysqli_error($connection) . $insertAttendance);
 
-          echo '<div class="alert alert-success"><strong>Success!</strong> Employee successfully logged in</div>';
+          echo '<div class="alert alert-success"><strong>Success!</strong> Employee successfully logged in <img id="imageOutput" src="' . $empImg . '" alt=""> </div>';
         }
       } else {
         echo '<div class="alert alert-danger"><strong>Failed!</strong> Employee is not Registered</div>';
@@ -117,3 +133,4 @@ if (isset($q)) {
 // Output "no suggestion" if no hint was found or output correct values
 //echo $hint === "" ? "no suggestion" : $hint;
 ?>
+<img src="../image/18.jpg" alt="">

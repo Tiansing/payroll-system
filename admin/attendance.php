@@ -42,7 +42,8 @@ if ($Attendance == '1') {
   <button type="button" class="close" data-dismiss="alert"></button>
   Attendance for the day already exist.
 </div>';
-} else { }
+} else {
+}
 
 ?>
 <!doctype html>
@@ -154,13 +155,14 @@ if ($Attendance == '1') {
                         </tr>
                       </thead>
                       <tbody>
+
                         <?php while ($row = mysqli_fetch_assoc($queryResult)) {
 
                           $statusMorning = ($row['status_morning']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late</span>';
 
                           $statusAfternoon = ($row['status_afternoon']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late</span>';
 
-                          ?>
+                        ?>
 
 
                           <tr>
@@ -168,16 +170,51 @@ if ($Attendance == '1') {
 
 
                             <td><a class="text-inherit"><?php echo $row['fullname'] ?></a></td>
-                            <td class=""><a class="text-inherit"><?php echo date('h:i A', strtotime($row['time_in_morning'])) ?></a><?php echo $statusMorning ?></td>
-                            <td><a class="text-inherit"><?php echo date('h:i A', strtotime($row['time_out_morning'])) ?></a></td>
+                            <td class=""><a class="text-inherit"><?php
+                                                                  if (isset($row['time_in_morning'])) {
+                                                                    echo date('h:i A', strtotime($row['time_in_morning']));
+
+
+                                                                  ?></a><?php echo $statusMorning;
+                                                                      } else {
+                                                                        echo "";
+                                                                      } ?></td>
+
+
+                            <td><a class="text-inherit"><?php
+                                                        if (isset($row['time_out_morning'])) {
+                                                          echo  date('h:i A', strtotime($row['time_out_morning']));
+                                                        } else {
+                                                          echo "";
+                                                        }
+
+                                                        ?></a></td>
 
 
 
                             <td class="text"><?php echo round($row['num_hr_morning'], 2) ?> HRS</td>
+
+
                             <td>
-                              <?php echo date('h:i A', strtotime($row['time_in_afternoon'])) ?><?php echo $statusAfternoon ?>
+                              <?php
+                              if (isset($row['time_in_afternoon'])) {
+                                echo date('h:i A', strtotime($row['time_in_afternoon']));
+                                echo $statusAfternoon;
+                              } else {
+                                echo "";
+                              }
+
+                              ?>
                             </td>
-                            <td><?php echo date('h:i A', strtotime($row['time_out_afternoon'])) ?></td>
+
+
+                            <td><?php
+                                if (isset($row['time_out_afternoon'])) {
+                                  echo date('h:i A', strtotime($row['time_out_afternoon']));
+                                }
+                                ?></td>
+
+
                             <td class="text"><?php echo round($row['num_hr_afternoon'], 2) ?> HRS</td>
                             <td><a class="text-inherit"><?php echo date('M d, Y', strtotime($row['date'])) ?></a></td>
                             <td>
@@ -196,37 +233,37 @@ if ($Attendance == '1') {
                                   <h5 class="modal-title">Edit Time</h5>
                                 </div>
                                 <form method="post" action="time.php?id=<?php echo $row['attendance_id'] ?>">
-                                <div class="modal-body text p-lg">
-                                 
-                                  <div style="padding-top: 12px;" class="form-group">
-                                    <label class="form-label">Timein Morning</label>
-                                    <div class="bootstrap-timepicker">
-                                      <input required="true" type="text"  autofocus="true"  class="form-control timepicker" name="time_in_am">
+                                  <div class="modal-body text p-lg">
+
+                                    <div style="padding-top: 12px;" class="form-group">
+                                      <label class="form-label">Timein Morning</label>
+                                      <div class="bootstrap-timepicker">
+                                        <input required="true" type="text" autofocus="true" class="form-control timepicker" name="time_in_am">
+                                      </div>
+                                    </div>
+                                    <div style="padding-top: 12px;" class="form-group">
+                                      <label class="form-label">Timeout Morning</label>
+                                      <div class="bootstrap-timepicker">
+                                        <input required="true" type="text" class="form-control timepicker" name="time_out_am">
+                                      </div>
+                                    </div>
+                                    <div style="padding-top: 12px;" class="form-group">
+                                      <label class="form-label">Timein Afternoon</label>
+                                      <div class="bootstrap-timepicker">
+                                        <input required="true" type="text" class="form-control timepicker" name="time_in_pm">
+                                      </div>
+                                    </div>
+                                    <div style="padding-top: 12px;" class="form-group">
+                                      <label class="form-label">Timeout Afternoon</label>
+                                      <div class="bootstrap-timepicker">
+                                        <input required="true" type="text" class="form-control timepicker" name="time_out_pm">
+                                      </div>
                                     </div>
                                   </div>
-                                  <div style="padding-top: 12px;" class="form-group">
-                                    <label class="form-label">Timeout Morning</label>
-                                    <div class="bootstrap-timepicker">
-                                      <input required="true" type="text" class="form-control timepicker" name="time_out_am">
-                                    </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn dark-white p-x-md" data-dismiss="modal">No</button>
+                                    <button type="submit" name="edit_time" class="btn danger p-x-md">Yes</button>
                                   </div>
-                                  <div style="padding-top: 12px;" class="form-group">
-                                    <label class="form-label">Timein Afternoon</label>
-                                    <div class="bootstrap-timepicker">
-                                      <input required="true" type="text" class="form-control timepicker" name="time_in_pm">
-                                    </div>
-                                  </div>
-                                  <div style="padding-top: 12px;" class="form-group">
-                                    <label class="form-label">Timeout Afternoon</label>
-                                    <div class="bootstrap-timepicker">
-                                      <input required="true" type="text" class="form-control timepicker" name="time_out_pm">
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="modal-footer">
-                                  <button type="button" class="btn dark-white p-x-md" data-dismiss="modal">No</button>
-                                  <button type="submit" name="edit_time" class="btn danger p-x-md">Yes</button>
-                                </div>
                                 </form>
                               </div><!-- /.modal-content -->
                             </div>

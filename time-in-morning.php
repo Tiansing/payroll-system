@@ -1,6 +1,36 @@
 <?php
 $timezone = 'Asia/Manila';
 date_default_timezone_set($timezone);
+
+require_once('admin/includes/script.php');
+require_once('admin/session/Login.php');
+
+$model = new Dashboard();
+$session = new AdministratorSession();
+$session->LoginSession();
+$model = new Dashboard();
+
+$connection = $model->TemporaryConnection();
+
+
+$Attendance = '';
+$today = date('Y-m-d');
+$stat = '';
+if (isset($_GET['status'])) {
+	$Attendance = $_GET['status'];
+}
+
+if (isset($_GET['filter'])) {
+	$today = $_GET['filter'];
+}
+
+if ($Attendance == '1') {
+	$stat = '<div class="alert alert-danger alert-dismissible">
+  <button type="button" class="close" data-dismiss="alert"></button>
+  Attendance for the day already exist.
+</div>';
+} else {
+}
 ?>
 <!doctype html>
 <html lang="en" dir="ltr">
@@ -14,6 +44,7 @@ date_default_timezone_set($timezone);
 
 	<script src="phpqrscan/ht.js"></script>
 
+
 	<style>
 		.result {
 			background-color: green;
@@ -26,7 +57,6 @@ date_default_timezone_set($timezone);
 		}
 
 
-
 		/* table */
 		.well {
 
@@ -37,7 +67,7 @@ date_default_timezone_set($timezone);
 		.table-scroll tbody {
 			position: absolute;
 			overflow-y: scroll;
-			height: 350px;
+			height: 150px;
 		}
 
 		.table-scroll tr {
@@ -52,7 +82,7 @@ date_default_timezone_set($timezone);
 	</style>
 </head>
 
-<body class="">
+<body class="" onload="table()">
 	<div class="page" id="app">
 		<div class="page-single">
 			<div class="container">
@@ -85,6 +115,26 @@ date_default_timezone_set($timezone);
 								var x = document.getElementById("myAudio1");
 								var x2 = document.getElementById("myAudio2");
 
+								// function showHint(str) {
+								// 	if (str.length == 0) {
+								// 		document.getElementById("txtHint").innerHTML = "";
+								// 		document.getElementById("imageOutput").src = ""; // Clear the image
+								// 		return;
+								// 	} else {
+								// 		var xmlhttp = new XMLHttpRequest();
+								// 		xmlhttp.onreadystatechange = function() {
+								// 			if (this.readyState == 4 && this.status == 200) {
+								// 				document.getElementById("txtHint").innerHTML = this.responseText;
+								// 				document.getElementById("imageOutput").src = this.responseText;
+								// 			}
+								// 		};
+								// 		xmlhttp.open("GET", "phpqrscan/ScanTimeInMorning.php?q=" + str, true);
+								// 		xmlhttp.send();
+
+
+								// 	}
+								// }
+
 								function showHint(str) {
 									if (str.length == 0) {
 										document.getElementById("txtHint").innerHTML = "";
@@ -93,10 +143,11 @@ date_default_timezone_set($timezone);
 										var xmlhttp = new XMLHttpRequest();
 										xmlhttp.onreadystatechange = function() {
 											if (this.readyState == 4 && this.status == 200) {
+												// Assuming the response is an image URL
 												document.getElementById("txtHint").innerHTML = this.responseText;
 											}
 										};
-										xmlhttp.open("GET", "phpqrscan/gethint.php?q=" + str, true);
+										xmlhttp.open("GET", "phpqrscan/ScanTimeInMorning.php?q=" + str, true);
 										xmlhttp.send();
 									}
 								}
@@ -105,122 +156,52 @@ date_default_timezone_set($timezone);
 									x.play();
 								}
 							</script>
+
+
 							<div class="col" style="padding:30px;">
 								<h4>SCAN RESULTs</h4>
-								<div>Employee name</div>
+								<div>Employee ID</div>
 								<form action="">
-									<input type="text" required="true" v-model="time_in_morning" class="form-control" name="start" class="input" id="result" onkeyup="showHint(this.value)" placeholder="Employee Identification here" readonly="" style="text-align: center;" />
+
+
+									<input type="text" required="true" v-model="time_in_morning" class="form-control" name="start" class="input" id="result" onkeyup="showHint(this.value)" placeholder="Employee Identification here" style="text-align: center;" disabled />
+
 								</form>
-								<p style="padding-top: 20px;"> Status: <span id="txtHint"></span></p>
 
-
-								<div>
-									<div class=" well">
-										<table class="table table-scroll table-striped">
-											<thead>
-												<tr>
-													<th>#</th>
-													<th>First Name</th>
-													<th>Last Name</th>
-													<th>County</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>1</td>
-													<td>Andrew</td>
-													<td>Jackson</td>
-													<td>Washington</td>
-												</tr>
-												<tr>
-													<td>2</td>
-													<td>Thomas</td>
-													<td>Marion</td>
-													<td>Jackson</td>
-												</tr>
-												<tr>
-													<td>3</td>
-													<td>Benjamin</td>
-													<td>Warren</td>
-													<td>Lincoln</td>
-												</tr>
-												<tr>
-													<td>4</td>
-													<td>Grant</td>
-													<td>Wayne</td>
-													<td>Union</td>
-												</tr>
-												<tr>
-													<td>5</td>
-													<td>John</td>
-													<td>Adams</td>
-													<td>Marshall</td>
-												</tr>
-												<tr>
-													<td>6</td>
-													<td>Morgan</td>
-													<td>Lee</td>
-													<td>Lake</td>
-												</tr>
-												<tr>
-													<td>7</td>
-													<td>John</td>
-													<td>Henry</td>
-													<td>Brown</td>
-												</tr>
-												<tr>
-													<td>8</td>
-													<td>William</td>
-													<td>Jacob</td>
-													<td>Orange</td>
-												</tr>
-												<tr>
-													<td>9</td>
-													<td>Kelly</td>
-													<td>Davidson</td>
-													<td>Taylor</td>
-												</tr>
-												<tr>
-													<td>10</td>
-													<td>Colleen</td>
-													<td>Hurst</td>
-													<td>Randolph</td>
-												</tr>
-												<tr>
-													<td>11</td>
-													<td>Rhona</td>
-													<td>Herrod</td>
-													<td>Cumberland</td>
-												</tr>
-												<tr>
-													<td>12</td>
-													<td>Jane</td>
-													<td>Paul</td>
-													<td>Marshall</td>
-												</tr>
-												<tr>
-													<td>13</td>
-													<td>Ashton</td>
-													<td>Fox</td>
-													<td>Calhoun</td>
-												</tr>
-												<tr>
-													<td>14</td>
-													<td>Garrett</td>
-													<td>John</td>
-													<td>Madison</td>
-												</tr>
-												<tr>
-													<td>15</td>
-													<td>Fredie</td>
-													<td>Winters</td>
-													<td>Washington</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
+								<div id="txtHint">
 
 								</div>
+								<!-- <p style="padding-top: 20px;" id="txtHint"> Status: <span id="txtHint"></span></p> -->
+
+								<div id="table-body">
+
+
+								</div>
+								<!-- Include Bootstrap JS and jQuery -->
+								<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+								<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+								<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+								<script>
+									function fetchNewRecords() {
+										$.ajax({
+											url: 'phpqrscan/get_new_records.php', // Your server-side script to fetch new records
+											method: 'GET',
+											dataType: 'html',
+											success: function(data) {
+												$('#table-body').html(data);
+											},
+											error: function(xhr, status, error) {
+												console.log('Error:', error);
+											}
+										});
+									}
+
+									// Fetch new records every 5 seconds
+									setInterval(function() {
+										fetchNewRecords();
+									}, 100);
+								</script>
 							</div>
 
 
