@@ -20,7 +20,7 @@ while ($row = mysqli_fetch_assoc($queryResult)) {
     $statusMorning = ($row['status_morning']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late</span>';
     $statusAfternoon = ($row['status_afternoon']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late</span>';
 
-    $output .= '<tr>';
+    $output .= '<tr >';
     $output .= '<td>' . $row['employee_id'] . '</td>';
     $output .= '<td>' . $row['fullname'] . '</td>';
     $output .= '<td>' . date('h:i A', strtotime($row['time_in_morning'])) . $statusMorning . '</td>';
@@ -32,9 +32,9 @@ mysqli_close($connection);
 
 // Output the updated table rows as HTML
 echo
-'<table class="table table-scroll table-striped">
+'<table class="table table-scroll table-striped ">
 <thead>
-    <tr>
+    <tr >
         <th> ID</th>
         <th> Employee Name</th>
         <th style="padding-left:40px;"> Time In</th>

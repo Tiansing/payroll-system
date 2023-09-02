@@ -33,7 +33,7 @@ $rowEmp = mysqli_fetch_assoc($result);
 
 
 $to = date('Y-m-d');
-$from = date('Y-m-d', strtotime('-6 day', strtotime($to)));
+$from = date('Y-m-d', strtotime('-14 day', strtotime($to)));
 
 if (isset($_GET['range'])) {
   $range = $_GET['range'];
@@ -246,7 +246,7 @@ if ($type == "Timekeeper") {
 
                           $cashadvance = $carow['cashamount'];
 
-                          $gross = $row['rate'] * $total_hr;
+                          $gross = ($row['rate'] / 8) * $total_hr;
                           $net_pay = $gross - $cashadvance;
 
 
@@ -257,7 +257,7 @@ if ($type == "Timekeeper") {
 
                             <td><a class="text-inherit"><?php echo $row['fullname'] ?></a></td>
                             <!-- <td><a  class="text-inherit"><?php echo $row['description'] ?></a></td> -->
-                            <td><a class="text-inherit"><?php echo $row['rate'] ?> </a></td>
+                            <td><a class="text-inherit"><?php echo $row['rate'] ?> asdfsadf</a></td>
 
                             <td>
                               <?php echo  number_format($gross) ?>

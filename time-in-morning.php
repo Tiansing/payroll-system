@@ -66,8 +66,8 @@ if ($Attendance == '1') {
 
 		.table-scroll tbody {
 			position: absolute;
-			overflow-y: scroll;
-			height: 150px;
+			overflow-y: hidden;
+			height: 200px;
 		}
 
 		.table-scroll tr {
@@ -79,6 +79,28 @@ if ($Attendance == '1') {
 		.table-scroll thead>tr>th {
 			border: none;
 		}
+
+		.custom-header {
+
+			color: white;
+			padding: 10px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.back-button {
+			padding: 5px 10px;
+			border: none;
+
+			color: white;
+			cursor: pointer;
+		}
+
+		.title {
+			font-size: 24px;
+			margin: 0;
+		}
 	</style>
 </head>
 
@@ -86,15 +108,34 @@ if ($Attendance == '1') {
 	<div class="page" id="app">
 		<div class="page-single">
 			<div class="container">
-				<div style="padding-bottom: 20px;" class="text-center">
-					<h1 id="date"></h1>
-					<h1 class="text" id="time"></h1>
+
+
+
+				<div style="padding-bottom: 5px;" class="text-center">
+					<h3 id="date"></h3>
+					<h3 class="text" id="time"></h3>
 				</div>
 
 				<div class="">
 					<center>
-						<div>
-							<h4 class="timein">Time In Morning</h4>
+						<div style="padding-bottom: 10px;" class="container-fluid">
+
+							<div class="container bg-primary">
+								<div class="row">
+									<div class="col-12">
+										<div class="custom-header">
+											<a href="index.php" class="btn btn-info back-button">
+												< Back</a>
+
+													<h1 class="timein title text-center">Time In Morning</h1>
+													<div></div> <!-- Empty div for spacing on the right side -->
+
+										</div>
+
+									</div>
+								</div>
+							</div>
+
 						</div>
 
 						<!-- SCANNER -->
@@ -159,7 +200,7 @@ if ($Attendance == '1') {
 
 
 							<div class="col" style="padding:30px;">
-								<h4>SCAN RESULTs</h4>
+
 								<div>Employee ID</div>
 								<form action="">
 
@@ -185,7 +226,7 @@ if ($Attendance == '1') {
 								<script>
 									function fetchNewRecords() {
 										$.ajax({
-											url: 'phpqrscan/get_new_records.php', // Your server-side script to fetch new records
+											url: 'phpqrscan/TimeInMorning_new_records.php', // Your server-side script to fetch new records
 											method: 'GET',
 											dataType: 'html',
 											success: function(data) {

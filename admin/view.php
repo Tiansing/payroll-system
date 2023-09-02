@@ -99,19 +99,19 @@ $emp = mysqli_fetch_assoc($result);
             </div>
             <div style="padding-left: 12px; padding-bottom: 25px;">
               <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modal-view-barcode">
-                <i class="fe fe-eye mr-2"></i> View Barcode
+                <i class="fe fe-eye mr-2"></i> View QR code
               </button>
             </div>
             <?php if ($emp['bool_gen'] == 0) { ?>
               <div style="padding-left: 12px; padding-bottom: 25px;">
                 <a href="generate.php?id=<?php echo $emid ?>" class="btn btn-secondary">
-                  <i class="fe fe-code mr-2"></i> Generate Barcode
+                  <i class="fe fe-code mr-2"></i> Generate QR code
                 </a>
               </div>
             <?php } else { ?>
               <div style="padding-left: 12px; padding-bottom: 25px;">
                 <button disabled href="generate.php?id=<?php echo $emid ?>" class="btn btn-secondary">
-                  <i class="fe fe-code mr-2"></i> Generate Barcode
+                  <i class="fe fe-code mr-2"></i> Generate QR code
                 </button>
               </div>
             <?php } ?>

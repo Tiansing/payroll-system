@@ -20,6 +20,9 @@ date_default_timezone_set($timezone);
 		<div class="page-single">
 			<div class="container">
 				<div style="padding-bottom: 20px;" class="text-center">
+					<img src="image/labavendologo.jpg" width="100" alt="">
+				</div>
+				<div style="padding-bottom: 20px;" class="text-center">
 					<h1 id="date"></h1>
 					<h1 class="text" id="time"></h1>
 				</div>

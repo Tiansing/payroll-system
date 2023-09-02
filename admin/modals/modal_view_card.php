@@ -55,13 +55,14 @@ if (isset($_POST['add_deploy'])) {
                 <div class="modal-body p-lg" id="printDataHolder3">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <center><label style="padding-top: 15px; padding-bottom:1px" class="form-label">PRECIOUS BROS CONSTRUCTION<p style="padding-top: 0px;" class="-label">Calatagan Tibang, Virac, Catanduanes</p></label></center>
+                            <center><label style="padding-top: 15px; padding-bottom:1px" class="form-label">LABAVENDO<p style="padding-top: 0px;" class="-label">Manila, Philippines</p></label></center>
                             <center><img height="120" width="120" src="../image/<?php echo $emp['photo'] ?>"></center>
                             <br>
                             <center>
                                 <p><?php echo $emp['fullname'] ?><br><?php echo $emp['address'] ?><br><?php echo $emp['description'] ?><br><?php echo $emp['phonenumber'] ?></p>
                             </center>
                             <center><img src="<?php echo $emp['path'] ?>"> </center>
+                            <center><small><?php echo $emp['employee_id'] ?></small></center>
 
                             <center><br><small style="padding-top: 20px">Person to be contacted in case of emergency,<br> <?php echo ($emp['emergency_name']) ?> (<?php echo $emp['emergency_contact'] ?>)</small>
                             </center>

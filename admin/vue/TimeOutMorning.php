@@ -86,8 +86,3 @@ $set_timezone = date_default_timezone_set("Asia/Manila");
 
               $num_hr = "UPDATE `attendance` SET `num_hr_morning` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
               $update = mysqli_query($connection, $num_hr) or die(mysqli_error().$num_hr);
-
-
- 
-
-?>

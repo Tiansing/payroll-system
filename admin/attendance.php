@@ -118,7 +118,7 @@ if ($Attendance == '1') {
               </div>
               <div style="padding-left: 12px;" class="dropdown  ">
                 <a target="_blank" href="../index.php"><button type="button" style="background-color: " class="btn btn-secondary">
-                    <i style="padding-top: 10px;" class="fe fe-grid mr-2"></i> Use Barcode</button></a>
+                    <i style="padding-top: 10px;" class="fe fe-grid mr-2"></i> Use QR code</button></a>
 
 
               </div>

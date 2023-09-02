@@ -4,16 +4,16 @@ if (!isset($_SESSION['official_username']) && !isset($_SESSION['official_passwor
   header("location:index.php?utm_campaign=expired");
 }
 
+$numbers = '';
+for ($i = 0; $i < 10; $i++) {
+  $numbers .= $i;
+}
 
+$empl_id = substr(str_shuffle($numbers), 0, 9);
 
 if (isset($_POST['add_new'])) {
 
-  $numbers = '';
-  for ($i = 0; $i < 10; $i++) {
-    $numbers .= $i;
-  }
 
-  $employee_id = substr(str_shuffle($numbers), 0, 9);
   $position_id = $_POST['desired_position'];
   $schedule_id = $_POST['desired_schedule'];
 
@@ -46,11 +46,19 @@ if (isset($_POST['add_new'])) {
   $parent_address = ucwords($_POST['parent_address']);
   $emergency_name = ucwords($_POST['emergency_name']);
   $emergency_contact = $_POST['emergency_contact'];
+  $userid = $_POST['userid'];
+  $employee_id = $userid;
+
+  $password = $_POST['password'];
+  $hashedPassword = md5($password);
   $date = date("Y-m-d");
 
   $insert = "INSERT INTO `employees` (`employee_id`, `position_id`, `schedule_id`, `created_on`, `photo`, `fullname`, `address`, `email`, `phonenumber`, `birthdate`, `sex`, `position`, `civil_status`, `citizenship`, `height`, `weight`, `religion`, `spouse`, `spouse_occupation`, `father`, `father_occupation`, `mother`, `mother_occupation`, `parent_address`, `emergency_name`, `emergency_contact`) VALUES ('$employee_id', '$position_id', '$schedule_id', '$date', '$photo', '$fullname', '$address', '$email', '$phonenumber', '$birthdate', '$sex', '$position', '$civil_status', '$citizenship', '$height', '$weight', '$religion', '$spouse', '$spouse_occupation', '$father', '$father_occupation', '$mother', '$mother_occupation', '$parent_address', '$emergency_name', '$emergency_contact');";
 
   $query = mysqli_query($connection, $insert) or die("Could not insert: $insert");
+
+  $insert1 = "INSERT INTO `employee_acct`(`userid`, `password`,`fullname`,`photo`,`created_on`,`type`) VALUES ('$userid', '$hashedPassword','$fullname','$photo','$date','employee');";
+  $query1 = mysqli_query($connection, $insert1) or die("Could not insert: $insert1");
 
   echo "<script>window.location.href='profile.php'</script>";
 }
@@ -63,7 +71,6 @@ if (isset($_POST['add_new'])) {
     }
   }
 </script>
-
 
 <div id="modal-add-employee" class="modal" data-backdrop="true">
   <div class="modal-dialog modal-lg">
@@ -121,7 +128,7 @@ if (isset($_POST['add_new'])) {
                     $res = mysqli_query($connection, $pos);
                     while ($row = mysqli_fetch_assoc($res)) {
 
-                      ?>
+                    ?>
 
                       <option value="<?php echo $row['id']  ?>"><?php echo $row['description']  ?></option>
                     <?php } ?>
@@ -138,7 +145,7 @@ if (isset($_POST['add_new'])) {
                     $res = mysqli_query($connection, $pos);
                     while ($row = mysqli_fetch_assoc($res)) {
 
-                      ?>
+                    ?>
 
                       <option value="<?php echo $row['id']  ?>"><?php echo $row['time_in_morning']  ?>-<?php echo $row['time_out_morning']  ?>/<?php echo $row['time_in_afternoon']  ?>-<?php echo $row['time_out_afternoon']  ?></option>
                     <?php } ?>
@@ -226,7 +233,7 @@ if (isset($_POST['add_new'])) {
 
                     while ($start_year != $current_year) {
                       $current_year--;
-                      ?>
+                    ?>
                       <option value="<?php echo $current_year ?>"><?php echo $current_year ?></option>
                     <?php } ?>
                   </select>
@@ -334,6 +341,19 @@ if (isset($_POST['add_new'])) {
                   <input name="emergency_contact" type="number" maxlength="11" min="0" onkeypress="limitKeypress(event,this.value,11)" class="form-control" required placeholder="Enter contact details...">
                 </div>
               </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">User ID:</label>
+                  <input type="text" class="form-control" value="<?php echo $empl_id; ?>" required placeholder="Enter username details..." disabled>
+                  <input type="hidden" name="userid" value="<?php echo $empl_id; ?>">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="form-label">Password:</label>
+                  <input name="password" type="password" class="form-control" required placeholder="Enter password details...">
+                </div>
+              </div>
             </div>
 
 
@@ -342,7 +362,8 @@ if (isset($_POST['add_new'])) {
       <div class="modal-footer">
         <div style="padding-right: 12px;">
           <button type="button" class="btn dark-white p-x-md" data-dismiss="modal">No</button>
-          <button type="submit" name="add_new" class="btn danger p-x-md">Save</button></div>
+          <button type="submit" name="add_new" class="btn danger p-x-md">Save</button>
+        </div>
       </div>
       </form>
     </div><!-- /.modal-content -->
