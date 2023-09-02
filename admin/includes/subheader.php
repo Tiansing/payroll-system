@@ -55,6 +55,9 @@ if ($type == "Administrator") {
   <li class="nav-item dropdown">
     <a href="scheduling.php" class="nav-link"><i class="fe fe-flag"></i> Employee Schedule</a>
   </li>
+  <li class="nav-item dropdown">
+  <a href="leave.php" class="nav-link"><i class="fa fa-calendar-minus-o"></i> Employee Leave</a>
+</li>
 </ul>');
 } elseif ($type == "Secretary") {
 
