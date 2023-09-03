@@ -110,12 +110,12 @@ if ($Attendance == '1') {
 
 
               </div>
-              <div style="padding-left: 12px;" class="dropdown  ">
+              <!-- <div style="padding-left: 12px;" class="dropdown  ">
                 <button type="button" style="background-color: " class="btn btn-secondary" onclick="printPage()">
                   <i style="padding-top: 10px;" class="fe fe-printer mr-2"></i> Print Attendance</button>
 
 
-              </div>
+              </div> -->
               <div style="padding-left: 12px;" class="dropdown  ">
                 <a target="_blank" href="../index.php"><button type="button" style="background-color: " class="btn btn-secondary">
                     <i style="padding-top: 10px;" class="fe fe-grid mr-2"></i> Use QR code</button></a>

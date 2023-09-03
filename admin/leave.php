@@ -2,6 +2,7 @@
 
 require_once('includes/script.php');
 require_once('session/Login.php');
+include "processLeave.php";
 
 $model = new Dashboard();
 $session = new AdministratorSession();
@@ -27,14 +28,14 @@ $photo = $admin['photo'];
 $create = $admin['created_on'];
 
 $Attendance = '';
-$today = '';
+$lstat = '';
 $stat = '';
 if (isset($_GET['status'])) {
   $Attendance = $_GET['status'];
 }
 
 if (isset($_GET['filter'])) {
-  $today = $_GET['filter'];
+  $lstat = $_GET['filter'];
 }
 
 if ($Attendance == '1') {
@@ -67,8 +68,8 @@ if ($Attendance == '1') {
             </div>
             <div class="col-lg order-lg-first">
               <?php require_once('includes/subheader.php') ?>
-              <?php require_once('modals/modal_filter_attendance.php') ?>
-              <?php require_once('modals/modal_show_attendance.php') ?>
+              <?php require_once('modals/modal_filter_leave.php') ?>
+
             </div>
           </div>
         </div>
@@ -103,34 +104,51 @@ if ($Attendance == '1') {
                 </div>
 
               </div>
-              <div style="padding-left: 12px;" class="dropdown  ">
-                <button type="button" style="background-color: " data-toggle="modal" data-target="#modal-filter-attendance" class="btn btn-secondary">
-                  <i style="padding-top: 10px;" class="fe fe-filter mr-2"></i> Filter Date</button>
 
-
-              </div>
 
               <div style="padding-left: 12px;" class="dropdown  ">
-                <button type="button" style="background-color: " data-toggle="modal" data-target="#modal-filter-attendance" class="btn btn-secondary">
+                <button type="button" style="background-color: " data-toggle="modal" data-target="#modal-filter-leave" class="btn btn-secondary">
                   <i style="padding-top: 10px;" class="fe fe-filter mr-2"></i> Filter Status</button>
+                <?php
+                switch ($lstat) {
 
+                  case "Approved":
 
+                ?>
+                    <button type="button" onclick="clearStatus()" class="btn btn-success">
+                      <i style="padding-top: 10px;" class="fe fe-x mr-2"></i> Approved</button>
+
+                  <?php
+                    break;
+                  case "Pending":
+                  ?>
+                    <button type="button" onclick="clearStatus()" class="btn btn-warning">
+                      <i style="padding-top: 10px;" class="fe fe-x mr-2"></i> Pending</button>
+                  <?php break;
+                  case "Declined": ?>
+                    <button type="button" onclick="clearStatus()" class="btn btn-danger">
+                      <i style="padding-top: 10px;" class="fe fe-x mr-2"></i> Declined</button>
+                <?php } ?>
               </div>
             </div>
+
+
+
             <div class="col-12">
               <div class="card">
                 <div class="card-header py-3">
                   <h3 class="card-title">Leave Requests Table</h3>
                 </div>
-                <?php require_once('modals/modal_add_attendance.php') ?>
+
                 <div class="card-body">
                   <div class="table-responsive">
-                    <table class="table table-hovered" id="dataTable" cellspacing="5">
+                    <table class="table table-hovered" id="example1" cellspacing="5">
                       <thead>
                         <tr>
 
 
-                          <th>Employee ID</th>
+                          <th>ID</th>
+
                           <th>Employee name</th>
                           <th>Status</th>
                           <th>Date of Leave</th>
@@ -144,8 +162,7 @@ if ($Attendance == '1') {
 
 
                         <?php
-                        $query = "SELECT * FROM employee_leave ORDER BY id DESC";
-                        $emp_leave_req = mysqli_query($connection, $query);
+                        include "modals/modal_all_leave.php";
                         while ($row = mysqli_fetch_assoc($emp_leave_req)) {
                           $id  = $row['id'];
                           $employee_id  = $row['employee_id'];
@@ -167,8 +184,9 @@ if ($Attendance == '1') {
                         ?>
                           <tr>
                             <td>
-                              <?php echo $employee_id; ?>
+                              <?php echo $id; ?>
                             </td>
+
                             <td>
                               <?php echo $employee_name; ?>
                             </td>
@@ -200,14 +218,15 @@ if ($Attendance == '1') {
                               <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#reasonModal<?php echo $id; ?>">
                                 View Reason
                               </button>
-                              <button type="button" class="btn btn-sm btn-success" onclick="approveLeave(<?php echo $id; ?>)">
+                              <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#approvemodal<?php echo $id; ?>">
                                 Approve
                               </button>
-                              <button type="button" class="btn btn-sm btn-danger" onclick="declineLeave(<?php echo $id; ?>)">
+                              <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#declineLeave<?php echo $id; ?>">
                                 Decline
                               </button>
                             </td>
-
+                            <?php approveLeave(); ?>
+                            <?php declineLeave(); ?>
                             <!-- Modal -->
                             <div class="modal fade" id="reasonModal<?php echo $id; ?>" tabindex="-1" role="dialog" aria-labelledby="reasonModalLabel" aria-hidden="true">
                               <div class="modal-dialog modal-dialog-scrollable" role="document">
@@ -233,6 +252,52 @@ if ($Attendance == '1') {
                               </div>
                             </div>
 
+                            <!-- Approve Leave modal -->
+                            <div class="modal fade" id="approvemodal<?php echo $id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header bg-success">
+                                    <h5 class="modal-title text-white" id="exampleModalLabel"> Approve Leave Request </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    </button>
+                                  </div>
+                                  <form method="POST" action="">
+                                    <div class="modal-body">
+                                      <input type="hidden" name="leaveid" value="<?php echo $id; ?>">
+                                      <h4> Do you want to Approve <mark><?php echo $employee_name; ?></mark> Leave Request ?</h4>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-dismiss="modal"> NO </button>
+                                      <button type="submit" name="approveLeave" class="btn btn-primary"> Yes </butron>
+                                    </div>
+                                  </form>
+
+                                </div>
+                              </div>
+                            </div>
+                            <!-- Decline Leave modal -->
+                            <div class="modal fade" id="declineLeave<?php echo $id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header bg-danger">
+                                    <h5 class="modal-title text-white" id="exampleModalLabel"> Decline Leave Request </h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    </button>
+                                  </div>
+                                  <form method="POST" action="">
+                                    <div class="modal-body">
+                                      <input type="hidden" name="leaveid" value="<?php echo $id; ?>">
+                                      <h4> Do you want to Decline <mark><?php echo $employee_name; ?></mark> Leave Request ?</h4>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-dismiss="modal"> NO </button>
+                                      <button type="submit" name="declineLeave" class="btn btn-primary"> Yes </butron>
+                                    </div>
+                                  </form>
+
+                                </div>
+                              </div>
+                            </div>
 
                           </tr>
                         <?php } ?>
@@ -255,14 +320,8 @@ if ($Attendance == '1') {
   <?php require_once('includes/bower.php') ?>
 </body>
 <script>
-  function approveLeave(id) {
-    var url = "approveLeave.php?leaveid=" + id;
-    window.location.href = url
-  }
-
-  function declineLeave(id) {
-    var url = "declineLeave.php?leaveid=" + id;
-    window.location.href = url
+  function clearStatus() {
+    window.location.href = "leave.php";
   }
 </script>
 

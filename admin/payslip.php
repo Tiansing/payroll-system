@@ -76,13 +76,13 @@ $myId = $row['id'];
               <a href="home.php" class="text-primary">Dashboard</a> <i style="font-size: 20px;" class="fe fe-chevron-right"></i> Payslip
             </h1>
           </div>
-          <div style="padding-left: 0; padding-bottom: 25px;" class="dropdown">
+          <!-- <div style="padding-left: 0; padding-bottom: 25px;" class="dropdown">
             <button type="button" class="btn btn-secondary  " onclick="printPage()">
               <i class="fe fe-printer mr-2"></i> Print Payslip
             </button>
             <div class="dropdown-menu">
             </div>
-          </div>
+          </div> -->
           <div class="row row-cards">
 
             <?php require_once('modals/modal_filter_date.php') ?>

@@ -103,7 +103,7 @@ if (isset($_POST['add_educ'])) {
   <div class="modal-dialog modal-md">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Barcode</h5>
+        <h5 class="modal-title">QR code</h5>
       </div>
       <form action="" method="post">
         <div class="modal-body p-lg" id="printDataHolder2">
@@ -119,8 +119,8 @@ if (isset($_POST['add_educ'])) {
         <div class="modal-footer">
           <div style="padding-right: 12px;">
             <button class="btn dark-white p-x-md" data-dismiss="modal">Close</button>
-            <button type="button" class="btn dark-white p-x-md" onclick="printPage2()">Print</button>
-            <button onclick="closeModal()">Close Modal</button>
+            <!-- <button type="button" class="btn dark-white p-x-md" onclick="printPage2()">Print</button> -->
+
           </div>
         </div>
       </form>

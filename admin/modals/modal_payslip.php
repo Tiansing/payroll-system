@@ -69,7 +69,7 @@
       <div class="modal-footer">
         <div style="padding-right: 12px;">
           <button type="button" class="btn dark-white p-x-md" data-dismiss="modal">Close</button>
-          <button type="button" class="btn dark-white p-x-md">Print</button>
+          <!-- <button type="button" class="btn dark-white p-x-md">Print</button> -->
         </div>
       </div>
     </div>

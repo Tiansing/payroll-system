@@ -73,7 +73,7 @@ if (isset($_POST['add_deploy'])) {
                 <div class="modal-footer">
                     <div style="padding-right: 12px;">
                         <button class="btn dark-white p-x-md" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn success p-x-md" onclick="printPage3()">Print</button>
+                        <!-- <button type="submit" class="btn success p-x-md" onclick="printPage3()">Print</button> -->
                     </div>
                 </div>
             </form>

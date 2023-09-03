@@ -142,8 +142,8 @@ if (isset($_POST['add'])) {
               <input name="minutes" type="number" class="form-control" required placeholder="Enter number of minutes...">
             </div>
             <div class="form-group">
-              <label class="form-label">Rate Per Hour</label>
-              <input name="rate" type="number" maxlength="4" min="0" onkeypress="limitKeypress(event,this.value,4)" class="form-control" required placeholder="Enter rate per hour...">
+              <label class="form-label">Rate Per Day</label>
+              <input name="rate" type="number" maxlength="4" min="0" onkeypress="limitKeypress(event,this.value,4)" class="form-control" required placeholder="Enter rate per Day...">
             </div>
           </div>
           <script type="text/javascript">

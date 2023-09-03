@@ -179,13 +179,13 @@ if ($type == "Timekeeper") {
               <div class="dropdown-menu">
               </div>
             </div>
-            <div style="padding-left: 12px; padding-bottom: 25px;" class="dropdown">
+            <!-- <div style="padding-left: 12px; padding-bottom: 25px;" class="dropdown">
               <button type="button" class="btn btn-secondary  " onclick="printPage()">
                 <i class="fe fe-list mr-2"></i> Print Payroll
               </button>
               <div class="dropdown-menu">
               </div>
-            </div>
+            </div> -->
 
             <?php require_once('modals/modal_filter_date.php') ?>
             <script type="text/javascript">

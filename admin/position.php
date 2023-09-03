@@ -76,7 +76,7 @@ $create = $admin['created_on'];
                           <th>ID</th>
                           <th>Position ID</th>
                           <th>Position Title</th>
-                          <th>Rate Per Hour</th>
+                          <th>Rate Per Day</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -114,9 +114,9 @@ $create = $admin['created_on'];
                                       </div>
                                     </div>
                                     <div style="padding-top: 0px;" class="form-group">
-                                      <label class="form-label">Rate Per Hour</label>
+                                      <label class="form-label">Rate Per Day</label>
                                       <div class="bootstr-timepicker">
-                                        <input required="true" type="text"  value="<?php echo $row['rate'] ?>" class="form-control timeicker" name="rate_per_hour">
+                                        <input required="true" type="text" value="<?php echo $row['rate'] ?>" class="form-control timeicker" name="rate_per_hour">
                                       </div>
                                     </div>
 

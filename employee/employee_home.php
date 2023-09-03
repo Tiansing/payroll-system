@@ -80,7 +80,7 @@ if (isset($_POST['submit'])) {
     $date_of_leave = $_POST['date_of_leave'];
     $days_of_leave = $_POST['days_of_leave'];
     $reason = $_POST['reason'];
-
+    $reason = stripslashes(mysqli_real_escape_string($connection, $reason));
     $query = "INSERT INTO employee_leave (employee_id, date_of_leave, days_of_leave, reason_for_leave, leave_status, date_filed) VALUES ('$employee_id', '$date_of_leave', '$days_of_leave', '$reason', 'Pending', now());";
     mysqli_query($connection, $query);
 
@@ -179,11 +179,11 @@ if (isset($_POST['submit'])) {
 
                                 <h5><span <?php switch ($leave_stat) {
                                                 case "Pending":
-                                                    echo "class='badge badge-warning'";
+                                                    echo "class='badge badge-warning text-white'";
                                                 case "Approved":
-                                                    echo "class='badge badge-success'";
+                                                    echo "class='badge badge-success text-white'";
                                                 case "Declined":
-                                                    echo "class='badge badge-danger'";
+                                                    echo "class='badge badge-danger text-white'";
                                             } ?>><?php echo $leave_stat; ?></span></h5>
                             </td>
                             <td>
