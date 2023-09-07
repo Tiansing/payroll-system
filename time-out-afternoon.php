@@ -127,7 +127,7 @@ if ($Attendance == '1') {
 											<a href="index.php" class="btn btn-info back-button">
 												< Back</a>
 
-													<h1 class="timein title text-center">Time Out Afternoon</h1>
+													<h1 class="timein title text-center"><i class="fe fe-sunset"></i>&nbsp;Time out Midshift&nbsp;<i class="fe fe-sunset"></i></h1>
 													<div></div> <!-- Empty div for spacing on the right side -->
 
 										</div>

@@ -127,7 +127,7 @@ if ($Attendance == '1') {
 											<a href="index.php" class="btn btn-info back-button">
 												< Back</a>
 
-													<h1 class="timein title text-center">Time In Afternoon</h1>
+													<h1 class="timein title text-center"><i class="fe fe-sunset"></i>&nbsp;Time In Midshift&nbsp;<i class="fe fe-sunset"></i></h1>
 													<div></div> <!-- Empty div for spacing on the right side -->
 
 										</div>
@@ -188,7 +188,7 @@ if ($Attendance == '1') {
 												document.getElementById("txtHint").innerHTML = this.responseText;
 											}
 										};
-										xmlhttp.open("GET", "phpqrscan/ScanTimeInAfternoon.php?q=" + str, true);
+										xmlhttp.open("GET", "phpqrscan/ScanTimeInMidshift.php?q=" + str, true);
 										xmlhttp.send();
 									}
 								}

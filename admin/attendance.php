@@ -95,7 +95,7 @@ if ($Attendance == '1') {
           <div class="row row-cards">
             <div style="padding-left: 12px; padding-bottom: 25px;">
               <div class="dropdown  ">
-                <button type="button" style="background-color: " class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
+                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
                   <i style="padding-top: 10px;" class="fe fe-clock mr-2"></i> Add Attendance</button>
 
                 <div style="padding-top: 10px;" class="dropdown-menu">
@@ -105,7 +105,7 @@ if ($Attendance == '1') {
 
               </div>
               <div style="padding-left: 12px;" class="dropdown  ">
-                <button type="button" style="background-color: " data-toggle="modal" data-target="#modal-filter-attendance" class="btn btn-secondary">
+                <button type="button" data-toggle="modal" data-target="#modal-filter-attendance" class="btn btn-secondary">
                   <i style="padding-top: 10px;" class="fe fe-filter mr-2"></i> Filter Date</button>
 
 
@@ -117,18 +117,20 @@ if ($Attendance == '1') {
 
               </div> -->
               <div style="padding-left: 12px;" class="dropdown  ">
-                <a target="_blank" href="../index.php"><button type="button" style="background-color: " class="btn btn-secondary">
+                <a target="_blank" href="../index.php"><button type="button" class="btn btn-secondary">
                     <i style="padding-top: 10px;" class="fe fe-grid mr-2"></i> Use QR code</button></a>
 
 
               </div>
               <div style="padding-left: 420px; float: right" class="dropdown ">
-                <button data-toggle="modal" data-target="#modal-show-attendance" type="button" style="background-color: " class="btn btn-secondary ">
+                <button data-toggle="modal" data-target="#modal-show-attendance" type="button" class="btn btn-secondary ">
                   <i style="padding-top: 10px;" class="fe fe-eye mr-2"></i> Show All</button>
 
 
               </div>
             </div>
+
+
             <div class="col-12">
               <div class="card">
                 <div class="card-header py-3">
@@ -140,7 +142,6 @@ if ($Attendance == '1') {
                     <table class="table table-hovered" id="dataTable" cellspacing="5">
                       <thead>
                         <tr>
-
 
                           <th>Employee name</th>
                           <th>Timein AM</th>
@@ -277,6 +278,8 @@ if ($Attendance == '1') {
                 </div>
               </div>
             </div>
+
+
           </div>
         </div>
       </div>

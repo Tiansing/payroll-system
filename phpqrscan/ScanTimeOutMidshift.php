@@ -82,17 +82,34 @@ if (isset($q)) {
 
       if ($employee_id != 0) {
 
+        // Generate your image URL here
+
+
+
+
+
+        $queryEmployeeId = "SELECT * FROM `employees` WHERE `employee_id` = '$content';";
+        $queryResult = mysqli_query($connection, $queryEmployeeId);
+        $rowQuery = mysqli_fetch_assoc($queryResult);
+
+        $employee_id = $rowQuery['id'];
+        $schedule_id = $rowQuery['schedule_id'];
+
+        $sched = "SELECT * FROM `schedules` WHERE `id` = '$schedule_id';";
+        $querySched = mysqli_query($connection, $sched);
+        $schedRow = mysqli_fetch_assoc($querySched);
+
+        $logstatus = ($time_in > $schedRow['time_in_afternoon']) ? 0 : 1;
+
         $insert = "UPDATE `attendance` SET `time_out_afternoon` = '$time_in' WHERE `employee_id` = '$employee_id' AND `date` = '$date';";
 
         $query = mysqli_query($connection, $insert) or die(mysqli_error($connection) . $insert);
-
-
         //number of hours in the morning
         $sql2 = "SELECT * FROM `attendance` WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
         $query2 = mysqli_query($connection, $sql2);
         $row2 = mysqli_fetch_assoc($query2);
 
-        if (isset($row2['time_in_afternoon']) || isset($row2['time_in_morning'])) {
+        if (isset($row2['time_in_afternoon'])) {
           // Set appropriate headers for image content
           $imageUrl = '<img height="100" width="100" src="image/' . $empImg . '" alt="" > ';
 

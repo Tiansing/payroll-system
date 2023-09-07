@@ -120,14 +120,14 @@ if ($Attendance == '1') {
 					<center>
 						<div style="padding-bottom: 10px;" class="container-fluid">
 
-							<div class="container bg-warning">
+							<div class="container bg-primary">
 								<div class="row">
 									<div class="col-12">
 										<div class="custom-header">
 											<a href="index.php" class="btn btn-info back-button">
 												< Back</a>
 
-													<h1 class="timein title text-center"><i class="fe fe-sunrise"></i>&nbsp;Time Out Morning&nbsp;<i class="fe fe-sunrise"></i></h1>
+													<h1 class="timein title text-center">Time In Graveyard</h1>
 													<div></div> <!-- Empty div for spacing on the right side -->
 
 										</div>
@@ -188,7 +188,7 @@ if ($Attendance == '1') {
 												document.getElementById("txtHint").innerHTML = this.responseText;
 											}
 										};
-										xmlhttp.open("GET", "phpqrscan/ScanTimeOutMorning.php?q=" + str, true);
+										xmlhttp.open("GET", "phpqrscan/ScanTimeInGraveyard.php?q=" + str, true);
 										xmlhttp.send();
 									}
 								}
@@ -205,7 +205,7 @@ if ($Attendance == '1') {
 								<form action="">
 
 
-									<input type="text" required="true" v-model="time_in_morning" class="form-control" name="start" class="input" id="result" onkeyup="showHint(this.value)" placeholder="Employee Identification here" style="text-align: center;" disabled />
+									<input type="text" required="true" v-model="time_in_graveyard" class="form-control" name="start" class="input" id="result" onkeyup="showHint(this.value)" placeholder="Employee Identification here" style="text-align: center;" disabled />
 
 								</form>
 
@@ -226,7 +226,7 @@ if ($Attendance == '1') {
 								<script>
 									function fetchNewRecords() {
 										$.ajax({
-											url: 'phpqrscan/TimeOutMorning_new_records.php', // Your server-side script to fetch new records
+											url: 'phpqrscan/TimeInGraveyard_new_records.php', // Your server-side script to fetch new records
 											method: 'GET',
 											dataType: 'html',
 											success: function(data) {

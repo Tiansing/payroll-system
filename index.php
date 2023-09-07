@@ -25,13 +25,19 @@ date_default_timezone_set($timezone);
 				<div style="padding-bottom: 20px;" class="text-center">
 					<h1 id="date"></h1>
 					<h1 class="text" id="time"></h1>
+
 				</div>
 
-				<div class="row">
-					<div class="col-lg-6">
+				<div style="padding-bottom: 20px;" class="h-100 d-flex align-items-center justify-content-center">
+					<div class="col-lg-6 ">
 						<div class="card">
 							<div class="card-header">
-								<h3 class="card-title"><b>Morning Attendance</b> <i class="fe fe-sunrise"></i></h3>
+								<h3 class="card-title"><b>Morning Attendance</b> <i class="fe fe-sunrise"></i>
+
+								</h3>
+								<div class="card-title">
+									<h6 class="card-text text-muted">&nbsp;&nbsp;6:00 am - 3:00 pm</h6>
+								</div>
 								<div class="card-options">
 									<a href="time-in-morning.php" class="btn btn-primary btn-sm">Time In</a>
 									<a href="time-out-morning.php" class="btn btn-warning btn-sm ml-2">Time Out</a>
@@ -39,13 +45,32 @@ date_default_timezone_set($timezone);
 							</div>
 						</div>
 					</div>
+				</div>
+				<div class="row">
 					<div class="col-lg-6">
 						<div class="card">
 							<div class="card-header">
-								<h3 class="card-title"><b>Afternoon Attendance</b> <i class="fe fe-sunset"></i></h3>
+								<h3 class="card-title"><b>Midshift Attendance</b> <i class="fe fe-sunset"></i></h3>
+								<div class="card-title">
+									<h6 class="card-text text-muted">&nbsp;&nbsp;2:00 pm - 11:00 pm</h6>
+								</div>
 								<div class="card-options">
 									<a href="time-in-afternoon.php" class="btn btn-primary btn-sm">Time In</a>
 									<a href="time-out-afternoon.php" class="btn btn-warning btn-sm ml-2">Time Out</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6">
+						<div class="card">
+							<div class="card-header">
+								<h3 class="card-title"><b>Graveyard Attendance</b> <i class="fe fe-moon"></i></h3>
+								<div class="card-title">
+									<h6 class="card-text text-muted">&nbsp;&nbsp;10:00 pm - 7:00 am</h6>
+								</div>
+								<div class="card-options">
+									<a href="time-in-graveyard.php" class="btn btn-primary btn-sm">Time In</a>
+									<a href="time-out-graveyard.php" class="btn btn-warning btn-sm ml-2">Time Out</a>
 								</div>
 							</div>
 						</div>
@@ -54,6 +79,9 @@ date_default_timezone_set($timezone);
 				</div>
 			</div>
 		</div>
+		<a href="admin" target="_blank" class="btn">
+			<h4><span class="badge badge-primary">Employee Login</span></h4>
+		</a>
 		<a href="admin" target="_blank" class="btn">Go to Dashboard Panel</a>
 	</div>
 	</div>

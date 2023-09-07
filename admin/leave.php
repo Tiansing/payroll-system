@@ -107,7 +107,7 @@ if ($Attendance == '1') {
 
 
               <div style="padding-left: 12px;" class="dropdown  ">
-                <button type="button" style="background-color: " data-toggle="modal" data-target="#modal-filter-leave" class="btn btn-secondary">
+                <button type="button" data-toggle="modal" data-target="#modal-filter-leave" class="btn btn-secondary">
                   <i style="padding-top: 10px;" class="fe fe-filter mr-2"></i> Filter Status</button>
                 <?php
                 switch ($lstat) {
@@ -175,7 +175,7 @@ if ($Attendance == '1') {
                           $dtfiled  = $row['date_filed'];
                           $dtfiled = strtotime($dtfiled);
                           $dtfiled = date("F j, Y", $dtfiled);
-                          $query1 = "SELECT * FROM employees";
+                          $query1 = "SELECT * FROM employees WHERE employee_id =  $employee_id";
                           $emp_leave_req1 = mysqli_query($connection, $query1);
                           while ($row1 = mysqli_fetch_assoc($emp_leave_req1)) {
                             $employee_name = $row1["fullname"];

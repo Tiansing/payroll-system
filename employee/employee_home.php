@@ -93,8 +93,8 @@ if (isset($_POST['submit'])) {
         <div class="d-flex align-items-center">
             <img src="../image/<?php echo $photo; ?>" alt="Profile Picture" class="profile-picture">
             <div class="employee-info">
-                <p class="mb-0">ID: <span id="employeeID"><?php echo $employee_id; ?></span></p>
-                <p class="mb-0">Name: <span id="employeeName"><?php echo $fullname; ?></span></p>
+                <p class="mb-0">ID: <b><span id="employeeID"><?php echo $employee_id; ?></span></b></p>
+                <p class="mb-0">Name: <b><span id="employeeName"><?php echo $fullname; ?></span></b></p>
             </div>
         </div>
         <a href="signout.php" class="logout-button">Logout</a>

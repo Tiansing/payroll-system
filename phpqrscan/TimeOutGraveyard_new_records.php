@@ -11,7 +11,7 @@ $session = new AdministratorSession();
 $session->LoginSession();
 $connection = $model->TemporaryConnection();
 
-$queryPosition = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id  WHERE  attendance.date='$today' AND attendance.time_out_afternoon IS NOT NULL ORDER BY attendance.time_out_afternoon DESC ;";
+$queryPosition = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id  WHERE  attendance.date='$today' AND attendance.time_out_graveyard IS NOT NULL ORDER BY attendance.time_out_graveyard DESC ;";
 $queryResult = mysqli_query($connection, $queryPosition);
 
 $output = '';
@@ -19,13 +19,14 @@ $output = '';
 while ($row = mysqli_fetch_assoc($queryResult)) {
     $statusMorning = ($row['status_morning']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late</span>';
     $statusAfternoon = ($row['status_afternoon']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late</span>';
+    $statusGraveyard = ($row['status_graveyard']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late</span>';
 
     $output .= '<tr >';
     $output .= '<td>' . $row['employee_id'] . '</td>';
     $output .= '<td>' . $row['fullname'] . '</td>';
-    $output .= '<td>' . date('h:i A', strtotime($row['time_in_afternoon'])) . $statusAfternoon . '</td>';
-    if (isset($row['time_out_afternoon'])) {
-        $output .= '<td>' . date('h:i A', strtotime($row['time_out_afternoon'])) . '</td>';
+    $output .= '<td>' . date('h:i A', strtotime($row['time_in_graveyard'])) . $statusGraveyard . '</td>';
+    if (isset($row['time_out_graveyard'])) {
+        $output .= '<td>' . date('h:i A', strtotime($row['time_out_graveyard'])) . '</td>';
     } else {
 
         $output .= '<td>00:00</td>';

@@ -176,8 +176,19 @@ $emp = mysqli_fetch_assoc($result);
                         <div class="col-md-4">
                           <div class="form-group">
                             <label class="form-label">Schedule</label>
-                            <input type="text" class="form-control" readonly="" placeholder=" " value="<?php echo date('H:i A', strtotime($emp['time_in_morning'])) ?> - <?php echo date('H:i A', strtotime($emp['time_out_morning'])) ?> / <?php echo date('H:i', strtotime($emp['time_in_afternoon'])) ?> PM - <?php echo date('H:i', strtotime($emp['time_out_afternoon'])) ?> PM">
+                            <input type="text" class="form-control" readonly="" placeholder=" " value=" <?php
+                                                                                                        if (isset($emp['time_in_morning'])) {
+                                                                                                          echo "Morning " . date('H:i A', strtotime($emp['time_in_morning'])) . " - " . date('H:i', strtotime($emp['time_out_morning'])) . " PM";
+                                                                                                        } else if (isset($emp['time_in_afternoon'])) {
+                                                                                                          echo "Midshift " . date('H:i', strtotime($emp['time_in_afternoon'])) . " PM" . " - " . date('H:i', strtotime($emp['time_out_afternoon'])) . " PM";
+                                                                                                        } else if (isset($emp['time_in_graveyard'])) {
+                                                                                                          echo "Graveyard " . date('H:i', strtotime($emp['time_in_graveyard'])) . " PM" . " - " . date('H:i A', strtotime($emp['time_out_graveyard']));
+                                                                                                        }
+
+                                                                                                        ?>">
                           </div>
+
+
                         </div>
                         <div class="col-md-4">
                           <div class="form-group">

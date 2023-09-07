@@ -140,15 +140,9 @@ if (isset($_POST['add_new'])) {
                   <label class="form-label">Desired Schedule</label>
                   <select required="" name="desired_schedule" class="form-control custom-select">
                     <option class="text-muted">Select Schedule</option>
-                    <?php
-                    $pos = "SELECT * FROM `schedules`;";
-                    $res = mysqli_query($connection, $pos);
-                    while ($row = mysqli_fetch_assoc($res)) {
-
-                    ?>
-
-                      <option value="<?php echo $row['id']  ?>"><?php echo $row['time_in_morning']  ?>-<?php echo $row['time_out_morning']  ?>/<?php echo $row['time_in_afternoon']  ?>-<?php echo $row['time_out_afternoon']  ?></option>
-                    <?php } ?>
+                    <option value="27">Morning 6:00am-3:00pm</option>
+                    <option value="28">Midshift 2:00pm-11:00pm</option>
+                    <option value="29">Graveyard 10:00pm-7:00am</option>
                   </select>
                 </div>
               </div>

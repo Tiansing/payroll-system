@@ -82,24 +82,41 @@ if (isset($q)) {
 
       if ($employee_id != 0) {
 
-        $insert = "UPDATE `attendance` SET `time_out_afternoon` = '$time_in' WHERE `employee_id` = '$employee_id' AND `date` = '$date';";
+        // Generate your image URL here
+
+
+
+
+
+        $queryEmployeeId = "SELECT * FROM `employees` WHERE `employee_id` = '$content';";
+        $queryResult = mysqli_query($connection, $queryEmployeeId);
+        $rowQuery = mysqli_fetch_assoc($queryResult);
+
+        $employee_id = $rowQuery['id'];
+        $schedule_id = $rowQuery['schedule_id'];
+
+        $sched = "SELECT * FROM `schedules` WHERE `id` = '$schedule_id';";
+        $querySched = mysqli_query($connection, $sched);
+        $schedRow = mysqli_fetch_assoc($querySched);
+
+        $logstatus = ($time_in > $schedRow['time_in_graveyard']) ? 0 : 1;
+
+        $insert = "UPDATE `attendance` SET `time_out_graveyard` = '$time_in' WHERE `employee_id` = '$employee_id' AND `date` = '$date';";
 
         $query = mysqli_query($connection, $insert) or die(mysqli_error($connection) . $insert);
-
-
         //number of hours in the morning
         $sql2 = "SELECT * FROM `attendance` WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
         $query2 = mysqli_query($connection, $sql2);
         $row2 = mysqli_fetch_assoc($query2);
 
-        if (isset($row2['time_in_afternoon']) || isset($row2['time_in_morning'])) {
+        if (isset($row2['time_in_graveyard'])) {
           // Set appropriate headers for image content
           $imageUrl = '<img height="100" width="100" src="image/' . $empImg . '" alt="" > ';
 
           echo $imageUrl;
 
           echo '<div style="margin-top: 10px;" class="alert alert-success"><strong><u>' . $empName . '</u></strong> successfully logged out!  </div>';
-          $start = $row2['time_in_afternoon'];
+          $start = $row2['time_in_graveyard'];
 
           $time_start = new DateTime($start);
           $time_end = new DateTime($time_in);
@@ -113,7 +130,7 @@ if (isset($q)) {
             $int = $int - 1;
           }
 
-          $num_hr = "UPDATE `attendance` SET `num_hr_afternoon` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
+          $num_hr = "UPDATE `attendance` SET `num_hr_graveyard` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
           $update = mysqli_query($connection, $num_hr) or die(mysqli_error($connection) . $num_hr);
         } else {
           echo '<div class="alert alert-danger"><strong>Failed! </strong>Employee <strong><u>' . $empName . '</u></strong> doesn&rsquo;t Time in yet</div>';

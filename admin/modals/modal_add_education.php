@@ -113,7 +113,11 @@ if (isset($_POST['add_educ'])) {
           </center>
           <br>
           <center>
-            <h6 class="small">Generated on <?php echo date('F m, Y', strtotime($emp['generated_on'])) ?></h6>
+            <h6 class="small">Generated on <?php if (isset($emp['generated_on'])) {
+                                              echo date('F m, Y', strtotime($emp['generated_on']));
+                                            } else {
+                                              echo "";
+                                            } ?></h6>
           </center>
         </div>
         <div class="modal-footer">

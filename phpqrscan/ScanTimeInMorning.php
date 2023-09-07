@@ -133,4 +133,3 @@ if (isset($q)) {
 // Output "no suggestion" if no hint was found or output correct values
 //echo $hint === "" ? "no suggestion" : $hint;
 ?>
-<img src="../image/18.jpg" alt="">
