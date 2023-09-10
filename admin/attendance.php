@@ -144,12 +144,10 @@ if ($Attendance == '1') {
                         <tr>
 
                           <th>Employee name</th>
-                          <th>Timein AM</th>
-                          <th>Timeout AM</th>
+                          <th>Timein</th>
+                          <th>Timeout</th>
                           <th>Total Time</th>
-                          <th>Timein PM</th>
-                          <th>Timeout PM</th>
-                          <th>Total Time</th>
+                          <th>Schedule</th>
                           <th>date</th>
                           <th>action</th>
 
@@ -157,11 +155,18 @@ if ($Attendance == '1') {
                       </thead>
                       <tbody>
 
-                        <?php while ($row = mysqli_fetch_assoc($queryResult)) {
+                        <?php
+
+
+                        while ($row = mysqli_fetch_assoc($queryResult)) {
+                          $sched_id = $row['schedule_id'];
+                          $att_id = $row['attendance_id'];
 
                           $statusMorning = ($row['status_morning']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late</span>';
 
                           $statusAfternoon = ($row['status_afternoon']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late</span>';
+
+                          $statusGraveyard = ($row['status_graveyard']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late</span>';
 
                         ?>
 
@@ -171,20 +176,27 @@ if ($Attendance == '1') {
 
 
                             <td><a class="text-inherit"><?php echo $row['fullname'] ?></a></td>
-                            <td class=""><a class="text-inherit"><?php
-                                                                  if (isset($row['time_in_morning'])) {
-                                                                    echo date('h:i A', strtotime($row['time_in_morning']));
-
-
-                                                                  ?></a><?php echo $statusMorning;
-                                                                      } else {
-                                                                        echo "";
-                                                                      } ?></td>
-
-
+                            <td class=""><?php
+                                          if (isset($row['time_in_morning'])) {
+                                            echo date('h:i A', strtotime($row['time_in_morning']));
+                                            echo $statusMorning;
+                                          } else if (isset($row['time_in_afternoon'])) {
+                                            echo date('h:i A', strtotime($row['time_in_afternoon']));
+                                            echo $statusAfternoon;
+                                          } else if (isset($row['time_in_graveyard'])) {
+                                            echo date('h:i A', strtotime($row['time_in_graveyard']));
+                                            echo $statusGraveyard;
+                                          } else {
+                                            echo "";
+                                          } ?>
+                            </td>
                             <td><a class="text-inherit"><?php
                                                         if (isset($row['time_out_morning'])) {
                                                           echo  date('h:i A', strtotime($row['time_out_morning']));
+                                                        } else if (isset($row['time_in_afternoon'])) {
+                                                          echo date('h:i A', strtotime($row['time_out_afternoon']));
+                                                        } else if (isset($row['time_in_graveyard'])) {
+                                                          echo date('h:i A', strtotime($row['time_out_graveyard']));
                                                         } else {
                                                           echo "";
                                                         }
@@ -193,30 +205,35 @@ if ($Attendance == '1') {
 
 
 
-                            <td class="text"><?php echo round($row['num_hr_morning'], 2) ?> HRS</td>
+                            <td class="text"><?php
+                                              if (isset($row['num_hr_morning'])) {
+                                                echo round($row['num_hr_morning'], 2);
+                                              } else if (isset($row['num_hr_afternoon'])) {
+                                                echo round($row['num_hr_afternoon'], 2);
+                                              } else if (isset($row['num_hr_graveyard'])) {
+                                                echo round($row['num_hr_graveyard'], 2);
+                                              } else {
+                                                echo "";
+                                              }
+                                              ?> HRS</td>
+
+                            <td class="text"><?php
+
+                                              $queryPosition1 = "SELECT * FROM schedules WHERE id = $sched_id";
+                                              $queryResult1 = mysqli_query($connection, $queryPosition1);
+                                              while ($row3 = mysqli_fetch_assoc($queryResult1)) {
+                                                if (isset($row3['time_in_morning'])) {
+                                                  echo "Morning " . date('H:i A', strtotime($row3['time_in_morning'])) . " - " . date("h:i A", strtotime($row3['time_out_morning']));
+                                                } else if (isset($row3['time_in_afternoon'])) {
+                                                  echo "Midshift " . date("h:i A", strtotime($row3['time_in_afternoon'])) . " - " . date("h:i A", strtotime($row3['time_out_afternoon']));
+                                                } else if (isset($row3['time_in_graveyard'])) {
+                                                  echo "Graveyard " . date("h:i A", strtotime($row3['time_in_graveyard']))  . " - " . date("h:i A", strtotime($row3['time_out_graveyard']));
+                                                }
+                                              }
+
+                                              ?> </td>
 
 
-                            <td>
-                              <?php
-                              if (isset($row['time_in_afternoon'])) {
-                                echo date('h:i A', strtotime($row['time_in_afternoon']));
-                                echo $statusAfternoon;
-                              } else {
-                                echo "";
-                              }
-
-                              ?>
-                            </td>
-
-
-                            <td><?php
-                                if (isset($row['time_out_afternoon'])) {
-                                  echo date('h:i A', strtotime($row['time_out_afternoon']));
-                                }
-                                ?></td>
-
-
-                            <td class="text"><?php echo round($row['num_hr_afternoon'], 2) ?> HRS</td>
                             <td><a class="text-inherit"><?php echo date('M d, Y', strtotime($row['date'])) ?></a></td>
                             <td>
                               <!--    <button class="btn btn-success btn-sm">Edit</button> -->
@@ -235,35 +252,103 @@ if ($Attendance == '1') {
                                 </div>
                                 <form method="post" action="time.php?id=<?php echo $row['attendance_id'] ?>">
                                   <div class="modal-body text p-lg">
+                                    <?php
 
-                                    <div style="padding-top: 12px;" class="form-group">
-                                      <label class="form-label">Timein Morning</label>
-                                      <div class="bootstrap-timepicker">
-                                        <input required="true" type="text" autofocus="true" class="form-control timepicker" name="time_in_am">
-                                      </div>
-                                    </div>
-                                    <div style="padding-top: 12px;" class="form-group">
-                                      <label class="form-label">Timeout Morning</label>
-                                      <div class="bootstrap-timepicker">
-                                        <input required="true" type="text" class="form-control timepicker" name="time_out_am">
-                                      </div>
-                                    </div>
-                                    <div style="padding-top: 12px;" class="form-group">
-                                      <label class="form-label">Timein Afternoon</label>
-                                      <div class="bootstrap-timepicker">
-                                        <input required="true" type="text" class="form-control timepicker" name="time_in_pm">
-                                      </div>
-                                    </div>
-                                    <div style="padding-top: 12px;" class="form-group">
-                                      <label class="form-label">Timeout Afternoon</label>
-                                      <div class="bootstrap-timepicker">
-                                        <input required="true" type="text" class="form-control timepicker" name="time_out_pm">
-                                      </div>
-                                    </div>
+                                    $queryPosition1 = "SELECT * FROM attendance WHERE attendance_id = $att_id";
+                                    $queryResult1 = mysqli_query($connection, $queryPosition1);
+                                    while ($row3 = mysqli_fetch_assoc($queryResult1)) {
+
+                                      if (isset($row3['time_in_morning'])) {
+                                    ?>
+                                        <div style="padding-top: 12px;" class="form-group">
+                                          <label class="form-label">Timein Morning</label>
+                                          <div class="bootstrap-timepicker">
+                                            <input required="true" type="text" value="<?php
+                                                                                      if (isset($row3['time_in_morning'])) {
+                                                                                        echo date('h:i A', strtotime($row3['time_in_morning']));
+                                                                                      } else {
+                                                                                        echo "";
+                                                                                      }
+                                                                                      ?>" class="form-control timepicker" name="time_in_am">
+                                          </div>
+                                        </div>
+
+                                        <div style="padding-top: 12px;" class="form-group">
+                                          <label class="form-label">Timeout Morning</label>
+                                          <div class="bootstrap-timepicker">
+                                            <input required="true" type="text" value="<?php
+                                                                                      if (isset($row3['time_out_morning'])) {
+                                                                                        echo date('h:i A', strtotime($row3['time_out_morning']));
+                                                                                      } else {
+                                                                                        echo "";
+                                                                                      }
+                                                                                      ?>" class="form-control timepicker" name="time_out_am">
+                                          </div>
+                                        </div>
+
+                                      <?php  } else if (isset($row3['time_in_afternoon'])) {
+
+                                      ?>
+                                        <div style="padding-top: 12px;" class="form-group">
+                                          <label class="form-label">Timein Midshift</label>
+                                          <div class="bootstrap-timepicker">
+                                            <input required="true" type="text" value="<?php
+                                                                                      if (isset($row3['time_in_afternoon'])) {
+                                                                                        echo date('h:i A', strtotime($row3['time_in_afternoon']));
+                                                                                      } else {
+                                                                                        echo "";
+                                                                                      }
+                                                                                      ?>" class="form-control timepicker" name="time_in_pm">
+                                          </div>
+                                        </div>
+
+                                        <div style="padding-top: 12px;" class="form-group">
+                                          <label class="form-label">Timeout Midshift</label>
+                                          <div class="bootstrap-timepicker">
+                                            <input required="true" type="text" value="<?php
+                                                                                      if (isset($row3['time_out_afternoon'])) {
+                                                                                        echo date('h:i A', strtotime($row3['time_out_afternoon']));
+                                                                                      } else {
+                                                                                        echo "";
+                                                                                      }
+
+                                                                                      ?>" class="form-control timepicker" name="time_out_pm">
+                                          </div>
+                                        </div>
+                                      <?php  } else if (isset($row3['time_in_graveyard'])) {
+
+                                      ?>
+                                        <div style="padding-top: 12px;" class="form-group">
+                                          <label class="form-label">Timein Graveyard</label>
+                                          <div class="bootstrap-timepicker">
+                                            <input required="true" type="text" class="form-control timepicker" value="<?php
+                                                                                                                      if (isset($row3['time_in_graveyard'])) {
+                                                                                                                        echo date('h:i A', strtotime($row3['time_in_graveyard']));
+                                                                                                                      } else {
+                                                                                                                        echo "";
+                                                                                                                      }
+                                                                                                                      ?>" name="time_in_grvyrd">
+                                          </div>
+                                        </div>
+
+                                        <div style="padding-top: 12px;" class="form-group">
+                                          <label class="form-label">Timeout Graveyard</label>
+                                          <div class="bootstrap-timepicker">
+                                            <input required="true" type="text" class="form-control timepicker" value="<?php
+                                                                                                                      if (isset($row3['time_out_graveyard'])) {
+                                                                                                                        echo date('h:i A', strtotime($row3['time_out_graveyard']));
+                                                                                                                      } else {
+                                                                                                                        echo "";
+                                                                                                                      }
+                                                                                                                      ?>" name="time_out_grvyrd">
+                                          </div>
+                                        </div>
+                                    <?php      }
+                                    } ?>
                                   </div>
                                   <div class="modal-footer">
-                                    <button type="button" class="btn dark-white p-x-md" data-dismiss="modal">No</button>
-                                    <button type="submit" name="edit_time" class="btn danger p-x-md">Yes</button>
+                                    <button type="button" class="btn dark-white p-x-md" data-dismiss="modal">Cancel</button>
+                                    <button type="submit" name="edit_time" class="btn danger p-x-md">Update</button>
                                   </div>
                                 </form>
                               </div><!-- /.modal-content -->

@@ -118,11 +118,11 @@ if ($generate == '1') {
                             <td>
                               <?php
                               if (isset($row['time_in_morning'])) {
-                                echo "Morning " . date('H:i A', strtotime($row['time_in_morning'])) . " - " . date('H:i', strtotime($row['time_out_morning'])) . " PM";
+                                echo "Morning " . date("h:i A", strtotime($row['time_in_morning'])) . " - " . date("h:i A", strtotime($row['time_out_morning']));
                               } else if (isset($row['time_in_afternoon'])) {
-                                echo "Midshift " . date('H:i', strtotime($row['time_in_afternoon'])) . " PM" . " - " . date('H:i', strtotime($row['time_out_afternoon'])) . " PM";
+                                echo "Midshift " . date("h:i A", strtotime($row['time_in_afternoon']))  . " - " . date("h:i A", strtotime($row['time_out_afternoon']));
                               } else if (isset($row['time_in_graveyard'])) {
-                                echo "Graveyard " . date('H:i', strtotime($row['time_in_graveyard'])) . " PM" . " - " . date('H:i A', strtotime($row['time_out_graveyard']));
+                                echo "Graveyard " . date("h:i A", strtotime($row['time_in_graveyard']))  . " - " . date("h:i A", strtotime($row['time_out_graveyard']));
                               }
 
                               ?>

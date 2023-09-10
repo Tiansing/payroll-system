@@ -9,10 +9,41 @@ if (isset($_GET['filter'])) {
   $today = $_GET['filter'];
 }
 
-$queryPosition = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id WHERE attendance.date='$today';";
-$queryResult = mysqli_query($connection, $queryPosition);
+//NEW QUERY TO CHECK IF THE ATTENDANCE WAS AVAILABLE YESTERDAY AND TODAY
+$queryYesterday = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id WHERE attendance.date = DATE_SUB(CURDATE(), INTERVAL 1 DAY ) ORDER BY attendance.id DESC LIMIT 1;";
+$queryResYest = mysqli_query($connection, $queryYesterday);
+$roy = mysqli_fetch_assoc($queryResYest);
 
 
+
+
+$queryToday = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id WHERE attendance.date='$today'AND attendance.time_in_graveyard IS NOT NULL;";
+$queryResTod = mysqli_query($connection, $queryToday);
+$rot = mysqli_fetch_assoc($queryResTod);
+
+if (isset($roy['time_in_graveyard']) || isset($rot['time_in_graveyard'])) {
+
+  $queryPos = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id WHERE attendance.date='$today' OR attendance.time_in_graveyard IS NOT NULL ORDER BY attendance.id DESC LIMIT 1;";
+  $queryRes = mysqli_query($connection, $queryPos);
+  $ro = mysqli_fetch_assoc($queryRes);
+  $dtYesterday = date('Y-m-d', strtotime('-1 days'));
+
+  $dtToday = date('Y-m-d');
+  $dtToday1 = $ro['date'];
+  if ($dtYesterday == $dtToday1 || $dtToday == $dtToday1) {
+
+    $queryPosition = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id WHERE attendance.date='$today' OR attendance.time_in_graveyard IS NOT NULL;";
+    $queryResult = mysqli_query($connection, $queryPosition);
+  } else {
+
+    $queryPosition = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id WHERE attendance.date='$today';";
+    $queryResult = mysqli_query($connection, $queryPosition);
+  }
+} else {
+
+  $queryPosition = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id WHERE attendance.date='$today';";
+  $queryResult = mysqli_query($connection, $queryPosition);
+}
 
 $numbers = '';
 for ($i = 0; $i < 7; $i++) {

@@ -27,12 +27,18 @@ $lastname = $admin['lastname'];
 $photo = $admin['photo'];
 $create = $admin['created_on'];
 
+if (isset($_POST['time_in_am']) && isset($_POST['time_out_am'])) {
+    $newtimein_am = date('H:i:s', strtotime($_POST['time_in_am']));
+    $newtimeout_am = date('H:i:s', strtotime($_POST['time_out_am']));
+} elseif (isset($_POST['time_in_pm']) && isset($_POST['time_out_pm'])) {
+    $newtimein_pm = date('H:i:s', strtotime($_POST['time_in_pm']));
+    $newtimeout_pm = date('H:i:s', strtotime($_POST['time_out_pm']));
+} elseif (isset($_POST['time_in_grvyrd']) && isset($_POST['time_out_grvyrd'])) {
+    $newtimein_grvyrd = date('H:i:s', strtotime($_POST['time_in_grvyrd']));
+    $newtimeout_grvyrd = date('H:i:s', strtotime($_POST['time_out_grvyrd']));
+}
 
-$newtimein_am = date('H:i:s', strtotime($_POST['time_in_am']));
-$newtimeout_am = date('H:i:s', strtotime($_POST['time_out_am']));
 
-$newtimein_pm = date('H:i:s', strtotime($_POST['time_in_pm']));
-$newtimeout_pm = date('H:i:s', strtotime($_POST['time_out_pm']));
 
 /* Interval Morning */
 
@@ -44,7 +50,10 @@ $interval = $time_start->diff($time_end);
 $hrs = $interval->format('%h');
 $mins = $interval->format('%i');
 $mins = $mins / 60;
-$intAm = $hrs + $mins;
+$intMorn = $hrs + $mins;
+if ($intMorn > 4.5) {
+    $intMorn = $intMorn - 1;
+}
 
 /* Interval Afternoon */
 
@@ -56,17 +65,49 @@ $intervalPm = $time_startPm->diff($time_endPm);
 $hrsPm = $intervalPm->format('%h');
 $minsPm = $intervalPm->format('%i');
 $minsPm = $minsPm / 60;
-$intPm = $hrsPm + $minsPm;
+$intMid = $hrsPm + $minsPm;
+if ($intMid > 4.5) {
+    $intMid = $intMid - 1;
+}
+
+
+/* Interval Graveyard */
+
+$startGrvyrd = $newtimein_grvyrd;
+
+$time_startGrvyrd = new DateTime($startGrvyrd);
+$time_endGrvyrd = new DateTime($newtimeout_grvyrd);
+$intervalGrvyrd = $time_startGrvyrd->diff($time_endGrvyrd);
+$hrsGrvyrd = $intervalGrvyrd->format('%h');
+$minsGrvyrd = $intervalGrvyrd->format('%i');
+$minsGrvyrd = $minsGrvyrd / 60;
+$intGrvyrd = $hrsGrvyrd + $minsGrvyrd;
+if ($intGrvyrd > 4.5) {
+    $intGrvyrd = $intGrvyrd - 1;
+}
 
 
 if (isset($_GET['id'])) {
     $idEm = $_GET['id'];
 
-    $delete = "UPDATE `attendance` SET `time_in_morning`='$newtimein_am', `time_out_morning`='$newtimeout_am', `time_in_afternoon`='$newtimein_pm', `time_out_afternoon`='$newtimeout_pm', `num_hr_morning`='$intAm', `num_hr_afternoon`='$intPm' WHERE `attendance_id`='$idEm';
-    ";
-    $query = mysqli_query($connection, $delete) or die('Could not insert');
-    $date = date("Y-m-d");
-    header("location: ../admin/attendance.php?filter=$date&id=$idEm");
+    if (isset($newtimein_am) && isset($newtimeout_am)) {
+        $delete = "UPDATE `attendance` SET `time_in_morning`='$newtimein_am', `time_out_morning`='$newtimeout_am',`num_hr_morning`='$intMorn' WHERE `attendance_id`='$idEm';";
+        $query = mysqli_query($connection, $delete) or die('Could not insert');
+        $date = date("Y-m-d");
+        header("location: ../admin/attendance.php?filter=$date&id=$idEm");
+    }
+    if (isset($newtimein_pm) && isset($newtimeout_pm)) {
+        $delete = "UPDATE `attendance` SET `time_in_afternoon`='$newtimein_pm', `time_out_afternoon`='$newtimeout_pm',`num_hr_afternoon`='$intMid' WHERE `attendance_id`='$idEm';";
+        $query = mysqli_query($connection, $delete) or die('Could not insert');
+        $date = date("Y-m-d");
+        header("location: ../admin/attendance.php?filter=$date&id=$idEm");
+    }
+    if (isset($newtimein_grvyrd) && isset($newtimeout_grvyrd)) {
+        $delete = "UPDATE `attendance` SET `time_in_graveyard`='$newtimein_grvyrd', `time_out_graveyard`='$newtimeout_grvyrd',`num_hr_graveyard`='$intGrvyrd' WHERE `attendance_id`='$idEm';";
+        $query = mysqli_query($connection, $delete) or die('Could not insert');
+        $date = date("Y-m-d");
+        header("location: ../admin/attendance.php?filter=$date&id=$idEm");
+    }
 }
 
 if (isset($_GET['uid'])) {

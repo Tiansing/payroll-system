@@ -114,7 +114,7 @@ if (isset($q)) {
           $querySched = mysqli_query($connection, $sched);
           $schedRow = mysqli_fetch_assoc($querySched);
 
-          $logstatus = ($time_in > $schedRow['time_in_afternoon']) ? 0 : 1;
+          $logstatus = ($time_in >= $schedRow['time_in_afternoon']) ? 0 : 1;
 
           $insertAttendance = "INSERT INTO `attendance` (`employee_id`, `attendance_id`, `date`, `time_in_morning`, `time_out_morning`, `time_in_afternoon`, `time_out_afternoon`, `status_morning`, `status_afternoon`, `num_hr_morning`, `num_hr_afternoon`, `month`, `year`) VALUES ('$employee_id', '$id', '$date', null, null, '$time_in', null, null, '$logstatus', null, null, '$month', '$year');";
 

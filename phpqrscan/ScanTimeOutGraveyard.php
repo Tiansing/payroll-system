@@ -116,22 +116,51 @@ if (isset($q)) {
           echo $imageUrl;
 
           echo '<div style="margin-top: 10px;" class="alert alert-success"><strong><u>' . $empName . '</u></strong> successfully logged out!  </div>';
-          $start = $row2['time_in_graveyard'];
+          $sql3 = "SELECT * FROM `attendance` WHERE `employee_id` = '$employee_id' ORDER BY id DESC LIMIT 1";
+          $query3 = mysqli_query($connection, $sql3);
+          $row3 = mysqli_fetch_assoc($query3);
 
-          $time_start = new DateTime($start);
-          $time_end = new DateTime($time_in);
-          $interval = $time_start->diff($time_end);
-          $hrs = $interval->format('%h');
-          $mins = $interval->format('%i');
-          $mins = $mins / 60;
-          $int = $hrs + $mins;
+ 
+if($row3['date']==$date){
+  $start = $row2['time_in_graveyard'];
 
-          if ($int > 4.5) {
-            $int = $int - 1;
-          }
+  $time_start = new DateTime($start);
+  $time_end = new DateTime($time_in);
+  $interval = $time_start->diff($time_end);
+  $hrs = $interval->format('%h');
+  $mins = $interval->format('%i');
+  $mins = $mins / 60;
+  $int = $hrs + $mins;
 
-          $num_hr = "UPDATE `attendance` SET `num_hr_graveyard` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
+  if ($int > 4.5) {
+    $int = $int - 1;
+  }
+
+  $num_hr = "UPDATE `attendance` SET `num_hr_graveyard` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
+  $update = mysqli_query($connection, $num_hr) or die(mysqli_error($connection) . $num_hr);
+}else{
+  $start =strtotime($row2['time_in_graveyard']) ;
+$time_in = date('H:i:s',strtotime($time_in));
+  $time_start = $start ;
+$time_end = $time_in ;
+
+
+if ($time_start > $time_end) {
+   $int = (($time_end + 86400) - $time_start) / 3600;
+} else {
+   $int = ($time_start - $time_end) / 3600;
+
+}
+
+$num_hr = "UPDATE `attendance` SET `num_hr_graveyard` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
           $update = mysqli_query($connection, $num_hr) or die(mysqli_error($connection) . $num_hr);
+}
+           }
+        
+
+          
+
+
         } else {
           echo '<div class="alert alert-danger"><strong>Failed! </strong>Employee <strong><u>' . $empName . '</u></strong> doesn&rsquo;t Time in yet</div>';
         }
