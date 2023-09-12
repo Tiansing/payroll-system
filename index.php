@@ -79,7 +79,7 @@ date_default_timezone_set($timezone);
 				</div>
 			</div>
 		</div>
-		<a href="admin" target="_blank" class="btn">
+		<a href="employee" target="_blank" class="btn">
 			<h4><span class="badge badge-primary">Employee Login</span></h4>
 		</a>
 		<a href="admin" target="_blank" class="btn">Go to Dashboard Panel</a>

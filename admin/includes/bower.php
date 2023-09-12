@@ -34,6 +34,12 @@
         [0, "desc"]
       ]
     })
+    $('#attndTable').DataTable({
+      responsive: true,
+      "order": [
+        [5, "desc"]
+      ]
+    })
   })
 </script>
 <script>

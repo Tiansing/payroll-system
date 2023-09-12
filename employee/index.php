@@ -30,7 +30,7 @@ if (isset($_SESSION['employee_username']) && isset($_SESSION['employee_password'
                         </div>
                         <form class="card" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                             <div class="card-body p-6">
-                                <div class="card-title"><strong>Employee account</strong> Login</div>
+                                <div class="card-title">Login <strong>Employee account</strong></div>
                                 <?php echo $session->Validate() ?>
                                 <div class="form-group">
                                     <label class="form-label">Employee ID</label>

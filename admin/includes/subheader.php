@@ -28,7 +28,9 @@ $type = $admin['type'];
 
 $date = date("Y-m-d");
 if ($type == "Administrator") {
-
+  /*  <li class="nav-item dropdown">
+    <a href="scheduling.php" class="nav-link"><i class="fe fe-flag"></i> Employee Schedule</a>
+  </li> */
   echo ('<ul class="nav nav-tabs border-0 flex-column flex-lg-row">
   <li class="nav-item">
     <a href="index.php" class="nav-link"><i class="fe fe-home"></i> Payroll</a>
@@ -52,14 +54,12 @@ if ($type == "Administrator") {
   <li class="nav-item">
     <a href="position.php" class="nav-link"><i class="fe fe-list"></i> Positions</a>
   </li>
-  <li class="nav-item dropdown">
-    <a href="scheduling.php" class="nav-link"><i class="fe fe-flag"></i> Employee Schedule</a>
-  </li>
+
   <li class="nav-item dropdown">
   <a href="leave.php" class="nav-link"><i class="fa fa-calendar-minus-o"></i> Employee Leave</a>
 </li>
 </ul>');
-} elseif ($type == "Secretary") {
+} elseif ($type == "Human Resources") {
 
   echo ('<ul class="nav nav-tabs border-0 flex-column flex-lg-row">
   <li class="nav-item">
@@ -72,7 +72,7 @@ if ($type == "Administrator") {
     </div>
 
 </ul>');
-} elseif ($type == "Timekeeper") {
+} elseif ($type == "Team Leader") {
 
 
 
