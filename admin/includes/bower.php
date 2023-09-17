@@ -5,10 +5,9 @@
 <script src="../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 <!-- bootstrap time picker -->
 <script src="../plugins/timepicker/bootstrap-timepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
 
-<link rel="stylesheet" href="../plugins/timepicker/bootstrap-glyphicons.css">
-<link rel="stylesheet" href="../plugins/timepicker/bootstrap-timepicker.css">
-<link rel="stylesheet" href="../plugins/timepicker/bootstrap-timepicker.min.css">
+
 <!-- Bootstrap WYSIHTML5 -->
 <script src="../plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
 <!-- Slimscroll -->
@@ -81,12 +80,11 @@
     $('.timepicker').timepicker({
       showInputs: false, // Hide manual input fields
       minuteStep: 1,
-      fontAwesome: 'font-awesome',
-      icons: {
-        up: 'fa fa-angle-up',
-        down: 'fa fa-angle-down'
-      },
-      format: 'LT'
+
+      upArrowStyle: 'bi bi-caret-up-fill',
+      downArrowStyle: 'bi bi-caret-down-fill',
+      format: 'LT',
+
     })
 
     //Date range picker

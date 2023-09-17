@@ -14,7 +14,7 @@
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
-    <title>Document</title>
+    <title>Employee Portal</title>
     <title>Leave Application Form</title>
     <!-- Include Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">

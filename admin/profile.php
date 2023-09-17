@@ -38,12 +38,30 @@ if ($generate == '1') {
       </div>';
 } else {
 }
+
+if (isset($_POST['delete_emp'])) {
+  $empid = $_POST['eid'];
+  $employee_id = $_POST['employee_id'];
+
+  $query = "DELETE FROM employees WHERE id = $empid";
+  $del_query = mysqli_query($connection, $query);
+
+  $filename = $_SERVER['DOCUMENT_ROOT'] . "/payroll-system/admin/employee_barcode/" . $employee_id . ".png";
+  if ($del_query) {
+    if (file_exists($filename)) {
+      unlink($filename);
+    }
+  }
+}
+
+
 ?>
 <!doctype html>
 <html lang="en" dir="ltr">
 
 <head>
   <title>Profiling and Payroll Management System</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
 </head>
 
 <body class="" v-on:click="Reload">
@@ -76,6 +94,8 @@ if ($generate == '1') {
               </button>
             </div>
 
+            <!-- end of delete modal -->
+            <?php include('modals/modal_delete.php') ?>
             <div class="col-12">
               <div class="card">
                 <div class="card-header py-3">
@@ -88,7 +108,7 @@ if ($generate == '1') {
                       <thead>
                         <tr>
                           <th class="w-1">ID</th>
-                          <th>Name</th>
+                          <th width="100">Name</th>
                           <th>Position</th>
                           <th>Address</th>
                           <!-- <th>Civil Status</th> -->
@@ -100,9 +120,42 @@ if ($generate == '1') {
                         <?php
                         $query = "SELECT *, employees.id AS empid FROM employees LEFT JOIN position ON position.id=employees.position_id LEFT JOIN schedules ON schedules.id=employees.schedule_id";
                         $result = mysqli_query($connection, $query);
-
                         while ($row = mysqli_fetch_assoc($result)) {
                         ?>
+                          <div id="modal-deletes-employee<?php echo $row['empid'] ?>" class="modal fade animate" data-backdrop="true">
+                            <div class="modal-dialog modal-md">
+                              <div class="modal-content">
+                                <div class="modal-header bg-danger text-white">
+                                  <h5 class="modal-title">Delete Record </h5>
+                                </div>
+                                <div class="modal-body p-lg">
+                                  <div class="col-md-12">
+                                    <form action="" method="post" enctype="multipart/form-data">
+
+                                      <div class="modal-body">
+
+                                        <input type="hidden" name="eid" value="<?php echo $row['empid'] ?>">
+                                        <input type="hidden" name="employee_id" value="<?php echo $row['employee_id'] ?>">
+
+                                        <h6>
+                                          <p>Do you want to Delete <mark><?php echo $row['fullname'] ?></mark> Data ?</p>
+                                        </h6>
+                                      </div>
+
+
+                                  </div>
+                                  <div class="modal-footer">
+                                    <div style="padding-right: 12px;">
+                                      <button type="button" class="btn dark-white p-x-md" data-dismiss="modal">No</button>
+                                      <button type="submit" name="delete_emp" class="btn danger p-x-md">Yes</button>
+                                    </div>
+                                  </div>
+                                  </form>
+                                </div><!-- /.modal-content -->
+                              </div>
+                            </div>
+                          </div>
+
                           <tr>
                             <td><a><?php echo $row['employee_id'] ?></a></td>
                             <td><a class="text-inherit"><?php echo $row['fullname'] ?></a></td>
@@ -128,8 +181,9 @@ if ($generate == '1') {
                               ?>
                             </td>
                             <td>
-                              <a href="view.php?id=<?php echo $row['employee_id'] ?>"><button class="btn btn-success btn-sm">View</button></a>
-                              <a href="edit.php?id=<?php echo $row['employee_id'] ?>"><button class="btn btn-primary btn-sm">Edit</button></a>
+                              <a href="view.php?id=<?php echo $row['employee_id'] ?>"><button class="btn btn-success btn-sm"><i class='bi bi-eye-fill'></i></button></a>
+                              <a href="edit.php?id=<?php echo $row['employee_id'] ?>"><button class="btn btn-primary btn-sm"><i class='bi bi-pencil-square'></i></button></a>
+                              <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modal-deletes-employee<?php echo $row['empid'] ?>"><i class='bi bi-trash3-fill'></i></button>
 
                             </td>
                           <?php } ?>
@@ -148,7 +202,28 @@ if ($generate == '1') {
     </div>
     <?php require_once('includes/footer.php') ?>
   </div>
+  <script>
+    $(document).ready(function() {
 
+      // DELETE FUNCTION
+      $('.deletebtn').on('click', function() {
+
+        $('#deletemodal').modal('show');
+
+        $tr = $(this).closest('tr');
+
+        var data = $tr.children("td").map(function() {
+          return $(this).text();
+        }).get();
+
+        console.log(data);
+
+        $('#delete_id').val(data[0]);
+
+      });
+
+    });
+  </script>
   <?php require_once('includes/datatables.php') ?>
 </body>
 

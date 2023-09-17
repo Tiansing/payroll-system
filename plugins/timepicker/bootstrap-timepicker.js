@@ -973,8 +973,8 @@
     showMeridian: true,
     template: "dropdown",
     appendWidgetTo: ".bootstrap-timepicker",
-    upArrowStyle: "glyphicon glyphicon-chevron-up",
-    downArrowStyle: "glyphicon glyphicon-chevron-down",
+    upArrowStyle: 'url("../../svgviewer-output.svg")',
+    downArrowStyle: 'url("../../svgviewer-output.svg")',
     containerClass: "bootstrap-timepicker",
   };
 

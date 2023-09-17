@@ -25,6 +25,14 @@ $firstname = $admin['firstname'];
 $lastname = $admin['lastname'];
 $photo = $admin['photo'];
 $create = $admin['created_on'];
+
+if (isset($_POST['delete_pos'])) {
+  $posid = $_POST['pid'];
+
+
+  $query = "DELETE FROM position WHERE id = $posid";
+  $del_query = mysqli_query($connection, $query);
+}
 ?>
 <!doctype html>
 
@@ -32,6 +40,7 @@ $create = $admin['created_on'];
 
 <head>
   <title>Profiling and Payroll Management System</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css" integrity="sha384-b6lVK+yci+bfDmaY1u0zE8YYJt0TZxLEAFyYSLHId4xoVvsrQu3INevFKo+Xir8e" crossorigin="anonymous">
 </head>
 
 <body>
@@ -82,6 +91,38 @@ $create = $admin['created_on'];
                       </thead>
                       <tbody>
                         <?php while ($row = mysqli_fetch_assoc($queryResult)) { ?>
+                          <div id="modal-deletes-employee<?php echo $row['id'] ?>" class="modal fade animate" data-backdrop="true">
+                            <div class="modal-dialog modal-md">
+                              <div class="modal-content">
+                                <div class="modal-header bg-danger text-white">
+                                  <h5 class="modal-title">Delete Position </h5>
+                                </div>
+                                <div class="modal-body p-lg">
+                                  <div class="col-md-12">
+                                    <form action="" method="post" enctype="multipart/form-data">
+
+                                      <div class="modal-body">
+
+                                        <input type="hidden" name="pid" value="<?php echo $row['id'] ?>">
+
+                                        <h6>
+                                          <p>Do you want to Delete <mark><?php echo $row['description'] ?></mark> Postion ?</p>
+                                        </h6>
+                                      </div>
+
+
+                                  </div>
+                                  <div class="modal-footer">
+                                    <div style="padding-right: 12px;">
+                                      <button type="button" class="btn dark-white p-x-md" data-dismiss="modal">No</button>
+                                      <button type="submit" name="delete_pos" class="btn danger p-x-md">Yes</button>
+                                    </div>
+                                  </div>
+                                  </form>
+                                </div><!-- /.modal-content -->
+                              </div>
+                            </div>
+                          </div>
                           <tr>
 
                             <td><span class="text-muted"><?php echo $row['id'] ?></span></td>
@@ -91,8 +132,8 @@ $create = $admin['created_on'];
                               <?php echo number_format($row['rate']) ?> PHP/Day
                             </td>
                             <td>
-                              <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#edit-time-<?php echo $row['id'] ?>">Edit</button>
-
+                              <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#edit-time-<?php echo $row['id'] ?>"><i class='bi bi-pencil-square'></i></button>
+                              <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modal-deletes-employee<?php echo $row['id'] ?>"><i class='bi bi-trash3-fill'></i></button>
 
                             </td>
 
