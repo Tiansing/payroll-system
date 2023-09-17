@@ -42,7 +42,7 @@ if (isset($_GET['range'])) {
   $to = date('Y-m-d', strtotime($ex[1]));
 }
 
-if ($type == "Timekeeper") {
+if ($type == "Team Leader") {
   header("location:attendance.php?filter=$to");
 }
 

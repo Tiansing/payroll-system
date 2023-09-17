@@ -17,6 +17,9 @@
 <script src="../bower_components/fastclick/lib/fastclick.js"></script>
 
 
+
+<link rel="stylesheet" href="plugins/timepicker/bootstrap-timepicker.min.css">
+
 <script>
   $(function() {
     // $('#example1').DataTable({

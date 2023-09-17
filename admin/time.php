@@ -73,7 +73,7 @@ if ($intMid > 4.5) {
 
 /* Interval Graveyard */
 
-$startGrvyrd = $newtimein_grvyrd;
+/* $startGrvyrd = $newtimein_grvyrd;
 
 $time_startGrvyrd = new DateTime($startGrvyrd);
 $time_endGrvyrd = new DateTime($newtimeout_grvyrd);
@@ -81,11 +81,57 @@ $intervalGrvyrd = $time_startGrvyrd->diff($time_endGrvyrd);
 $hrsGrvyrd = $intervalGrvyrd->format('%h');
 $minsGrvyrd = $intervalGrvyrd->format('%i');
 $minsGrvyrd = $minsGrvyrd / 60;
-$intGrvyrd = $hrsGrvyrd + $minsGrvyrd;
-if ($intGrvyrd > 4.5) {
-    $intGrvyrd = $intGrvyrd - 1;
-}
+$intGrvyrd = $hrsGrvyrd + $minsGrvyrd; */
+$employee_id = $_GET['eid'];
+$date = date("Y-m-d");
+$sql2 = "SELECT * FROM `attendance` WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
+$query2 = mysqli_query($connection, $sql2);
+$row2 = mysqli_fetch_assoc($query2);
 
+if ($newtimein_grvyrd < $newtimeout_grvyrd) {
+
+    $sql3 = "SELECT * FROM `attendance` WHERE `employee_id` = '$employee_id' ORDER BY id DESC LIMIT 1";
+    $query3 = mysqli_query($connection, $sql3);
+    $row3 = mysqli_fetch_assoc($query3);
+
+
+
+    $startGrvyrd = $newtimein_grvyrd;
+
+    $time_startGrvyrd = new DateTime($startGrvyrd);
+    $time_endGrvyrd = new DateTime($newtimeout_grvyrd);
+    $intervalGrvyrd = $time_startGrvyrd->diff($time_endGrvyrd);
+    $hrsGrvyrd = $intervalGrvyrd->format('%h');
+    $minsGrvyrd = $intervalGrvyrd->format('%i');
+    $minsGrvyrd = $minsGrvyrd / 60;
+    $intGrvyrd = $hrsGrvyrd + $minsGrvyrd;
+
+    if ($intGrvyrd > 4.5) {
+        $intGrvyrd = $intGrvyrd - 1;
+    }
+} else {
+
+    $sql4 = "SELECT * FROM `attendance` WHERE `employee_id` = '$employee_id' AND `date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
+    $query4 = mysqli_query($connection, $sql4);
+    $row4 = mysqli_fetch_assoc($query4);
+    $datey = $row4['date'];
+    if ($newtimein_grvyrd > $newtimeout_grvyrd) {
+
+        $time_start = $newtimein_grvyrd;
+        $to_time = $newtimeout_grvyrd;
+
+        if ($time_start > $to_time) {
+            $intGrvyrd = ((strtotime($to_time) + 86400) - strtotime($time_start)) / 3600;
+        } else {
+            $intGrvyrd = (strtotime($time_start) - strtotime($to_time)) / 3600;
+        }
+        if ($intGrvyrd > 4.5) {
+            $intGrvyrd = $intGrvyrd - 1;
+        }
+
+        echo '<div style="margin-top: 10px;" class="alert alert-success"><strong><u>' . $empName . '</u></strong> successfully logged out!  </div>';
+    }
+}
 
 if (isset($_GET['id'])) {
     $idEm = $_GET['id'];

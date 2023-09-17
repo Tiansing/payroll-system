@@ -192,9 +192,9 @@ if (isset($_POST['add_time_out'])) {
     $mins = $mins / 60;
     $int = $hrs + $mins;
 
-    /* if($int > 4.5){
-                $int = $int - 1;
-              }   */
+    if ($int > 4.5) {
+      $int = $int - 1;
+    }
 
 
     $num_hr = "UPDATE `attendance` SET `num_hr_afternoon` = '$int' WHERE `employee_id` = '$employee' AND `date` = '$date'";
@@ -203,7 +203,7 @@ if (isset($_POST['add_time_out'])) {
     echo "<script>window.location.href='attendance.php?filter=$today&timeout=1'</script>";
   } else {
 
-    $insert = "UPDATE `attendance` SET `time_out_afternoon` = '$time_in' WHERE `employee_id` = '$employee' AND `date` = '$date';";
+    $insert = "UPDATE `attendance` SET `time_out_graveyard` = '$time_in' WHERE `employee_id` = '$employee' AND `date` = '$date';";
 
     $query = mysqli_query($connection, $insert) or die(mysqli_error() . $insert);
 
@@ -214,7 +214,7 @@ if (isset($_POST['add_time_out'])) {
 
     if (isset($row2['time_in_graveyard'])) {
 
-      echo "<script>window.location.href='attendance.php?filter=$today&timeout=1'</script>";
+      // echo "<script>window.location.href='attendance.php?filter=$today&timeout=1'</script>";
 
       $sql3 = "SELECT * FROM `attendance` WHERE `employee_id` = '$employee' ORDER BY id DESC LIMIT 1";
       $query3 = mysqli_query($connection, $sql3);
@@ -420,7 +420,7 @@ if (isset($_POST['add_time_out'])) {
                   <span class="custom-control-label">Time In Morning</span>
                 </label>
                 <label class="custom-control custom-radio custom-control-inline">
-                  <input required="" type="radio" class="custom-control-input" name="time_in_option" value="Afternoon">
+                  <input required="" type="radio" class="custom-control-input" name="time_in_option" value="Midshift">
                   <span class="custom-control-label">Time In Midshift</span>
                 </label>
                 <label class="custom-control custom-radio custom-control-inline">
@@ -432,7 +432,7 @@ if (isset($_POST['add_time_out'])) {
 
             <div style="padding-top: 12px;" class="form-group">
               <label class="form-label">Time In</label>
-              <div class="bootstrap-timepicker">
+              <div class=" bootstrap-timepicker">
                 <input required="true" type="text" class="form-control timepicker" name="time_in">
               </div>
             </div>
@@ -558,7 +558,7 @@ if (isset($_POST['add_time_out'])) {
                   <span class="custom-control-label">Time Out Morning</span>
                 </label>
                 <label class="custom-control custom-radio custom-control-inline">
-                  <input required="" type="radio" class="custom-control-input" name="time_in_option" value="Afternoon">
+                  <input required="" type="radio" class="custom-control-input" name="time_in_option" value="Midshift">
                   <span class="custom-control-label">Time Out Midshift</span>
                 </label>
                 <label class="custom-control custom-radio custom-control-inline">

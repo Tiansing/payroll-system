@@ -88,7 +88,7 @@ $create = $admin['created_on'];
                             <td><span class="text-muted"><?php echo $row['position_id'] ?></span></td>
                             <td><a class="text-inherit"><?php echo $row['description'] ?></a></td>
                             <td>
-                              <?php echo number_format($row['rate']) ?> PHP/Hour
+                              <?php echo number_format($row['rate']) ?> PHP/Day
                             </td>
                             <td>
                               <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#edit-time-<?php echo $row['id'] ?>">Edit</button>

@@ -249,9 +249,9 @@ if ($Attendance == '1') {
                             <div class="modal-dialog" id="animate">
                               <div class="modal-content">
                                 <div class="modal-header">
-                                  <h5 class="modal-title">Edit Time</h5>
+                                  <h5 class="modal-title">Edit Time <?php echo $row['id'] ?></h5>
                                 </div>
-                                <form method="post" action="time.php?id=<?php echo $row['attendance_id'] ?>">
+                                <form method="post" action="time.php?id=<?php echo $row['attendance_id'] ?>&eid=<?php echo $row['employee_id'] ?>">
                                   <div class="modal-body text p-lg">
                                     <?php
 
