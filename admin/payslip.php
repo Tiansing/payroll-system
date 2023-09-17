@@ -6,7 +6,7 @@ require_once('session/Login.php');
 $model = new Dashboard();
 $session = new AdministratorSession();
 $session->LoginSession();
-
+date_default_timezone_set('Asia/Manila');
 date_default_timezone_get();
 
 if (!isset($_SESSION['official_username']) && !isset($_SESSION['official_password']) && !isset($_SESSION['official_id'])) {
@@ -28,7 +28,7 @@ $lastname = $admin['lastname'];
 $photo = $admin['photo'];
 $create = $admin['created_on'];
 $to = date('Y-m-d');
-$from = date('Y-m-d', strtotime('-6 day', strtotime($to)));
+$from = date('Y-m-d', strtotime('-14 day', strtotime($to)));
 
 $id = $_GET['id'];
 

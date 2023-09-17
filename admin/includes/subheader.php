@@ -30,7 +30,10 @@ $date = date("Y-m-d");
 if ($type == "Administrator") {
   /*  <li class="nav-item dropdown">
     <a href="scheduling.php" class="nav-link"><i class="fe fe-flag"></i> Employee Schedule</a>
-  </li> */
+  </li>
+  
+  
+   <a href="schedule.php" class="dropdown-item ">Schedule</a>*/
   echo ('<ul class="nav nav-tabs border-0 flex-column flex-lg-row">
   <li class="nav-item">
     <a href="index.php" class="nav-link"><i class="fe fe-home"></i> Payroll</a>
@@ -43,7 +46,7 @@ if ($type == "Administrator") {
     <div class="dropdown-menu dropdown-menu-arrow">
       <a href="overtime.php" class="dropdown-item ">Overtime</a>
       <a href="advance.php" class="dropdown-item ">Cash Advance</a>
-      <a href="schedule.php" class="dropdown-item ">Schedule</a>
+     
     </div>
   </li>
   <li class="nav-item dropdown">

@@ -32,7 +32,7 @@ if (isset($roy['time_in_graveyard']) || isset($rot['time_in_graveyard'])) {
   $dtToday1 = $ro['date'];
   if ($dtYesterday == $dtToday1 || $dtToday == $dtToday1) {
 
-    $queryPosition = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id WHERE attendance.date='$today' OR attendance.time_in_graveyard IS NOT NULL;";
+    $queryPosition = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id WHERE attendance.date='$today' OR attendance.date = DATE_SUB(CURDATE(),INTERVAL 1 DAY);";
     $queryResult = mysqli_query($connection, $queryPosition);
   } else {
 
@@ -89,6 +89,26 @@ if (isset($_POST['add_time_in'])) {
 
       echo "<script>window.location.href='attendance.php?filter=$today&am=$logstatus'</script>";
     }
+  } else if ($time_in_option == 'Midshift') {
+    $sql = "SELECT * FROM `employees` WHERE `id` = '$employee'";
+    $sqlEmployee = mysqli_query($connection, $sql);
+    $sqlRow = mysqli_fetch_assoc($sqlEmployee);
+
+    $schedule_id = $sqlRow['schedule_id'];
+
+    $sched = "SELECT * FROM `schedules` WHERE `id` = '$schedule_id';";
+    $querySched = mysqli_query($connection, $sched);
+    $schedRow = mysqli_fetch_assoc($querySched);
+
+    $logstatus = ($time_in > $schedRow['time_in_afternoon']) ? 0 : 1;
+    $month = date('F');
+    $year = date("Y");
+
+    $insert = "INSERT INTO `attendance` (`employee_id`, `attendance_id`, `date`, `time_in_morning`, `time_out_morning`, `time_in_afternoon`, `time_out_afternoon`, `status_morning`, `status_afternoon`, `num_hr_morning`, `num_hr_afternoon`, `month`, `year`) VALUES ('$employee', '$id', '$date', null, null, '$time_in', null, null, '$logstatus', null, null, '$month', '$year');";
+
+    $query = mysqli_query($connection, $insert) or die(mysqli_error() . $insert);
+
+    echo "<script>window.location.href='attendance.php?filter=$today&pm=$logstatus'</script>";
   } else {
 
     $sql = "SELECT * FROM `employees` WHERE `id` = '$employee'";
@@ -101,9 +121,11 @@ if (isset($_POST['add_time_in'])) {
     $querySched = mysqli_query($connection, $sched);
     $schedRow = mysqli_fetch_assoc($querySched);
 
-    $logstatus = ($time_in > $schedRow['time_in_afternoon']) ? 1 : 0;
+    $logstatus = ($time_in > $schedRow['time_in_graveyard']) ? 0 : 1;
+    $month = date('F');
+    $year = date("Y");
 
-    $insert = "UPDATE `attendance` SET `time_in_afternoon` = '$time_in', `status_afternoon` = '$logstatus' WHERE `employee_id` = '$employee' AND `date` = '$date';";
+    $insert = "INSERT INTO `attendance` (`employee_id`, `attendance_id`, `date`, `time_in_morning`, `time_out_morning`, `time_in_afternoon`, `time_out_afternoon`, `time_in_graveyard`, `time_out_graveyard`,`status_morning`, `status_afternoon`,`status_graveyard`, `num_hr_morning`, `num_hr_afternoon`,`num_hr_graveyard`, `month`, `year`) VALUES ('$employee', '$id', '$date', null, null, null, null, '$time_in', null, null, null, '$logstatus', null, null, null, '$month', '$year');";
 
     $query = mysqli_query($connection, $insert) or die(mysqli_error() . $insert);
 
@@ -149,7 +171,7 @@ if (isset($_POST['add_time_out'])) {
     $update = mysqli_query($connection, $num_hr) or die(mysqli_error() . $num_hr);
 
     echo "<script>window.location.href='attendance.php?filter=$today&timeout=1'</script>";
-  } else {
+  } else if ($time_in_option == 'Midshift') {
 
     $insert = "UPDATE `attendance` SET `time_out_afternoon` = '$time_in' WHERE `employee_id` = '$employee' AND `date` = '$date';";
 
@@ -177,6 +199,111 @@ if (isset($_POST['add_time_out'])) {
 
     $num_hr = "UPDATE `attendance` SET `num_hr_afternoon` = '$int' WHERE `employee_id` = '$employee' AND `date` = '$date'";
     $update = mysqli_query($connection, $num_hr) or die(mysqli_error() . $num_hr);
+
+    echo "<script>window.location.href='attendance.php?filter=$today&timeout=1'</script>";
+  } else {
+
+    $insert = "UPDATE `attendance` SET `time_out_afternoon` = '$time_in' WHERE `employee_id` = '$employee' AND `date` = '$date';";
+
+    $query = mysqli_query($connection, $insert) or die(mysqli_error() . $insert);
+
+    //number of hours in the afternoon
+    $sql2 = "SELECT * FROM `attendance` WHERE `employee_id` = '$employee' AND `date` = '$date'";
+    $query2 = mysqli_query($connection, $sql2);
+    $row2 = mysqli_fetch_assoc($query2);
+
+    if (isset($row2['time_in_graveyard'])) {
+
+      echo "<script>window.location.href='attendance.php?filter=$today&timeout=1'</script>";
+
+      $sql3 = "SELECT * FROM `attendance` WHERE `employee_id` = '$employee' ORDER BY id DESC LIMIT 1";
+      $query3 = mysqli_query($connection, $sql3);
+      $row3 = mysqli_fetch_assoc($query3);
+
+
+      if ($row3['date'] == $date) {
+        $start = $row2['time_in_graveyard'];
+
+        $time_start = new DateTime($start);
+        $time_end = new DateTime($time_in);
+        $interval = $time_start->diff($time_end);
+        $hrs = $interval->format('%h');
+        $mins = $interval->format('%i');
+        $mins = $mins / 60;
+        $int = $hrs + $mins;
+
+        if ($int > 4.5) {
+          $int = $int - 1;
+        }
+
+        $num_hr = "UPDATE `attendance` SET `num_hr_graveyard` = '$int' WHERE `employee_id` = '$employee' AND `date` = '$date'";
+        $update = mysqli_query($connection, $num_hr) or die(mysqli_error($connection) . $num_hr);
+      } else {
+
+        $start = strtotime($row2['time_in_graveyard']);
+        // $time_in = date('H:i:s', strtotime($time_in));
+        $time_start = $start;
+        $time_end = $time_in;
+
+
+        if ($time_start > $time_end) {
+          $int = (($time_end + 86400) - $time_start) / 3600;
+        } else {
+          $int = ($time_start - $time_end) / 3600;
+        }
+
+        $num_hr = "UPDATE `attendance` SET `num_hr_graveyard` = '$int' WHERE `employee_id` = '$employee' AND `date` = '$date'";
+        $update = mysqli_query($connection, $num_hr) or die(mysqli_error($connection) . $num_hr);
+      }
+    } else {
+
+      $sql4 = "SELECT * FROM `attendance` WHERE `employee_id` = '$employee' AND `date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
+      $query4 = mysqli_query($connection, $sql4);
+      $row4 = mysqli_fetch_assoc($query4);
+      $datey = $row4['date'];
+      if ($row4['time_in_graveyard']) {
+
+        $time_start = date('h:i A', strtotime($row4['time_in_graveyard']));
+        $to_time = $time_in;
+
+        if ($time_start > $to_time) {
+          $int = ((strtotime($to_time) + 86400) - strtotime($time_start)) / 3600;
+        } else {
+          $int = (strtotime($time_start) - strtotime($to_time)) / 3600;
+        }
+        if ($int > 4.5) {
+          $int = $int - 1;
+        }
+
+        $num_hr = "UPDATE `attendance` SET `num_hr_graveyard` = '$int' WHERE `employee_id` = '$employee' AND `date` = '$datey'";
+        $update = mysqli_query($connection, $num_hr) or die(mysqli_error($connection) . $num_hr);
+        $insert = "UPDATE `attendance` SET `time_out_graveyard` = '$time_in' WHERE `employee_id` = '$employee' AND `date` = '$datey';";
+
+        $imageUrl = '<img height="100" width="100" src="image/' . $empImg . '" alt="" > ';
+
+        echo $imageUrl;
+
+        $query = mysqli_query($connection, $insert) or die(mysqli_error($connection) . $insert);
+        echo "<script>window.location.href='attendance.php?filter=$today&timeout=1'</script>";
+      }
+    }
+    // $start = $row2['time_in_afternoon'];
+
+    // $time_start = new DateTime($start);
+    // $time_end = new DateTime($time_in);
+    // $interval = $time_start->diff($time_end);
+    // $hrs = $interval->format('%h');
+    // $mins = $interval->format('%i');
+    // $mins = $mins / 60;
+    // $int = $hrs + $mins;
+
+    // /* if($int > 4.5){
+    //             $int = $int - 1;
+    //           }   */
+
+
+    // $num_hr = "UPDATE `attendance` SET `num_hr_afternoon` = '$int' WHERE `employee_id` = '$employee' AND `date` = '$date'";
+    // $update = mysqli_query($connection, $num_hr) or die(mysqli_error() . $num_hr);
 
     echo "<script>window.location.href='attendance.php?filter=$today&timeout=1'</script>";
   }
@@ -294,9 +421,12 @@ if (isset($_POST['add_time_out'])) {
                 </label>
                 <label class="custom-control custom-radio custom-control-inline">
                   <input required="" type="radio" class="custom-control-input" name="time_in_option" value="Afternoon">
-                  <span class="custom-control-label">Time In Aftenoon</span>
+                  <span class="custom-control-label">Time In Midshift</span>
                 </label>
-
+                <label class="custom-control custom-radio custom-control-inline">
+                  <input required="" type="radio" class="custom-control-input" name="time_in_option" value="Graveyard">
+                  <span class="custom-control-label">Time In Graveyard</span>
+                </label>
               </div>
             </div>
 
@@ -429,7 +559,11 @@ if (isset($_POST['add_time_out'])) {
                 </label>
                 <label class="custom-control custom-radio custom-control-inline">
                   <input required="" type="radio" class="custom-control-input" name="time_in_option" value="Afternoon">
-                  <span class="custom-control-label">Time Out Aftenoon</span>
+                  <span class="custom-control-label">Time Out Midshift</span>
+                </label>
+                <label class="custom-control custom-radio custom-control-inline">
+                  <input required="" type="radio" class="custom-control-input" name="time_in_option" value="Graveyard">
+                  <span class="custom-control-label">Time Out Graveyard</span>
                 </label>
 
               </div>

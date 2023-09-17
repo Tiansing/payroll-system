@@ -52,6 +52,7 @@ if ($Attendance == '1') {
 
 <head>
   <title>Profiling and Payroll Management System</title>
+
 </head>
 
 <body>
@@ -148,7 +149,7 @@ if ($Attendance == '1') {
                           <th>Timeout</th>
                           <th>Total Time</th>
                           <th>Schedule</th>
-                          <th>date</th>
+                          <th>Timein date</th>
                           <th>action</th>
 
                         </tr>
@@ -193,9 +194,9 @@ if ($Attendance == '1') {
                             <td><a class="text-inherit"><?php
                                                         if (isset($row['time_out_morning'])) {
                                                           echo  date('h:i A', strtotime($row['time_out_morning']));
-                                                        } else if (isset($row['time_in_afternoon'])) {
+                                                        } else if (isset($row['time_out_afternoon'])) {
                                                           echo date('h:i A', strtotime($row['time_out_afternoon']));
-                                                        } else if (isset($row['time_in_graveyard'])) {
+                                                        } else if (isset($row['time_out_graveyard'])) {
                                                           echo date('h:i A', strtotime($row['time_out_graveyard']));
                                                         } else {
                                                           echo "";

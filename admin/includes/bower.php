@@ -5,14 +5,16 @@
 <script src="../bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
 <!-- bootstrap time picker -->
 <script src="../plugins/timepicker/bootstrap-timepicker.min.js"></script>
+
+<link rel="stylesheet" href="../plugins/timepicker/bootstrap-glyphicons.css">
+<link rel="stylesheet" href="../plugins/timepicker/bootstrap-timepicker.css">
+<link rel="stylesheet" href="../plugins/timepicker/bootstrap-timepicker.min.css">
 <!-- Bootstrap WYSIHTML5 -->
 <script src="../plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
 <!-- Slimscroll -->
 <script src="../bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <!-- FastClick -->
 <script src="../bower_components/fastclick/lib/fastclick.js"></script>
-
-
 
 
 <script>
@@ -59,6 +61,7 @@
 
   });
 </script>
+
 <script>
   $(function() {
     //Date picker
@@ -73,7 +76,14 @@
 
     //Timepicker
     $('.timepicker').timepicker({
-      showInputs: false
+      showInputs: false, // Hide manual input fields
+      minuteStep: 1,
+      fontAwesome: 'font-awesome',
+      icons: {
+        up: 'fa fa-angle-up',
+        down: 'fa fa-angle-down'
+      },
+      format: 'LT'
     })
 
     //Date range picker
