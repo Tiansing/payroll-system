@@ -120,7 +120,11 @@ if (isset($q)) {
 
           $query = mysqli_query($connection, $insertAttendance) or die(mysqli_error($connection) . $insertAttendance);
 
-          echo '<div class="alert alert-success"><strong>Success!</strong> Employee successfully logged in <img id="imageOutput" src="' . $empImg . '" alt=""> </div>';
+          $imageUrl = '<img height="100" width="100" src="image/' . $empImg . '" alt="" > ';
+
+          echo $imageUrl;
+
+          echo '<div style="margin-top: 10px;" class="alert alert-success"><strong>' . $empName . '</strong> successfully logged in  </div>';
         }
       } else {
         echo '<div class="alert alert-danger"><strong>Failed!</strong> Employee is not Registered</div>';

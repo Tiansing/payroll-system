@@ -156,41 +156,44 @@ if (isset($q)) {
             $update = mysqli_query($connection, $num_hr) or die(mysqli_error($connection) . $num_hr);
           }
         } else {
+          if (!empty($row2['time_in_graveyard'])) {
+            $sql4 = "SELECT * FROM `attendance` WHERE `employee_id` = '$employee_id' AND `date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
+            $query4 = mysqli_query($connection, $sql4);
+            $row4 = mysqli_fetch_assoc($query4);
+            $datey = $row4['date'];
+            if ($row4['time_in_graveyard']) {
 
-          $sql4 = "SELECT * FROM `attendance` WHERE `employee_id` = '$employee_id' AND `date` = DATE_SUB(CURDATE(), INTERVAL 1 DAY)";
-          $query4 = mysqli_query($connection, $sql4);
-          $row4 = mysqli_fetch_assoc($query4);
-          $datey = $row4['date'];
-          if ($row4['time_in_graveyard']) {
+              $time_start = date('h:i A', strtotime($row4['time_in_graveyard']));
+              $to_time = date('h:i A');
 
-            $time_start = date('h:i A', strtotime($row4['time_in_graveyard']));
-            $to_time = date('h:i A');
+              if ($time_start > $to_time) {
+                $int = ((strtotime($to_time) + 86400) - strtotime($time_start)) / 3600;
+              } else {
+                $int = (strtotime($time_start) - strtotime($to_time)) / 3600;
+              }
+              if ($int > 4.5) {
+                $int = $int - 1;
+              }
 
-            if ($time_start > $to_time) {
-              $int = ((strtotime($to_time) + 86400) - strtotime($time_start)) / 3600;
+              $num_hr = "UPDATE `attendance` SET `num_hr_graveyard` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$datey'";
+              $update = mysqli_query($connection, $num_hr) or die(mysqli_error($connection) . $num_hr);
+              $insert = "UPDATE `attendance` SET `time_out_graveyard` = '$time_in' WHERE `employee_id` = '$employee_id' AND `date` = '$datey';";
+
+              $imageUrl = '<img height="100" width="100" src="image/' . $empImg . '" alt="" > ';
+
+              echo $imageUrl;
+
+              $query = mysqli_query($connection, $insert) or die(mysqli_error($connection) . $insert);
+              echo '<div style="margin-top: 10px;" class="alert alert-success"><strong><u>' . $empName . '</u></strong> successfully logged out!  </div>';
             } else {
-              $int = (strtotime($time_start) - strtotime($to_time)) / 3600;
+              echo '<div class="alert alert-danger"><strong>Failed! </strong>Employee <strong><u>' . $empName . '</u></strong> doesn&rsquo;t Time in yet</div>';
             }
-            if ($int > 4.5) {
-              $int = $int - 1;
-            }
-
-            $num_hr = "UPDATE `attendance` SET `num_hr_graveyard` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$datey'";
-            $update = mysqli_query($connection, $num_hr) or die(mysqli_error($connection) . $num_hr);
-            $insert = "UPDATE `attendance` SET `time_out_graveyard` = '$time_in' WHERE `employee_id` = '$employee_id' AND `date` = '$datey';";
-
-            $imageUrl = '<img height="100" width="100" src="image/' . $empImg . '" alt="" > ';
-
-            echo $imageUrl;
-
-            $query = mysqli_query($connection, $insert) or die(mysqli_error($connection) . $insert);
-            echo '<div style="margin-top: 10px;" class="alert alert-success"><strong><u>' . $empName . '</u></strong> successfully logged out!  </div>';
           } else {
             echo '<div class="alert alert-danger"><strong>Failed! </strong>Employee <strong><u>' . $empName . '</u></strong> doesn&rsquo;t Time in yet</div>';
           }
         }
       } else {
-        echo '<div class="alert alert-danger"><strong>Failed! </strong>Employee <strong><u>' . $empName . '</u></strong> doesn&rsquo;t Time in yet</div>';
+        echo '<div class="alert alert-danger"><strong>Failed!</strong> Invalid QR code/ Employee is not Registered</div>';
       }
     } else {
       echo '<div class="alert alert-danger"><strong>Failed!</strong> Invalid QR code/ Employee is not Registered</div>';

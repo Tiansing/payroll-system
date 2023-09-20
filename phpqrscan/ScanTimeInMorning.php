@@ -119,7 +119,9 @@ if (isset($q)) {
           $insertAttendance = "INSERT INTO `attendance` (`employee_id`, `attendance_id`, `date`, `time_in_morning`, `time_out_morning`, `time_in_afternoon`, `time_out_afternoon`, `status_morning`, `status_afternoon`, `num_hr_morning`, `num_hr_afternoon`, `month`, `year`) VALUES ('$employee_id', '$id', '$date', '$time_in', null, null, null, '$logstatus', null, null, null, '$month', '$year');";
 
           $query = mysqli_query($connection, $insertAttendance) or die(mysqli_error($connection) . $insertAttendance);
+          $imageUrl = '<img height="100" width="100" src="image/' . $empImg . '" alt="" > ';
 
+          echo $imageUrl;
           echo '<div class="alert alert-success"><strong>Success!</strong> Employee successfully logged in <img id="imageOutput" src="' . $empImg . '" alt=""> </div>';
         }
       } else {

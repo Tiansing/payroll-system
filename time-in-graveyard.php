@@ -205,7 +205,7 @@ if ($Attendance == '1') {
 								<form action="">
 
 
-									<input type="text" required="true" v-model="time_in_graveyard" class="form-control" name="start" class="input" id="result" onkeyup="showHint(this.value)" placeholder="Employee Identification here" style="text-align: center;" disabled />
+									<input type="text" required="true" v-model="time_in_graveyard" class="form-control" name="start" class="input" id="result" onkeyup="showHint(this.value)" placeholder="Employee Identification here" style="text-align: center;" />
 
 								</form>
 
