@@ -73,15 +73,14 @@ if ($type == "Administrator") {
     <div class="dropdown-menu dropdown-menu-arrow">
       <a href="profile.php" class="dropdown-item ">Employee Profile</a>
     </div>
+    <li class="nav-item dropdown">
+    <a href="leave.php" class="nav-link"><i class="fa fa-calendar-minus-o"></i> Employee Leave</a>
+  </li>
 
 </ul>');
 } elseif ($type == "Team Leader") {
 
-
-
   echo ('
-
-  
   <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
   
   <li class="nav-item">
