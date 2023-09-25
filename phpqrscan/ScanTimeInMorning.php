@@ -121,6 +121,10 @@ if (isset($q)) {
           $query = mysqli_query($connection, $insertAttendance) or die(mysqli_error($connection) . $insertAttendance);
           $imageUrl = '<img height="100" width="100" src="image/' . $empImg . '" alt="" > ';
 
+          $insertOT = "INSERT INTO `overtime` (`employee_id`, `overtime_id`) VALUES ('$employee_id', '$id');";
+          $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+
+
           echo $imageUrl;
           echo '<div class="alert alert-success"><strong>Success!</strong> Employee successfully logged in <img id="imageOutput" src="' . $empImg . '" alt=""> </div>';
         }

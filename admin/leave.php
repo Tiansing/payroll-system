@@ -142,18 +142,19 @@ if ($Attendance == '1') {
 
                 <div class="card-body">
                   <div class="table-responsive">
-                    <table class="table table-hovered" id="example1" cellspacing="5">
+                    <table class="table table-hover" id="example1" cellspacing="5">
                       <thead>
                         <tr>
 
 
                           <th>ID</th>
-
                           <th>Employee name</th>
                           <th>Status</th>
+                          <th>Type of Leave</th>
                           <th>Date of Leave</th>
-                          <th>Days of Leave</th>
+                          <th width="50">Days of Leave</th>
                           <th>Date Filed</th>
+                          <th>Leave Reason</th>
                           <th>action</th>
 
                         </tr>
@@ -202,6 +203,10 @@ if ($Attendance == '1') {
                                         } ?>><?php echo $leave_stat; ?></span></h4>
                             </td>
                             <td>
+                              <?php echo "Sick Leave"; ?>
+
+                            </td>
+                            <td>
                               <?php echo $longdate; ?>
 
                             </td>
@@ -215,9 +220,14 @@ if ($Attendance == '1') {
 
                             </td>
                             <td>
-                              <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#reasonModal<?php echo $id; ?>">
+                              <?php echo $reason; ?>
+
+                            </td>
+
+                            <td>
+                              <!-- <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#reasonModal">
                                 View Reason
-                              </button>
+                              </button> -->
                               <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#approvemodal<?php echo $id; ?>">
                                 Approve
                               </button>
@@ -277,6 +287,7 @@ if ($Attendance == '1') {
                             </div>
                             <!-- Decline Leave modal -->
                             <div class="modal fade" id="declineLeave<?php echo $id; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
                               <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                   <div class="modal-header bg-danger">

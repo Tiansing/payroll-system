@@ -85,15 +85,23 @@ if (isset($q)) {
         // Generate your image URL here
 
 
-
-
-
         $queryEmployeeId = "SELECT * FROM `employees` WHERE `employee_id` = '$content';";
         $queryResult = mysqli_query($connection, $queryEmployeeId);
         $rowQuery = mysqli_fetch_assoc($queryResult);
 
+        $position_id = $rowQuery['position_id'];
         $employee_id = $rowQuery['id'];
         $schedule_id = $rowQuery['schedule_id'];
+
+        $queryPosition = "SELECT * FROM `position` WHERE `id` = '$position_id';";
+        $queryResPosition = mysqli_query($connection, $queryPosition);
+        $rowPos = mysqli_fetch_assoc($queryResPosition);
+        $posRate = $rowPos['rate'];
+
+        $queryOT = "SELECT * FROM `overtime` WHERE `employee_id` = '$employee_id';";
+        $queryResOT = mysqli_query($connection, $queryOT);
+        $rowOT = mysqli_fetch_assoc($queryResOT);
+        $otID = $rowOT['overtime_id'];
 
         $sched = "SELECT * FROM `schedules` WHERE `id` = '$schedule_id';";
         $querySched = mysqli_query($connection, $sched);
@@ -130,8 +138,25 @@ if (isset($q)) {
             $int = $int - 1;
           }
 
-          $num_hr = "UPDATE `attendance` SET `num_hr_morning` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
-          $update = mysqli_query($connection, $num_hr) or die(mysqli_error($connection) . $num_hr);
+          if ($int >= 8) {
+            $intH = 8;
+            $hours = (int) $int - $intH;
+
+
+            $num_hr = "UPDATE `attendance` SET `num_hr_morning` = '$intH' WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
+            $update = mysqli_query($connection, $num_hr) or die(mysqli_error($connection) . $num_hr);
+            if ($hours >= 1) {
+              $insertOT = "UPDATE `overtime` SET `hours`= '$hours', `rate_hour`= '$posRate', `date_overtime`='$date' WHERE `employee_id`= '$employee_id' AND `overtime_id` = '$otID'";
+              $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+            }
+          } else {
+            $num_hr = "UPDATE `attendance` SET `num_hr_morning` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
+            $update = mysqli_query($connection, $num_hr) or die(mysqli_error($connection) . $num_hr);
+          }
+
+
+          // $num_hr = "UPDATE `attendance` SET `num_hr_morning` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
+          // $update = mysqli_query($connection, $num_hr) or die(mysqli_error($connection) . $num_hr);
         } else {
           echo '<div class="alert alert-danger"><strong>Failed! </strong>Employee <strong><u>' . $empName . '</u></strong> doesn&rsquo;t Time in yet</div>';
         }

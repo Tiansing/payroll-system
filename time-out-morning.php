@@ -176,16 +176,37 @@ if ($Attendance == '1') {
 								// 	}
 								// }
 
+								/* 		function showHint(str) {
+											if (str.length == 0) {
+												document.getElementById("txtHint").innerHTML = "";
+												return;
+											} else {
+												var xmlhttp = new XMLHttpRequest();
+												xmlhttp.onreadystatechange = function() {
+													if (this.readyState == 4 && this.status == 200) {
+														// Assuming the response is an image URL
+														document.getElementById("txtHint").innerHTML = this.responseText;
+													}
+												};
+												xmlhttp.open("GET", "phpqrscan/ScanTimeOutMorning.php?q=" + str, true);
+												xmlhttp.send();
+											}
+										} */
+								var isRequestInProgress = false; // Flag to track if a request is in progress
+
 								function showHint(str) {
-									if (str.length == 0) {
-										document.getElementById("txtHint").innerHTML = "";
+									if (str.length == 0 || isRequestInProgress) {
+										// If the input is empty or a request is already in progress, do nothing
 										return;
 									} else {
+										isRequestInProgress = true; // Set the flag to indicate a request is in progress
+
 										var xmlhttp = new XMLHttpRequest();
 										xmlhttp.onreadystatechange = function() {
 											if (this.readyState == 4 && this.status == 200) {
 												// Assuming the response is an image URL
 												document.getElementById("txtHint").innerHTML = this.responseText;
+												isRequestInProgress = false; // Reset the flag when the request is complete
 											}
 										};
 										xmlhttp.open("GET", "phpqrscan/ScanTimeOutMorning.php?q=" + str, true);

@@ -140,7 +140,7 @@ if ($Attendance == '1') {
                 <?php require_once('modals/modal_add_attendance.php') ?>
                 <div class="card-body">
                   <div class="table-responsive">
-                    <table class="table table-hovered" id="attndTable" cellspacing="5">
+                    <table class="table table-hover" id="attndTable" cellspacing="5">
                       <thead>
                         <tr>
 
