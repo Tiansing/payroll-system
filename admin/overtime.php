@@ -39,7 +39,11 @@ if ($generate == '1') {
       </div>';
 } else {
 }
-
+if (isset($_POST['approveOT'])) {
+  $otID = $_POST['otID'];
+  $query = "UPDATE overtime SET ot_status = 1 WHERE overtime_id = $otID";
+  $approveQuer = mysqli_query($connection, $query);
+}
 ?>
 <!doctype html>
 
@@ -90,13 +94,14 @@ if ($generate == '1') {
                       <thead>
                         <tr>
                           <th>No.</th>
-                          <th>Overtime ID</th>
+                          <th>OT ID</th>
                           <th>Employee ID</th>
                           <th>Employee name</th>
-                          <th>Number of hours</th>
-                          <th>Rate</th>
+                          <th width="50">No. of hours</th>
+                          <th>Rate per day</th>
                           <th>Gross</th>
                           <th>DATE</th>
+                          <th>Status</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -105,6 +110,11 @@ if ($generate == '1') {
                         $count = 0;
                         while ($row = mysqli_fetch_assoc($queryResult)) {
                           $count++;
+                          $otd = $row['overtime_id'];
+                          $query = "SELECT * FROM overtime WHERE overtime_id = $otd ";
+                          $otQuery = mysqli_query($connection, $query);
+                          $rowot = mysqli_fetch_assoc($otQuery);
+
                         ?>
                           <tr>
 
@@ -120,8 +130,20 @@ if ($generate == '1') {
                             <td><strong><?php $gross = number_format($row['rate_hour']) * round($row['hours'], 1)   ?> <?php echo number_format($gross) ?> PHP</strong></td>
                             <td><a class="text-inherit"><?php echo date('F d, Y', strtotime($row['date_overtime'])) ?></a></td>
                             <td>
-
-                              <button class="btn btn-warning btn-sm " data-toggle="modal" data-target="#delete-<?php echo $row['overtime_id'] ?>">Delete</button>
+                              <?php
+                              if ($rowot['ot_status'] == 1) { ?>
+                                <h5><span class="badge badge-sm badge-success">
+                                    Approved
+                                  </span></h5>
+                              <?php  } else { ?>
+                                <h5><span class="badge badge-sm badge-warning">
+                                    Pending
+                                  </span></h5>
+                              <?php } ?>
+                            </td>
+                            <td>
+                              <button class="btn btn-success btn-sm " data-toggle="modal" data-target="#approve-<?php echo $row['overtime_id'] ?>">Approve</button>
+                              <button class="btn btn-danger btn-sm " data-toggle="modal" data-target="#delete-<?php echo $row['overtime_id'] ?>">Decline</button>
                             </td>
                           </tr>
 
@@ -129,16 +151,41 @@ if ($generate == '1') {
                           <div id="delete-<?php echo $row['overtime_id'] ?>" class="modal fade animate" data-backdrop="true">
                             <div class="modal-dialog" id="animate">
                               <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5 class="modal-title">Delete</h5>
+                                <div class="modal-header bg-danger text-white">
+                                  <h5 class="modal-title">Decline Overtime</h5>
                                 </div>
                                 <div class="modal-body text-center p-lg">
-                                  <p>Are you sure to execute this action?</p>
+                                  <p>Are you sure you want to decline ?</p>
                                   <p style="font-size: 25px;"><b>Overtime Number <?php echo $row['overtime_id'] ?></b></p>
                                 </div>
                                 <div class="modal-footer">
                                   <button type="button" class="btn dark-white p-x-md" data-dismiss="modal">No</button>
                                   <a href="delete/overtime.php?id=<?php echo $row['overtime_id'] ?>"><button type="button" class="btn danger p-x-md">Yes</button></a>
+                                </div>
+                              </div><!-- /.modal-content -->
+                            </div>
+                          </div>
+                          <!-- / .modal -->
+
+                          <!-- .modal -->
+                          <div id="approve-<?php echo $row['overtime_id'] ?>" class="modal fade animate" data-backdrop="true">
+                            <div class="modal-dialog" id="animate">
+                              <div class="modal-content">
+                                <div class="modal-header bg-success text-white">
+                                  <h5 class="modal-title">Approve Overtime</h5>
+                                </div>
+                                <div class="modal-body text-center p-lg">
+                                  <p>Are you sure you want to approve?</p>
+                                  <p style="font-size: 25px;"><b>Overtime Number <?php echo $row['overtime_id'] ?></b></p>
+                                </div>
+                                <div class="modal-footer">
+                                  <form action="" method="POST">
+                                    <input type="hidden" name="otID" value="<?php echo $row['overtime_id'] ?>">
+                                    <button type="button" class="btn dark-white p-x-md" data-dismiss="modal">No</button>
+                                    <button type="submit" name="approveOT" class="btn dark-white p-x-md">Yes</button>
+
+                                  </form>
+
                                 </div>
                               </div><!-- /.modal-content -->
                             </div>

@@ -105,7 +105,7 @@ $myId = $row['id'];
                 $sql = "SELECT *, SUM(num_hr_morning) AS morning, SUM(num_hr_afternoon) AS afternoon, attendance.employee_id AS empid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id LEFT JOIN position ON position.id=employees.position_id WHERE attendance.employee_id='$myId' AND date BETWEEN '$from' AND '$to' GROUP BY attendance.employee_id ORDER BY employees.fullname ASC";
 
 
-                $overtime = "SELECT *, SUM(hours) AS hour, SUM(rate_hour) AS rate_h, COUNT(employee_id) AS tot  FROM overtime WHERE overtime.employee_id='$myId' AND date_overtime BETWEEN '$from' AND '$to';";
+                $overtime = "SELECT *, SUM(hours) AS hour, SUM(rate_hour) AS rate_h, COUNT(employee_id) AS tot  FROM overtime WHERE overtime.employee_id='$myId' AND ot_status = 1 AND date_overtime BETWEEN '$from' AND '$to';";
                 $otresult = mysqli_query($connection, $overtime);
 
                 while ($otrow = mysqli_fetch_assoc($otresult)) {
