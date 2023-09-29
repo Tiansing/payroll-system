@@ -90,10 +90,10 @@ if (isset($_POST['approveOT'])) {
                 <?php require_once('modals/modal_add_overtime.php') ?>
                 <div class="card-body">
                   <div class="table-responsive">
-                    <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
+                    <table class="table table-hover" id="otTable" width="100%" cellspacing="0">
                       <thead>
                         <tr>
-                          <th>No.</th>
+                          <!-- <th>No.</th> -->
                           <th>OT ID</th>
                           <th>Employee ID</th>
                           <th>Employee name</th>
@@ -118,7 +118,7 @@ if (isset($_POST['approveOT'])) {
                         ?>
                           <tr>
 
-                            <td><span class="text-muted"><?php echo $count ?></span></td>
+                            <!-- <td><span class="text-muted"><?php echo $count ?></span></td> -->
                             <td><span class="text-muted"><?php echo $row['overtime_id'] ?></span></td>
                             <td><a class="text-primary"><?php echo $row['empid'] ?></a></td>
                             <td><a class="text-inherit"><?php echo $row['fullname'] ?></a></td>
@@ -209,5 +209,15 @@ if (isset($_POST['approveOT'])) {
   </div>
   <?php require_once('includes/datatables.php') ?>
 </body>
+<script>
+  $(document).ready(function() {
+    $('#otTable').DataTable({
+      responsive: true,
+      "order": [
+        [6, "desc"]
+      ]
+    })
+  });
+</script>
 
 </html>

@@ -116,6 +116,9 @@ if (isset($q)) {
 
           $logstatus = ($time_in >= $schedRow['time_in_graveyard']) ? 0 : 1;
 
+          $insertOT = "INSERT INTO `overtime` (`employee_id`, `overtime_id`) VALUES ('$employee_id', '$id');";
+          $query1 = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+
           $insertAttendance = "INSERT INTO `attendance` (`employee_id`, `attendance_id`, `date`, `time_in_morning`, `time_out_morning`, `time_in_afternoon`, `time_out_afternoon`, `time_in_graveyard`, `time_out_graveyard`,`status_morning`, `status_afternoon`,`status_graveyard`, `num_hr_morning`, `num_hr_afternoon`,`num_hr_graveyard`, `month`, `year`) VALUES ('$employee_id', '$id', '$date', null, null, null, null, '$time_in', null, null, null, '$logstatus', null, null, null, '$month', '$year');";
 
           $query = mysqli_query($connection, $insertAttendance) or die(mysqli_error($connection) . $insertAttendance);

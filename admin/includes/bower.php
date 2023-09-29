@@ -44,6 +44,12 @@
         [5, "desc"]
       ]
     })
+    $('#otTable').DataTable({
+      responsive: true,
+      "order": [
+        [6, "desc"]
+      ]
+    })
   })
 </script>
 <script>

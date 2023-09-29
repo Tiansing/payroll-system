@@ -5,7 +5,7 @@ if (!isset($_SESSION['official_username']) && !isset($_SESSION['official_passwor
 }
 
 
-$queryPosition = "SELECT *, overtime.id AS otid, employees.employee_id AS empid FROM overtime LEFT JOIN employees ON employees.id=overtime.employee_id ORDER BY date_overtime DESC;";
+$queryPosition = "SELECT *, overtime.id AS otid, employees.employee_id AS empid FROM overtime LEFT JOIN employees ON employees.id=overtime.employee_id WHERE overtime.hours IS NOT NULL ORDER BY date_overtime DESC;";
 $queryResult = mysqli_query($connection, $queryPosition);
 
 $numbers = '';
