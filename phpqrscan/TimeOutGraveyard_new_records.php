@@ -5,13 +5,15 @@ require_once('../admin/includes/script.php');
 require_once('../admin/session/Login.php');
 
 $set_timezone = date_default_timezone_set("Asia/Manila");
+
 $today = date('Y-m-d');
+
 $model = new Dashboard();
 $session = new AdministratorSession();
 $session->LoginSession();
 $connection = $model->TemporaryConnection();
 
-$queryPosition = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id  WHERE  attendance.date='$today' AND attendance.time_out_graveyard IS NOT NULL AND attendance.date=DATE_SUB(CURDATE(), INTERVAL 1 DAY) ORDER BY attendance.time_out_graveyard DESC ;";
+$queryPosition = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id  WHERE attendance.time_in_graveyard IS NOT NULL AND attendance.date='$today' OR attendance.date=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND time_out_graveyard IS NOT NULL  ORDER BY attendance.time_out_graveyard DESC ;";
 $queryResult = mysqli_query($connection, $queryPosition);
 
 $output = '';

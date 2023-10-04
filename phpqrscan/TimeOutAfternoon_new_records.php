@@ -11,7 +11,7 @@ $session = new AdministratorSession();
 $session->LoginSession();
 $connection = $model->TemporaryConnection();
 
-$queryPosition = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id  WHERE  attendance.date='$today' AND attendance.time_out_afternoon IS NOT NULL ORDER BY attendance.time_out_afternoon DESC ;";
+$queryPosition = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id  WHERE  attendance.time_in_graveyard IS NOT NULL AND attendance.date='$today' OR attendance.date=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND time_out_afternoon IS NOT NULL  ORDER BY attendance.time_out_afternoon DESC ;";
 $queryResult = mysqli_query($connection, $queryPosition);
 
 $output = '';

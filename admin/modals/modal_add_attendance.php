@@ -10,7 +10,7 @@ if (isset($_GET['filter'])) {
 }
 
 //NEW QUERY TO CHECK IF THE ATTENDANCE WAS AVAILABLE YESTERDAY AND TODAY
-$queryYesterday = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id WHERE attendance.date = DATE_SUB(CURDATE(), INTERVAL 1 DAY ) ORDER BY attendance.id DESC LIMIT 1;";
+$queryYesterday = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id WHERE attendance.date = DATE_SUB(CURDATE(), INTERVAL 1 DAY ) AND attendance.time_in_graveyard IS NOT NULL ORDER BY attendance.id DESC LIMIT 1;";
 $queryResYest = mysqli_query($connection, $queryYesterday);
 $roy = mysqli_fetch_assoc($queryResYest);
 
@@ -109,7 +109,7 @@ if (isset($_POST['add_time_in'])) {
     $query = mysqli_query($connection, $insert) or die(mysqli_error() . $insert);
 
     echo "<script>window.location.href='attendance.php?filter=$today&pm=$logstatus'</script>";
-  } else {
+  } else if ($time_in_option == 'Graveyard') {
 
     $sql = "SELECT * FROM `employees` WHERE `id` = '$employee'";
     $sqlEmployee = mysqli_query($connection, $sql);
@@ -201,7 +201,7 @@ if (isset($_POST['add_time_out'])) {
     $update = mysqli_query($connection, $num_hr) or die(mysqli_error() . $num_hr);
 
     echo "<script>window.location.href='attendance.php?filter=$today&timeout=1'</script>";
-  } else {
+  } else if ($time_in_option == 'Graveyard') {
 
     $insert = "UPDATE `attendance` SET `time_out_graveyard` = '$time_in' WHERE `employee_id` = '$employee' AND `date` = '$date';";
 

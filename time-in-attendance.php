@@ -120,14 +120,14 @@ if ($Attendance == '1') {
 					<center>
 						<div style="padding-bottom: 10px;" class="container-fluid">
 
-							<div class="container bg-warning">
+							<div class="container bg-primary">
 								<div class="row">
 									<div class="col-12">
 										<div class="custom-header">
 											<a href="index.php" class="btn btn-info back-button">
 												< Back</a>
 
-													<h1 class="timein title text-center"><i class="fe fe-sunset"></i>&nbsp;Time out Midshift&nbsp;<i class="fe fe-sunset"></i></h1>
+													<h1 class="timein title text-center"><i class="fe fe-sunrise"></i>&nbsp;Time In Attendance&nbsp;<i class="fe fe-sunrise"></i></h1>
 													<div></div> <!-- Empty div for spacing on the right side -->
 
 										</div>
@@ -188,7 +188,7 @@ if ($Attendance == '1') {
 												document.getElementById("txtHint").innerHTML = this.responseText;
 											}
 										};
-										xmlhttp.open("GET", "phpqrscan/ScanTimeOutMidshift.php?q=" + str, true);
+										xmlhttp.open("GET", "phpqrscan/ScanTimeInAttendance.php?q=" + str, true);
 										xmlhttp.send();
 									}
 								}
@@ -226,7 +226,7 @@ if ($Attendance == '1') {
 								<script>
 									function fetchNewRecords() {
 										$.ajax({
-											url: 'phpqrscan/TimeOutAfternoon_new_records.php', // Your server-side script to fetch new records
+											url: 'phpqrscan/TimeInAttendance_new_records.php', // Your server-side script to fetch new records
 											method: 'GET',
 											dataType: 'html',
 											success: function(data) {

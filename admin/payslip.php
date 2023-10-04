@@ -123,7 +123,9 @@ $myId = $row['id'];
                   } else {
                     $total = ($otrow['tot']) * 8;
                   }
-                  $gross = ($otrow['rate_h']) / $total_ot * round($otrow['hour'], 1);
+                  $gross = number_format($otrow['rate_h']) * 1.25 / 8;
+                  $gross = $gross * round($otrow['hour'], 1);
+
                   $ot = $gross;
                   // echo $ot." ";
 

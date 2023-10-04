@@ -127,7 +127,15 @@ if (isset($_POST['approveOT'])) {
                             <td>
                               <?php echo number_format($row['rate_hour']) ?> PHP
                             </td>
-                            <td><strong><?php $gross = number_format($row['rate_hour']) * round($row['hours'], 1)   ?> <?php echo number_format($gross) ?> PHP</strong></td>
+                            <td><strong><?php
+
+                                        $gross = number_format($row['rate_hour']) * 1.25 / 8;
+                                        $gross = $gross * round($row['hours'], 1);
+
+                                        echo number_format($gross)
+
+
+                                        ?> PHP</strong></td>
                             <td><a class="text-inherit"><?php echo date('F d, Y', strtotime($row['date_overtime'])) ?></a></td>
                             <td>
                               <?php

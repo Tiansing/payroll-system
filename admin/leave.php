@@ -174,6 +174,7 @@ if ($Attendance == '1') {
                           $dyleave  = $row['days_of_leave'];
                           $reason  = $row['reason_for_leave'];
                           $dtfiled  = $row['date_filed'];
+                          $type_of_leave  = $row['type_of_leave'];
                           $dtfiled = strtotime($dtfiled);
                           $dtfiled = date("F j, Y", $dtfiled);
                           $query1 = "SELECT * FROM employees WHERE employee_id =  $employee_id";
@@ -203,7 +204,7 @@ if ($Attendance == '1') {
                                         } ?>><?php echo $leave_stat; ?></span></h4>
                             </td>
                             <td>
-                              <?php echo "Sick Leave"; ?>
+                              <?php echo $type_of_leave; ?>
 
                             </td>
                             <td>

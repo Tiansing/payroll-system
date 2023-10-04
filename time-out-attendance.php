@@ -127,7 +127,7 @@ if ($Attendance == '1') {
 											<a href="index.php" class="btn btn-info back-button">
 												< Back</a>
 
-													<h1 class="timein title text-center"><i class="fe fe-sunset"></i>&nbsp;Time out Midshift&nbsp;<i class="fe fe-sunset"></i></h1>
+													<h1 class="timein title text-center"><i class="fe fe-sunrise"></i>&nbsp;Time Out Attendance&nbsp;<i class="fe fe-sunrise"></i></h1>
 													<div></div> <!-- Empty div for spacing on the right side -->
 
 										</div>
@@ -176,19 +176,40 @@ if ($Attendance == '1') {
 								// 	}
 								// }
 
+								/* 		function showHint(str) {
+											if (str.length == 0) {
+												document.getElementById("txtHint").innerHTML = "";
+												return;
+											} else {
+												var xmlhttp = new XMLHttpRequest();
+												xmlhttp.onreadystatechange = function() {
+													if (this.readyState == 4 && this.status == 200) {
+														// Assuming the response is an image URL
+														document.getElementById("txtHint").innerHTML = this.responseText;
+													}
+												};
+												xmlhttp.open("GET", "phpqrscan/ScanTimeOutMorning.php?q=" + str, true);
+												xmlhttp.send();
+											}
+										} */
+								var isRequestInProgress = false; // Flag to track if a request is in progress
+
 								function showHint(str) {
-									if (str.length == 0) {
-										document.getElementById("txtHint").innerHTML = "";
+									if (str.length == 0 || isRequestInProgress) {
+										// If the input is empty or a request is already in progress, do nothing
 										return;
 									} else {
+										isRequestInProgress = true; // Set the flag to indicate a request is in progress
+
 										var xmlhttp = new XMLHttpRequest();
 										xmlhttp.onreadystatechange = function() {
 											if (this.readyState == 4 && this.status == 200) {
 												// Assuming the response is an image URL
 												document.getElementById("txtHint").innerHTML = this.responseText;
+												isRequestInProgress = false; // Reset the flag when the request is complete
 											}
 										};
-										xmlhttp.open("GET", "phpqrscan/ScanTimeOutMidshift.php?q=" + str, true);
+										xmlhttp.open("GET", "phpqrscan/ScanTimeOutAttendance.php?q=" + str, true);
 										xmlhttp.send();
 									}
 								}
@@ -226,7 +247,7 @@ if ($Attendance == '1') {
 								<script>
 									function fetchNewRecords() {
 										$.ajax({
-											url: 'phpqrscan/TimeOutAfternoon_new_records.php', // Your server-side script to fetch new records
+											url: 'phpqrscan/TimeOutAttendance_new_records.php', // Your server-side script to fetch new records
 											method: 'GET',
 											dataType: 'html',
 											success: function(data) {

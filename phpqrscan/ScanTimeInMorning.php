@@ -126,7 +126,6 @@ if (isset($q)) {
 
 
           echo $imageUrl;
-          echo '<div class="alert alert-success"><strong>Success!</strong> Employee successfully logged in <img id="imageOutput" src="' . $empImg . '" alt=""> </div>';
         }
       } else {
         echo '<div class="alert alert-danger"><strong>Failed!</strong> Employee is not Registered</div>';

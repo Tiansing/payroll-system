@@ -27,8 +27,24 @@ date_default_timezone_set($timezone);
 					<h1 class="text" id="time"></h1>
 
 				</div>
-
-				<div style="padding-bottom: 20px;" class="h-100 d-flex align-items-center justify-content-center">
+				<div style="padding-bottom: 20px;" class="h-100 d-flex align-items-center justify-content-center ">
+					<div class="col-lg-6 ">
+						<div class="card">
+							<div class="card-header ">
+								<h3 class="card-title "><i class="fe fe-clock"></i> <b>Attendance Monitorng</b>
+								</h3>
+								<!-- <div class="card-title">
+									<h6 class="card-text text-muted">&nbsp;&nbsp;6:00 am - 3:00 pm</h6>
+								</div> -->
+								<div class="card-options">
+									<a href="time-in-attendance.php" class="btn btn-primary btn-sm">Time In</a>
+									<a href="time-out-attendance.php" class="btn btn-warning btn-sm ml-2">Time Out</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- <div style="padding-bottom: 20px;" class="h-100 d-flex align-items-center justify-content-center">
 					<div class="col-lg-6 ">
 						<div class="card">
 							<div class="card-header">
@@ -76,7 +92,7 @@ date_default_timezone_set($timezone);
 						</div>
 					</div>
 					</center>
-				</div>
+				</div> -->
 			</div>
 		</div>
 		<a href="employee" target="_blank" class="btn">
@@ -84,8 +100,7 @@ date_default_timezone_set($timezone);
 		</a>
 		<a href="admin" target="_blank" class="btn">Go to Dashboard Panel</a>
 	</div>
-	</div>
-	</div>
+
 
 	<!-- jQuery 3 -->
 	<script src="bower_components/jquery/dist/jquery.min.js"></script>

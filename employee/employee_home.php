@@ -88,11 +88,21 @@ while ($row = mysqli_fetch_assoc($employee_query)) {
 }
 
 if (isset($_POST['submit'])) {
-    $date_of_leave = $_POST['date_of_leave'];
-    $days_of_leave = $_POST['days_of_leave'];
+    if (!empty($_POST['date_of_leave'])) {
+        $date_of_leave = $_POST['date_of_leave'];
+    } else if (!empty($_POST['date_of_leave_vacation'])) {
+        $date_of_leave = $_POST['date_of_leave_vacation'];
+    }
+    if ($_POST['type_of_leave'] == "vacation") {
+        $days_of_leave = $_POST['days_of_leave1'];
+    } else {
+        $days_of_leave = $_POST['days_of_leave'];
+    }
+    $type_of_leave = $_POST['type_of_leave'];
+
     $reason = $_POST['reason'];
     $reason = stripslashes(mysqli_real_escape_string($connection, $reason));
-    $query = "INSERT INTO employee_leave (employee_id, date_of_leave, days_of_leave, reason_for_leave, leave_status, date_filed) VALUES ('$employee_id', '$date_of_leave', '$days_of_leave', '$reason', 'Pending', now());";
+    $query = "INSERT INTO employee_leave (employee_id, date_of_leave, days_of_leave, reason_for_leave, leave_status, date_filed, type_of_leave) VALUES ('$employee_id', '$date_of_leave', '$days_of_leave', '$reason', 'Pending', now(), '$type_of_leave');";
     mysqli_query($connection, $query);
 
     echo "<script>window.location.href='employee_home.php'</script>";
@@ -108,7 +118,7 @@ if (isset($_POST['submit'])) {
                 <p class="mb-0">Name: <b><span id="employeeName"><?php echo $fullname; ?></span></b></p>
             </div>
         </div>
-        <div class="p-2">
+        <!--       <div class="p-2">
             <table class="table table-sm text-white table-bordered text-center">
                 Available Leave Credits:
                 <thead>
@@ -126,7 +136,7 @@ if (isset($_POST['submit'])) {
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </div> -->
 
         <a href="signout.php" class="logout-button ml-auto p-2">Logout</a>
     </div>
@@ -156,8 +166,8 @@ if (isset($_POST['submit'])) {
 
                             <div class="form-group">
                                 <label for="dateOfLeave">Type of Leave:</label>
-                                <select id="dateDropdown" class="form-control">
-                                    <option value="normal">Sick Leave</option>
+                                <select id="dateDropdown" name="type_of_leave" class="form-control">
+                                    <option value="sick">Sick Leave</option>
                                     <option value="emergency">Emergency Leave</option>
                                     <option value="vacation">Vacation Leave</option>
                                 </select>
@@ -171,10 +181,10 @@ if (isset($_POST['submit'])) {
                             <div class="form-group ">
                                 <label for="dateOfLeave">Date of Leave</label>
                                 <div id="dt1">
-                                    <select id="selectedDatesDropdown" class="form-control"></select>
+                                    <select name='date_of_leave_vacation' id="selectedDatesDropdown" class='form-control'></select>
                                 </div>
                                 <div id="dt2">
-                                    <input type="input" id="dateID" name="date_of_leave" class="form-control">
+                                    <input type="input" id="dateID" name="date_of_leave" class="form-control" placeholder="Select Date">
                                 </div>
                             </div>
 
@@ -182,11 +192,13 @@ if (isset($_POST['submit'])) {
 
                             <div class="form-group">
                                 <label for="daysOfLeave">Days of Leave</label>
-                                <input type="number" name="days_of_leave" class="form-control" id="daysOfLeave" placeholder="Enter number of days">
+
+                                <input type="number" class="form-control" name="days_of_leave1" id="daysOfLeave" placeholder="Enter number of days">
+                                <input type="number" name="days_of_leave" class="form-control" id="leaveDays1" placeholder="Enter number of days">
                             </div>
                             <div class="form-group">
                                 <label for="reasonForLeave">Reason for Leave</label>
-                                <textarea class="form-control" name="reason" rows="2" placeholder="Enter reason"></textarea>
+                                <textarea class="form-control" name="reason" rows="2" placeholder="Enter reason" required></textarea>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -324,6 +336,9 @@ if (isset($_POST['submit'])) {
                 var selectedValue = $("#dateDropdown").val();
                 var selectedDatesDropdown = $("#selectedDatesDropdown");
                 var numOfDaysLeave = $("#daysOfLeave");
+                var numOfDaysLeaveNotVac = $("#leaveDays1");
+                var dolRequired = $("#dateID");
+
                 selectedDatesDropdown.empty();
 
                 // if (selectedValue === "normal") {
@@ -350,6 +365,7 @@ if (isset($_POST['submit'])) {
 
 
                     vacationEndDates.forEach(function(endDate) {
+
                         var endDateOption = $("<option></option>");
                         endDateOption.val(endDate.toISOString().slice(0, 10));
                         endDateOption.text(endDate.toDateString());
@@ -357,11 +373,14 @@ if (isset($_POST['submit'])) {
 
                     });
                     numOfDaysLeave.val("15");
-                    numOfDaysLeave.prop("disabled", true);
-
+                    numOfDaysLeave.show();
+                    numOfDaysLeaveNotVac.hide();
                 } else {
                     numOfDaysLeave.val("");
-                    numOfDaysLeave.prop("disabled", false);
+                    numOfDaysLeave.hide();
+                    numOfDaysLeaveNotVac.show();
+                    numOfDaysLeaveNotVac.prop('required', true);
+                    dolRequired.prop('required', true);
                 }
 
             }
@@ -380,9 +399,12 @@ if (isset($_POST['submit'])) {
                 var hideCalendaInp = $("#dt1");
                 var hideCalendaSel = $("#dt2");
 
-                if (selectDateValue === "normal" || selectDateValue === "emergency") {
+
+
+                if (selectDateValue === "sick" || selectDateValue === "emergency") {
                     hideCalendaInp.hide();
                     hideCalendaSel.show();
+
 
                 } else {
 
@@ -400,7 +422,7 @@ if (isset($_POST['submit'])) {
 
             beforeShowDay: function(date) {
                 var dateString = $.datepicker.formatDate('dd-mm-yy', date);
-                var isVacationLeave = $("#leaveType").val() === "vacation";
+                // var isVacationLeave = $("#leaveType").val() === "vacation";
 
                 // Disable Saturdays and Sundays by default
                 var dayOfWeek = date.getDay();
@@ -412,13 +434,13 @@ if (isset($_POST['submit'])) {
 
 
                 // Enable if it's a vacation leave and within the next 15 days
-                if (isVacationLeave) {
-                    var maxDate = new Date();
-                    maxDate.setDate(maxDate.getDate() + 15);
-                    isDisabled = isDisabled || date > maxDate;
-                }
+                /*  if (isVacationLeave) {
+                     var maxDate = new Date();
+                     maxDate.setDate(maxDate.getDate() + 15);
+                     isDisabled = isDisabled || date > maxDate;
+                 } */
 
-                return [!isWeekend && !isDisabled];
+                return [!isWeekend];
             }
         });
 

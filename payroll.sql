@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 17, 2023 at 09:01 AM
+-- Generation Time: Oct 04, 2023 at 12:28 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 7.4.1
 
@@ -79,7 +79,17 @@ CREATE TABLE `attendance` (
 --
 
 INSERT INTO `attendance` (`id`, `employee_id`, `attendance_id`, `date`, `time_in_morning`, `time_out_morning`, `time_in_afternoon`, `time_out_afternoon`, `time_in_graveyard`, `time_out_graveyard`, `status_morning`, `status_afternoon`, `status_graveyard`, `num_hr_morning`, `num_hr_afternoon`, `num_hr_graveyard`, `month`, `year`) VALUES
-(1, 1, '1602534', '2023-09-17', '05:58:19', '15:00:38', NULL, NULL, NULL, NULL, 1, NULL, NULL, 8.0333333333333, NULL, NULL, 'September', '2023');
+(4, 2, '5103246', '2023-09-20', '09:30:00', '09:44:43', NULL, '09:51:44', NULL, '09:58:57', 0, NULL, NULL, 0.23333333333333, 0, NULL, 'September', '2023'),
+(5, 3, '5640321', '2023-09-20', '09:41:02', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 'September', '2023'),
+(16, 7, '3205146', '2023-09-25', '06:00:15', '17:08:26', NULL, NULL, NULL, NULL, 0, NULL, NULL, 8, NULL, NULL, 'September', '2023'),
+(17, 7, '0146235', '2023-09-28', '06:00:51', '18:05:47', NULL, NULL, NULL, NULL, 0, NULL, NULL, 8, NULL, NULL, 'September', '2023'),
+(21, 2, '5063214', '2023-09-28', NULL, NULL, '13:59:39', '00:11:57', NULL, NULL, NULL, 1, NULL, NULL, 12.783333333333, NULL, 'September', '2023'),
+(22, 3, '6514203', '2023-09-28', NULL, NULL, NULL, NULL, '21:59:18', '09:06:27', NULL, NULL, 1, NULL, NULL, NULL, 'September', '2023'),
+(29, 2, '2310564', '2023-10-02', NULL, NULL, '14:05:13', '02:05:32', NULL, NULL, NULL, 0, NULL, NULL, 8, NULL, 'October', '2023'),
+(30, 8, '5426301', '2023-10-03', NULL, NULL, NULL, NULL, '21:59:40', '09:00:02', NULL, NULL, 1, NULL, NULL, 8, 'October', '2023'),
+(31, 3, '6315402', '2023-10-03', NULL, NULL, NULL, NULL, '22:00:31', NULL, NULL, NULL, 0, NULL, NULL, NULL, 'October', '2023'),
+(32, 2, '2406153', '2023-10-03', NULL, NULL, '22:59:28', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 'October', '2023'),
+(33, 7, '1025643', '2023-10-04', '05:59:56', '16:00:12', NULL, NULL, NULL, NULL, 1, NULL, NULL, 8, NULL, NULL, 'October', '2023');
 
 -- --------------------------------------------------------
 
@@ -102,7 +112,11 @@ CREATE TABLE `barcode` (
 INSERT INTO `barcode` (`id`, `employee_id`, `generated_on`, `path`, `bool_gen`) VALUES
 (1, '659218403', '2023-09-17', 'employee_barcode/659218403.png', 1),
 (2, '057481236', '2023-09-17', 'employee_barcode/057481236.png', 1),
-(3, '158369407', '2023-09-17', 'employee_barcode/158369407.png', 1);
+(3, '158369407', '2023-09-17', 'employee_barcode/158369407.png', 1),
+(4, '409257836', '2023-09-17', 'employee_barcode/409257836.png', 1),
+(5, '627513480', '2023-09-17', 'employee_barcode/627513480.png', 1),
+(6, '634587910', '2023-09-24', 'employee_barcode/634587910.png', 1),
+(7, '892063751', '2023-10-01', 'employee_barcode/892063751.png', 1);
 
 -- --------------------------------------------------------
 
@@ -176,9 +190,10 @@ CREATE TABLE `employees` (
 --
 
 INSERT INTO `employees` (`id`, `employee_id`, `position_id`, `schedule_id`, `created_on`, `photo`, `fullname`, `address`, `email`, `phonenumber`, `birthdate`, `sex`, `position`, `civil_status`, `citizenship`, `height`, `weight`, `religion`, `spouse`, `spouse_occupation`, `father`, `father_occupation`, `mother`, `mother_occupation`, `parent_address`, `emergency_name`, `emergency_contact`, `project_name`, `site_location`) VALUES
-(1, '659218403', 1, 27, '2023-09-17', 'Max-R_Headshot (1).jpg', 'Sarah M. Duterte', '20/65 Gerhold Groves Suite 912, Lake Sebu 523', 'cmuller@hintz.com', '09764565165', '1964-01-07', 'Male', '1', 'Single', 'Filipino', 175, 65, 'Catholic', 'María Mercedes Martin', 'Software Developer', 'Domingo Romero', 'Software Engineer', 'María Mar Gutierrez', 'House Wife', '97A/86 Wisozk Fall Apt. 581, Bindoy 0620 Quez', 'María Mar Gutierrez', '09811516161', NULL, NULL),
 (2, '158369407', 2, 28, '2023-09-17', 'images.jpg', 'Mercedes A. Gil', '23A/22 Zieme Squares Suite 794, San Narciso 9', 'candace57@lakin.biz', '09451516516', '1984-04-09', 'Female', '2', 'Married', 'FIlipino', 155, 68, 'Catholic', 'Cristian Alvarez', 'Janitor', 'Eduardo Cabrera', 'Chef', 'Emilio Ferrer', 'House Keeping', '60A/86 Terry Green Suite 342, Poblacion, Munt', 'Emilio Ferrer', '09881516161', NULL, NULL),
-(3, '057481236', 3, 29, '2023-09-17', 'download.png', 'Rocío  G. Jimenez', '18 Kassulke Route Suite 640, Carcar City 1330', 'haven.schmidt@yahoo.com', '09416161651', '1986-04-13', 'Female', '3', 'Separated', 'Filipino', 165, 65, 'Born Again', 'Alberto Gallardo', 'Boxer', 'Ruben Garrido', 'Captain', 'Manuel Suarez', 'Chef', '83A Roberts Neck Suite 333, Poblacion, Trece ', 'Manuel Suarez', '09516516165', NULL, NULL);
+(3, '057481236', 3, 29, '2023-09-17', 'download.png', 'Rocío  G. Jimenez', '18 Kassulke Route Suite 640, Carcar City 1330', 'haven.schmidt@yahoo.com', '09416161651', '1986-04-13', 'Female', '3', 'Separated', 'Filipino', 165, 65, 'Born Again', 'Alberto Gallardo', 'Boxer', 'Ruben Garrido', 'Captain', 'Manuel Suarez', 'Chef', '83A Roberts Neck Suite 333, Poblacion, Trece ', 'Manuel Suarez', '09516516165', NULL, NULL),
+(7, '634587910', 3, 27, '2023-09-24', 'Max-R_Headshot (1).jpg', 'Test Test Test', 'Ttset', 'tset@test', '4234324', '1975-03-02', 'Male', '3', 'Single', 'Etst', 3423, 42423, 'Fafdsf', 'Fsdfsd', 'Fsdfsd', 'Fsdfsd', 'Fsdfsfsf', 'Sdfdsf', 'Sdfsdf', 'Sdfdsf', 'Fsdfs', '14134132423', NULL, NULL),
+(8, '892063751', 1, 29, '2023-10-02', 'Max-R_Headshot (1).jpg', 'Cvbcvbcvb Cbcvbcv Bcvbcvbcb', 'Bcbcvbcv', 'bvcbcv@cvbcvb', '24324243432', '2018-02-03', 'Male', '1', 'Single', 'Xcvxvxcv', 423423, 4234234, 'Xcvxc', 'Vxcvcxv', 'Cxvcvx', 'Vcxvxv', 'Xcvxv', 'Xvcxvcx', 'Vxcvcxv', 'Xvxcv', 'Xcvcxvxcv', '234324234', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -197,15 +212,6 @@ CREATE TABLE `employee_acct` (
   `userid` varchar(225) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `employee_acct`
---
-
-INSERT INTO `employee_acct` (`id`, `username`, `password`, `fullname`, `photo`, `created_on`, `type`, `userid`) VALUES
-(1, NULL, '81dc9bdb52d04dc20036dbd8313ed055', 'Sarah M. Duterte', 'Max-R_Headshot (1).jpg', '2023-09-17', 'employee', '659218403'),
-(2, NULL, '81dc9bdb52d04dc20036dbd8313ed055', 'Mercedes A. Gil', 'images.jpg', '2023-09-17', 'employee', '158369407'),
-(3, NULL, '81dc9bdb52d04dc20036dbd8313ed055', 'Rocío  G. Jimenez', 'download.png', '2023-09-17', 'employee', '057481236');
-
 -- --------------------------------------------------------
 
 --
@@ -219,7 +225,8 @@ CREATE TABLE `employee_leave` (
   `days_of_leave` varchar(45) DEFAULT NULL,
   `reason_for_leave` longtext DEFAULT NULL,
   `leave_status` varchar(45) DEFAULT NULL,
-  `date_filed` varchar(45) DEFAULT NULL
+  `date_filed` varchar(45) DEFAULT NULL,
+  `type_of_leave` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -234,7 +241,8 @@ CREATE TABLE `overtime` (
   `overtime_id` varchar(45) DEFAULT NULL,
   `hours` double DEFAULT NULL,
   `rate_hour` double DEFAULT NULL,
-  `date_overtime` varchar(45) DEFAULT NULL
+  `date_overtime` varchar(45) DEFAULT NULL,
+  `ot_status` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 -- --------------------------------------------------------
@@ -369,13 +377,13 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `attendance`
 --
 ALTER TABLE `attendance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `barcode`
 --
 ALTER TABLE `barcode`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `cashadvance`
@@ -393,13 +401,13 @@ ALTER TABLE `education`
 -- AUTO_INCREMENT for table `employees`
 --
 ALTER TABLE `employees`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `employee_acct`
 --
 ALTER TABLE `employee_acct`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `employee_leave`
@@ -417,7 +425,7 @@ ALTER TABLE `overtime`
 -- AUTO_INCREMENT for table `position`
 --
 ALTER TABLE `position`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `schedules`

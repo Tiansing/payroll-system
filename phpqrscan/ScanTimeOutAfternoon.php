@@ -75,11 +75,6 @@ if (isset($q)) {
         $employee_id = "";
       }
 
-
-
-
-
-
       if ($employee_id != 0) {
 
         $insert = "UPDATE `attendance` SET `time_out_afternoon` = '$time_in' WHERE `employee_id` = '$employee_id' AND `date` = '$date';";
