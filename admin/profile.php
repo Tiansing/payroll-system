@@ -53,6 +53,12 @@ if (isset($_POST['delete_emp'])) {
     }
   }
 }
+if (isset($_POST['load_cred'])) {
+
+  $lcredits = $_POST['leaveCredits'];
+  $query = "UPDATE employees SET leave_credits = $lcredits";
+  $lcredits_query = mysqli_query($connection, $query);
+}
 
 
 ?>
@@ -93,8 +99,46 @@ if (isset($_POST['delete_emp'])) {
                 <i class="fe fe-plus mr-2"></i> Add Employee
               </button>
             </div>
+            <div style="padding-left: 12px; padding-bottom: 25px;">
+              <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modal-leave-credit">
+                <i class="fe fe-refresh-ccw mr-2"></i> Load Leave Credits
+              </button>
+            </div>
+            <!-- Leave Creadits Confirm -->
 
-            <!-- end of delete modal -->
+            <div id="modal-leave-credit" class="modal fade animate" data-backdrop="true">
+              <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                  <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Load all Leave Credits</h5>
+                  </div>
+                  <div class="modal-body p-lg">
+                    <div class="col-md-12">
+                      <form action="" method="post" enctype="multipart/form-data">
+
+                        <div class="modal-body">
+
+                          <input type="hidden" name="leaveCredits" value="15">
+
+                          <h4>
+                            <p>Are you sure you want to load all Employees leave credits?</p>
+                          </h4>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                      <div style="padding-right: 12px;">
+                        <button type="button" class="btn dark-white p-x-md" data-dismiss="modal">No</button>
+                        <button type="submit" name="load_cred" class="btn danger p-x-md">Yes</button>
+                      </div>
+                    </div>
+                    </form>
+                  </div><!-- /.modal-content -->
+                </div>
+              </div>
+            </div>
+
+            <!-- end of Leave Creadits Confirm modal -->
             <?php include('modals/modal_delete.php') ?>
             <div class="col-12">
               <div class="card">
@@ -108,11 +152,12 @@ if (isset($_POST['delete_emp'])) {
                       <thead>
                         <tr>
                           <th class="w-1">ID</th>
-                          <th width="100">Name</th>
+                          <th>Name</th>
                           <th>Position</th>
-                          <th>Address</th>
+                          <!-- <th>Address</th> -->
                           <!-- <th>Civil Status</th> -->
                           <th>Schedule</th>
+                          <th width="100">Leave Credits</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -121,6 +166,8 @@ if (isset($_POST['delete_emp'])) {
                         $query = "SELECT *, employees.id AS empid FROM employees LEFT JOIN position ON position.id=employees.position_id LEFT JOIN schedules ON schedules.id=employees.schedule_id";
                         $result = mysqli_query($connection, $query);
                         while ($row = mysqli_fetch_assoc($result)) {
+
+
                         ?>
                           <div id="modal-deletes-employee<?php echo $row['empid'] ?>" class="modal fade animate" data-backdrop="true">
                             <div class="modal-dialog modal-md">
@@ -162,9 +209,10 @@ if (isset($_POST['delete_emp'])) {
                             <td>
                               <?php echo $row['description'] ?>
                             </td>
-                            <td>
-                              <?php echo $row['address'] ?>
-                            </td>
+                            <!-- <td>
+                              <?php //echo $row['address'] 
+                              ?>
+                            </td> -->
                             <!--  <td>
                               <?php echo $row['civil_status'] ?>
                             </td> -->
@@ -179,6 +227,9 @@ if (isset($_POST['delete_emp'])) {
                               }
 
                               ?>
+                            </td>
+                            <td>
+                              <?php echo $row['leave_credits'] ?>
                             </td>
                             <td>
                               <a href="view.php?id=<?php echo $row['employee_id'] ?>"><button class="btn btn-success btn-sm"><i class='bi bi-eye-fill'></i></button></a>

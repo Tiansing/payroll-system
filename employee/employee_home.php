@@ -57,6 +57,12 @@
             background-color: white;
             color: #007bff;
         }
+
+        .table-responsive {
+            overflow-y: scroll;
+            height: 40em;
+            /* Set the height of the table container */
+        }
     </style>
 
 </head>
@@ -85,6 +91,7 @@ while ($row = mysqli_fetch_assoc($employee_query)) {
     $employee_id = $row['employee_id'];
     $fullname = $row['fullname'];
     $photo = $row['photo'];
+    $leave_credits = $row['leave_credits'];
 }
 
 if (isset($_POST['submit'])) {
@@ -93,15 +100,18 @@ if (isset($_POST['submit'])) {
     } else if (!empty($_POST['date_of_leave_vacation'])) {
         $date_of_leave = $_POST['date_of_leave_vacation'];
     }
-    if ($_POST['type_of_leave'] == "vacation") {
-        $days_of_leave = $_POST['days_of_leave1'];
-    } else {
-        $days_of_leave = $_POST['days_of_leave'];
-    }
+
+    $days_of_leave = $_POST['days_of_leave'];
+
     $type_of_leave = $_POST['type_of_leave'];
 
     $reason = $_POST['reason'];
     $reason = stripslashes(mysqli_real_escape_string($connection, $reason));
+
+    if ($type_of_leave == "vacation") {
+        $query1 = "UPDATE employees SET leave_credits = leave_credits - 1 WHERE employee_id = $employee_id";
+        mysqli_query($connection, $query1);
+    }
     $query = "INSERT INTO employee_leave (employee_id, date_of_leave, days_of_leave, reason_for_leave, leave_status, date_filed, type_of_leave) VALUES ('$employee_id', '$date_of_leave', '$days_of_leave', '$reason', 'Pending', now(), '$type_of_leave');";
     mysqli_query($connection, $query);
 
@@ -118,25 +128,24 @@ if (isset($_POST['submit'])) {
                 <p class="mb-0">Name: <b><span id="employeeName"><?php echo $fullname; ?></span></b></p>
             </div>
         </div>
-        <!--       <div class="p-2">
+        <div class="p-2">
             <table class="table table-sm text-white table-bordered text-center">
-                Available Leave Credits:
+
                 <thead>
                     <tr>
-                        <th>Sick Leave</th>
-                        <th>Emergency Leave</th>
-                        <th>Vacation Leave</th>
+
+                        <th>Vacation Leave Credits: </th>
+                        <td><?php echo $leave_credits; ?> left</td>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>10 days</td>
-                        <td>5 days</td>
-                        <td>15 days</td>
+
+
                     </tr>
                 </tbody>
             </table>
-        </div> -->
+        </div>
 
         <a href="signout.php" class="logout-button ml-auto p-2">Logout</a>
     </div>
@@ -181,7 +190,8 @@ if (isset($_POST['submit'])) {
                             <div class="form-group ">
                                 <label for="dateOfLeave">Date of Leave</label>
                                 <div id="dt1">
-                                    <select name='date_of_leave_vacation' id="selectedDatesDropdown" class='form-control'></select>
+                                    <input type="input" id="vacationDateID" name="date_of_leave_vacation" class="form-control" placeholder="Select Date">
+                                    <!-- <select name='date_of_leave_vacation' id="selectedDatesDropdown" class='form-control'></select> -->
                                 </div>
                                 <div id="dt2">
                                     <input type="input" id="dateID" name="date_of_leave" class="form-control" placeholder="Select Date">
@@ -192,18 +202,21 @@ if (isset($_POST['submit'])) {
 
                             <div class="form-group">
                                 <label for="daysOfLeave">Days of Leave</label>
-
-                                <input type="number" class="form-control" name="days_of_leave1" id="daysOfLeave" placeholder="Enter number of days">
                                 <input type="number" name="days_of_leave" class="form-control" id="leaveDays1" placeholder="Enter number of days">
                             </div>
                             <div class="form-group">
                                 <label for="reasonForLeave">Reason for Leave</label>
                                 <textarea class="form-control" name="reason" rows="2" placeholder="Enter reason" required></textarea>
                             </div>
+                            <div class="alert alert-danger  alert-sm" role="alert" id="alertLeave">
+                                You don't have enough Vacation Leave Credits!
+                            </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="submit" name="submit" class="btn btn-primary">Submit</button>
+                                <button type="submit" name="submit" id="btnSubmitLeave" class="btn btn-primary">Submit</button>
+
                             </div>
+
                         </form>
                     </div>
 
@@ -213,10 +226,10 @@ if (isset($_POST['submit'])) {
 
         <!-- Responsive Table -->
         <div class="table-responsive mt-5">
-            <table class="table table-bordered text-center">
-                <thead>
+            <table class="table table-bordered text-center table-fixed table-striped ">
+                <thead style="background-color: #f8f9fa;">
                     <tr>
-                        <th width="80">ID</th>
+                        <th width="80">Type of Leave</th>
                         <th width="120">Status</th>
                         <th width="150">Date of Leave</th>
                         <th width="100">Days of Leave</th>
@@ -236,11 +249,12 @@ if (isset($_POST['submit'])) {
                         $longdate = date('F j, Y', $dateformat);
                         $dyleave  = $row['days_of_leave'];
                         $reason  = $row['reason_for_leave'];
+                        $leaveType  = $row['type_of_leave'];
 
                     ?>
                         <tr>
                             <td>
-                                <?php echo $id; ?>
+                                <?php echo $leaveType; ?>
                             </td>
                             <td>
 
@@ -304,6 +318,8 @@ if (isset($_POST['submit'])) {
     <script type="text/javascript">
         $(document).ready(function() {
 
+
+
             // Function to calculate end dates for vacation leave
             function calculateVacationEndDates() {
                 var currentDate = new Date();
@@ -335,9 +351,11 @@ if (isset($_POST['submit'])) {
             function updateSelectedDates() {
                 var selectedValue = $("#dateDropdown").val();
                 var selectedDatesDropdown = $("#selectedDatesDropdown");
-                var numOfDaysLeave = $("#daysOfLeave");
-                var numOfDaysLeaveNotVac = $("#leaveDays1");
+
                 var dolRequired = $("#dateID");
+                var dolRequiredVacation = $("#vacationDateID");
+                var btnSubmitLeave = $("#btnSubmitLeave");
+                var alertLeave = $("#alertLeave");
 
                 selectedDatesDropdown.empty();
 
@@ -372,15 +390,22 @@ if (isset($_POST['submit'])) {
                         selectedDatesDropdown.append(endDateOption);
 
                     });
-                    numOfDaysLeave.val("15");
-                    numOfDaysLeave.show();
-                    numOfDaysLeaveNotVac.hide();
+
+                    if (<?php echo $leave_credits ?> == 0) {
+                        btnSubmitLeave.prop('disabled', true);
+                        alertLeave.show();
+                    } else {
+                        alertLeave.hide();
+                        btnSubmitLeave.prop('disabled', false);
+                    }
+                    dolRequired.prop('required', false);
+                    dolRequiredVacation.prop('required', true);
                 } else {
-                    numOfDaysLeave.val("");
-                    numOfDaysLeave.hide();
-                    numOfDaysLeaveNotVac.show();
-                    numOfDaysLeaveNotVac.prop('required', true);
+                    btnSubmitLeave.prop('disabled', false);
+                    alertLeave.hide();
                     dolRequired.prop('required', true);
+
+                    dolRequiredVacation.prop('required', false);
                 }
 
             }
@@ -429,7 +454,7 @@ if (isset($_POST['submit'])) {
                 var isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
 
                 // Disable past dates and dates not in the array
-                var isDisabled = (date < new Date());
+                var isDisabled = (date > new Date());
 
 
 
@@ -440,7 +465,31 @@ if (isset($_POST['submit'])) {
                      isDisabled = isDisabled || date > maxDate;
                  } */
 
-                return [!isWeekend];
+                return [!isWeekend && isDisabled];
+            }
+        });
+
+        // Handle leave type change
+        $("#dateDropdown").on("change", function() {
+            $("#dateID").datepicker("refresh");
+        });
+        $("#vacationDateID").datepicker({
+            beforeShowDay: function(date) {
+                var dateString = $.datepicker.formatDate('dd-mm-yy', date);
+
+                // Disable Saturdays and Sundays by default
+                var dayOfWeek = date.getDay();
+                var isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+
+                // Calculate the next 15 days from the current date
+                var currentDate = new Date();
+                var next15Days = new Date(currentDate);
+                next15Days.setDate(currentDate.getDate() + 30);
+
+                // Disable past dates and dates in the next 15 days
+                var isDisabled = (date < currentDate || date <= next15Days);
+
+                return [!isWeekend && !isDisabled];
             }
         });
 
