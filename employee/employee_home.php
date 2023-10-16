@@ -456,7 +456,12 @@ if (isset($_POST['submit'])) {
                 // Disable past dates and dates not in the array
                 var isDisabled = (date > new Date());
 
+                var currentDate = new Date();
+                var isCurrentDate = date.toDateString() === currentDate.toDateString();
 
+                // You can also add additional conditions as needed
+
+                return [isDisabled && !isWeekend || isCurrentDate];
 
                 // Enable if it's a vacation leave and within the next 15 days
                 /*  if (isVacationLeave) {
@@ -465,7 +470,7 @@ if (isset($_POST['submit'])) {
                      isDisabled = isDisabled || date > maxDate;
                  } */
 
-                return [!isWeekend && isDisabled];
+                // return [!isWeekend && isDisabled];
             }
         });
 

@@ -229,12 +229,17 @@ if ($Attendance == '1') {
                               <!-- <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#reasonModal">
                                 View Reason
                               </button> -->
-                              <button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#approvemodal<?php echo $id; ?>">
-                                Approve
-                              </button>
-                              <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#declineLeave<?php echo $id; ?>">
-                                Decline
-                              </button>
+                              <?php if ($leave_stat == "Pending") { ?>
+                                <button type="button" class="btn btn-sm btn-success" id="btnApproved" data-toggle="modal" data-target="#approvemodal<?php echo $id; ?>">
+                                  Approve
+                                </button>
+                                <button type="button" class="btn btn-sm btn-danger" id="btnDeclined" data-toggle="modal" data-target="#declineLeave<?php echo $id; ?>">
+                                  Decline
+                                </button>
+                              <?php } ?>
+
+
+
                             </td>
                             <?php approveLeave(); ?>
                             <?php declineLeave(); ?>
@@ -332,9 +337,14 @@ if ($Attendance == '1') {
   <?php require_once('includes/bower.php') ?>
 </body>
 <script>
-  function clearStatus() {
-    window.location.href = "leave.php";
-  }
+  $(document).ready(function() {
+
+
+    function clearStatus() {
+      window.location.href = "leave.php";
+    }
+
+  });
 </script>
 
 </html>
