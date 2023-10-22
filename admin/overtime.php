@@ -35,7 +35,7 @@ if (isset($_GET['status'])) {
 if ($generate == '1') {
   $stat = '<div class="alert alert-success alert-dismissible">
       <button type="button" class="close" data-dismiss="alert"></button>
-      Overtime successfully deleted.
+      Overtime successfully declined.
       </div>';
 } else {
 }
@@ -150,9 +150,13 @@ if (isset($_POST['approveOT'])) {
                               <?php } ?>
                             </td>
                             <td>
-                              <button class="btn btn-success btn-sm " data-toggle="modal" data-target="#approve-<?php echo $row['overtime_id'] ?>">Approve</button>
-                              <button class="btn btn-danger btn-sm " data-toggle="modal" data-target="#delete-<?php echo $row['overtime_id'] ?>">Decline</button>
+                              <?php if (($rowot['ot_status'] == 0)) {
+
+                              ?>
+                                <button class="btn btn-success btn-sm " data-toggle="modal" data-target="#approve-<?php echo $row['overtime_id'] ?>">Approve</button>
+                                <button class="btn btn-danger btn-sm " data-toggle="modal" data-target="#delete-<?php echo $row['overtime_id'] ?>">Decline</button>
                             </td>
+                          <?php   } ?>
                           </tr>
 
                           <!-- .modal -->

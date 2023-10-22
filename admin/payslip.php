@@ -45,13 +45,109 @@ for ($i = 0; $i < 10; $i++) {
 $number = substr(str_shuffle($number), 0, 9);
 
 $myId = $row['id'];
+$taxDed = 0; // Initialize the PHP variable
 
+if (isset($_POST["isChecked"])) {
+  $isChecked = $_POST["isChecked"];
+
+  // Update a PHP session variable (you can also update a database variable here)
+  $_SESSION["taxDeduct"] = $isChecked;
+}
 ?>
 <!doctype html>
 <html lang="en" dir="ltr">
 
 <head>
   <title>Profiling and Payroll Management System</title>
+  <style>
+    .toggle {
+      --width: 120px;
+      --height: calc(var(--width) / 4);
+
+      position: relative;
+      display: inline-block;
+      width: var(--width);
+      height: var(--height);
+      box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+      border-radius: var(--height);
+      cursor: pointer;
+    }
+
+    .toggle input {
+      display: none;
+    }
+
+    .toggle .slider {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: var(--height);
+      background-color: #ccc;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .toggle .slider::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: calc(var(--height));
+      height: calc(var(--height));
+      border-radius: calc(var(--height) / 2);
+      background-color: #fff;
+      box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+      transition: all 0.4s ease-in-out;
+    }
+
+    .toggle input:checked+.slider {
+      background-color: #2196F3;
+    }
+
+    .toggle input:checked+.slider::before {
+      transform: translateX(calc(var(--width) - var(--height)));
+    }
+
+    .toggle .labels {
+      position: absolute;
+      top: 8px;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      font-size: 12px;
+      font-family: sans-serif;
+      transition: all 0.4s ease-in-out;
+    }
+
+    .toggle .labels::after {
+      content: attr(data-off);
+      position: absolute;
+      right: 5px;
+      color: #4d4d4d;
+      opacity: 1;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+      transition: all 0.4s ease-in-out;
+    }
+
+    .toggle .labels::before {
+      content: attr(data-on);
+      position: absolute;
+      left: 5px;
+      color: #ffffff;
+      opacity: 0;
+      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.4);
+      transition: all 0.4s ease-in-out;
+    }
+
+    .toggle input:checked~.labels::after {
+      opacity: 0;
+    }
+
+    .toggle input:checked~.labels::before {
+      opacity: 1;
+    }
+  </style>
 </head>
 
 <body class="">
@@ -73,16 +169,20 @@ $myId = $row['id'];
         <div class="container">
           <div class="page-header">
             <h1 class="page-title">
-              <a href="home.php" class="text-primary">Dashboard</a> <i style="font-size: 20px;" class="fe fe-chevron-right"></i> Payslip
+              <a href="home.php" class="text-primary">Dashboard</a> <i style="font-size: 20px;" class="fe fe-chevron-right"></i> Payslip <?php echo $_SESSION["taxDeduct"]; ?>
             </h1>
           </div>
-          <!-- <div style="padding-left: 0; padding-bottom: 25px;" class="dropdown">
+
+          <div style="padding-left: 0; padding-bottom: 25px;" class="dropdown">
             <button type="button" class="btn btn-secondary  " onclick="printPage()">
               <i class="fe fe-printer mr-2"></i> Print Payslip
             </button>
+
             <div class="dropdown-menu">
             </div>
-          </div> -->
+
+          </div>
+
           <div class="row row-cards">
 
             <?php require_once('modals/modal_filter_date.php') ?>
@@ -97,7 +197,11 @@ $myId = $row['id'];
             </script>
             <div class="col-12" id="printDataHolder">
 
-
+              <label class="toggle">
+                <input type="checkbox" id="toggleDeduct">
+                <span class="slider"></span>
+                <span class="labels" data-on="Deduction ON" data-off="Deduction OFF"></span>
+              </label>
               <div class="card">
                 <?php
                 // Calculating the payroll from SAT - FRI (7 Days)
@@ -193,10 +297,18 @@ $myId = $row['id'];
                         <td colspan="4" class="font-w600 text-right">Gross Income</td>
                         <td class="text-right"><?php echo  number_format($gross) ?> PHP</td>
                       </tr>
-                      <tr>
-                        <td colspan="4" class="font-w600 text-right">Cash Advance</td>
-                        <td class="text-right">-<?php echo  number_format($cashadvance) ?> PHP</td>
+                      <tr id="taxDeductions">
+                        <td colspan="4" class="font-w600 text-right" style="line-height: 40px;">SSS<br>
+                          PHIL HEALTH<br>
+                          PAG IBIG</td>
+                        <td class="text-right" style="line-height: 40px;">-337.50 PHP <br>-200.00 PHP <br> -566.82 PHP</td>
                       </tr>
+                      <?php if ($cashadvance != 0) { ?>
+                        <tr>
+                          <td colspan="4" class="font-w600 text-right">Cash Advance</td>
+                          <td class="text-right">-<?php echo  number_format($cashadvance) ?> PHP</td>
+                        </tr>
+                      <?php  } ?>
                       <tr>
                         <td colspan="4" class="font-w600 text-right">Overtime</td>
                         <td class="text-right"><?php echo  number_format($ot) ?> PHP</td>
@@ -207,7 +319,14 @@ $myId = $row['id'];
                       </tr>
                       <tr color="dark">
                         <td colspan="4" class="font-weight-bold text-uppercase text-right">NET PAY (Net Income + Overtime)</td>
-                        <td class="text-right"><strong><?php echo  number_format($net_pay + $ot) ?> PHP </strong></td>
+                        <td class="text-right"><strong><?php
+
+                                                        if ($_SESSION["taxDeduct"] == "true") {
+                                                          echo  number_format($net_pay + $ot - 400);
+                                                        } else {
+                                                          echo  number_format($net_pay + $ot);
+                                                        }
+                                                        ?> PHP </strong></td>
                       </tr>
                     </table>
                   </div>
@@ -226,5 +345,92 @@ $myId = $row['id'];
   </div>
   <?php require_once('includes/datatables.php') ?>
 </body>
+<script>
+  $(document).ready(function() {
+
+    // Get the checkbox element
+    var checkbox = document.getElementById("toggleDeduct");
+
+    // Get the table row element
+    var deductionRow = document.getElementById("taxDeductions");
+
+    // Try to load the checkbox state from local storage
+    var isChecked = localStorage.getItem("isChecked");
+
+    // If a previous state was stored, update the checkbox state
+    if (isChecked === "true") {
+      checkbox.checked = true;
+      deductionRow.style.display = "table-row";
+    } else {
+      deductionRow.style.display = "none";
+    }
+    // Add a change event listener to the checkbox
+    checkbox.addEventListener("change", function() {
+      var isChecked = checkbox.checked;
+      // Check if the checkbox is checked
+      if (checkbox.checked) {
+        // Show the row
+
+
+        // Update the state in local storage
+        localStorage.setItem("isChecked", isChecked);
+        // Send an AJAX request to the server to update the PHP variable
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "payslip.php", true);
+
+        // Set the request header
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        // Define the data to send to the server
+        var data = "isChecked=" + isChecked;
+
+        // Define the callback function when the request is complete
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            // Request is complete
+            // Reload the page to reflect the updated PHP variable
+            location.reload();
+          }
+        };
+
+        // Send the request with the data
+        xhr.send(data);
+
+
+      } else {
+
+
+        // Hide the row
+
+
+        // Update the state in local storage
+        localStorage.setItem("isChecked", isChecked);
+        // Send an AJAX request to the server to update the PHP variable
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "payslip.php", true);
+
+        // Set the request header
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+        // Define the data to send to the server
+        var data = "isChecked=" + isChecked;
+
+        // Define the callback function when the request is complete
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            // Request is complete
+            // Reload the page to reflect the updated PHP variable
+            location.reload();
+          }
+        };
+
+        // Send the request with the data
+        xhr.send(data);
+      }
+    });
+
+
+  });
+</script>
 
 </html>
