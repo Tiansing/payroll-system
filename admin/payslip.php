@@ -147,6 +147,12 @@ if (isset($_POST["isChecked"])) {
     .toggle input:checked~.labels::before {
       opacity: 1;
     }
+
+    @media print {
+      #printLabel {
+        display: none;
+      }
+    }
   </style>
 </head>
 
@@ -169,7 +175,7 @@ if (isset($_POST["isChecked"])) {
         <div class="container">
           <div class="page-header">
             <h1 class="page-title">
-              <a href="home.php" class="text-primary">Dashboard</a> <i style="font-size: 20px;" class="fe fe-chevron-right"></i> Payslip <?php echo $_SESSION["taxDeduct"]; ?>
+              <a href="home.php" class="text-primary">Dashboard</a> <i style="font-size: 20px;" class="fe fe-chevron-right"></i> Payslip
             </h1>
           </div>
 
@@ -188,16 +194,107 @@ if (isset($_POST["isChecked"])) {
             <?php require_once('modals/modal_filter_date.php') ?>
             <script type="text/javascript">
               function printPage() {
+                var printLabel = document.getElementById("printLabel");
+                printLabel.classList.add("hide-for-print");
                 var divElements = document.getElementById('printDataHolder').innerHTML;
                 var oldPage = document.body.innerHTML;
                 document.body.innerHTML = "<link rel='stylesheet' href='css/common.css' type='text/css' /><body class='bodytext'><div class='padding'><b style='font-size: 16px;'><p class=''>Payslip generated on <?php echo date("m/d/Y") ?> <?php echo date("G:i A") ?> by <?php echo $firstname ?> <?php echo $lastname ?></p></b></div>" + divElements + "</body>";
                 window.print();
+                // Remove the CSS class after printing
+                printLabel.classList.remove("hide-for-print");
                 document.body.innerHTML = oldPage;
+
+                // Get the checkbox element
+                var checkbox = document.getElementById("toggleDeduct");
+
+                // Get the table row element
+                var deductionRow = document.getElementById("taxDeductions");
+
+                // Try to load the checkbox state from local storage
+                var isChecked = localStorage.getItem("isChecked");
+
+                // If a previous state was stored, update the checkbox state
+                if (isChecked === "true") {
+                  checkbox.checked = true;
+                  deductionRow.style.display = "table-row";
+                } else {
+                  deductionRow.style.display = "none";
+                }
+                // Add a change event listener to the checkbox
+                checkbox.addEventListener("change", function() {
+                  var isChecked = checkbox.checked;
+                  // Check if the checkbox is checked
+
+
+
+                  if (checkbox.checked) {
+                    // Show the row
+
+
+                    // Update the state in local storage
+                    localStorage.setItem("isChecked", isChecked);
+                    // Send an AJAX request to the server to update the PHP variable
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("POST", "payslip.php", true);
+
+                    // Set the request header
+                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+                    // Define the data to send to the server
+                    var data = "isChecked=" + isChecked;
+
+                    // Define the callback function when the request is complete
+                    xhr.onreadystatechange = function() {
+                      if (xhr.readyState === 4 && xhr.status === 200) {
+                        // Request is complete
+                        // Reload the page to reflect the updated PHP variable
+                        location.reload();
+                      }
+                    };
+
+                    // Send the request with the data
+                    xhr.send(data);
+
+
+                  } else {
+
+
+                    // Hide the row
+
+
+                    // Update the state in local storage
+                    localStorage.setItem("isChecked", isChecked);
+                    // Send an AJAX request to the server to update the PHP variable
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("POST", "payslip.php", true);
+
+                    // Set the request header
+                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+                    // Define the data to send to the server
+                    var data = "isChecked=" + isChecked;
+
+                    // Define the callback function when the request is complete
+                    xhr.onreadystatechange = function() {
+                      if (xhr.readyState === 4 && xhr.status === 200) {
+                        // Request is complete
+                        // Reload the page to reflect the updated PHP variable
+                        location.reload();
+                      }
+                    };
+
+                    // Send the request with the data
+                    xhr.send(data);
+                  }
+
+
+                });
+
               }
             </script>
             <div class="col-12" id="printDataHolder">
 
-              <label class="toggle">
+              <label class="toggle" id="printLabel">
                 <input type="checkbox" id="toggleDeduct">
                 <span class="slider"></span>
                 <span class="labels" data-on="Deduction ON" data-off="Deduction OFF"></span>
@@ -257,7 +354,16 @@ if (isset($_POST["isChecked"])) {
                   $cashadvance = $carow['cashamount'];
 
                   $gross = ($row['rate'] / 8) * $total_hr;
-                  $net_pay = $gross - $cashadvance;
+
+
+
+                  if ($_SESSION["taxDeduct"] == "true") {
+                    $totalTaxDeduct = 566.82 + 200.00 + 337.50;
+                    $net_pay = $gross - $cashadvance;
+                    $net_pay = $net_pay - $totalTaxDeduct;
+                  } else {
+                    $net_pay = $gross - $cashadvance;
+                  }
 
 
                 ?>
@@ -314,19 +420,19 @@ if (isset($_POST["isChecked"])) {
                         <td class="text-right"><?php echo  number_format($ot) ?> PHP</td>
                       </tr>
                       <tr>
-                        <td colspan="4" class="font-w600 text-right">Net Income (Gross Income - Cash Advance)</td>
+                        <td colspan="4" class="font-w600 text-right">Net Income (Gross Income
+                          <?php if ($cashadvance != 0) { ?>
+                            - Cash Advance
+                          <?php  }
+                          if ($_SESSION["taxDeduct"] == "true") { ?>
+                            - Health Insurance
+                          <?php  } ?>
+                          )</td>
                         <td class="text-right"><b><?php echo  number_format($net_pay) ?> PHP</b> </td>
                       </tr>
                       <tr color="dark">
                         <td colspan="4" class="font-weight-bold text-uppercase text-right">NET PAY (Net Income + Overtime)</td>
-                        <td class="text-right"><strong><?php
-
-                                                        if ($_SESSION["taxDeduct"] == "true") {
-                                                          echo  number_format($net_pay + $ot - 400);
-                                                        } else {
-                                                          echo  number_format($net_pay + $ot);
-                                                        }
-                                                        ?> PHP </strong></td>
+                        <td class="text-right"><strong><?php echo  number_format($net_pay + $ot); ?> PHP </strong></td>
                       </tr>
                     </table>
                   </div>
@@ -368,6 +474,9 @@ if (isset($_POST["isChecked"])) {
     checkbox.addEventListener("change", function() {
       var isChecked = checkbox.checked;
       // Check if the checkbox is checked
+
+
+
       if (checkbox.checked) {
         // Show the row
 
@@ -427,6 +536,8 @@ if (isset($_POST["isChecked"])) {
         // Send the request with the data
         xhr.send(data);
       }
+
+
     });
 
 

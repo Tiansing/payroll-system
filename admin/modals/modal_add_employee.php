@@ -138,7 +138,7 @@ if (isset($_POST['add_new'])) {
               <div class="col-md-4">
                 <div class="form-group">
                   <label class="form-label">Desired Schedule</label>
-                  <select required="" name="desired_schedule" class="form-control custom-select">
+                  <select required name="desired_schedule" class="form-control custom-select">
                     <option class="text-muted">Select Schedule</option>
                     <option value="27">Morning 6:00am-3:00pm</option>
                     <option value="28">Midshift 2:00pm-11:00pm</option>

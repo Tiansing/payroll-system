@@ -111,12 +111,12 @@ if ($Attendance == '1') {
 
 
               </div>
-              <!-- <div style="padding-left: 12px;" class="dropdown  ">
-                <button type="button" style="background-color: " class="btn btn-secondary" onclick="printPage()">
+              <div style="padding-left: 12px;" class="dropdown  ">
+                <button type="button" class="btn btn-secondary" onclick="printPage()">
                   <i style="padding-top: 10px;" class="fe fe-printer mr-2"></i> Print Attendance</button>
 
 
-              </div> -->
+              </div>
               <div style="padding-left: 12px;" class="dropdown  ">
                 <a target="_blank" href="../index.php"><button type="button" class="btn btn-secondary">
                     <i style="padding-top: 10px;" class="fe fe-grid mr-2"></i> Use QR code</button></a>
@@ -132,7 +132,7 @@ if ($Attendance == '1') {
             </div>
 
 
-            <div class="col-12">
+            <div class="col-12" id="printDataHolder">
               <div class="card">
                 <div class="card-header py-3">
                   <h3 class="card-title">Attendance Table for <b><?php echo date('F d, Y', strtotime($today)) ?></b></h3>

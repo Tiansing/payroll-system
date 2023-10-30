@@ -115,11 +115,11 @@ $emp = mysqli_fetch_assoc($result);
                 </button>
               </div>
             <?php } ?>
-            <!-- <div style="padding-left: 12px; float: right; padding-bottom: 25px;">
+            <div style="padding-left: 12px; float: right; padding-bottom: 25px;">
               <button type="button" class="btn btn-secondary" onclick="printPage()">
                 <i class="fe fe-printer mr-2"></i> Print Profile
               </button>
-            </div> -->
+            </div>
             <div style="padding-left: 12px; float: right; padding-bottom: 25px;">
               <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modal-view-card">
                 <i class="fe fe-user mr-2"></i> View ID
