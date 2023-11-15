@@ -32,7 +32,6 @@ if ($type == "Administrator") {
     <a href="scheduling.php" class="nav-link"><i class="fe fe-flag"></i> Employee Schedule</a>
   </li>
   
-  
    <a href="schedule.php" class="dropdown-item ">Schedule</a>
    
      <li class="nav-item">

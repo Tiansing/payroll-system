@@ -286,7 +286,7 @@ if ($type == "Team Leader") {
 
 
                           $gross = ($row['rate'] / 8) * $total_hr;
-                          $net_pay = $gross - $cashadvance - $loan - $totalMinsHrsLate;
+                          $net_pay = $gross - $cashadvance - $loan;
 
                         ?>
                           <tr>

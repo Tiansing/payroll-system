@@ -355,7 +355,24 @@ if (isset($_POST["isChecked"])) {
                   $libtotal = $daysOfLeave * 8;
                   $libtotal1 = $row['rate'] * $daysOfLeave;
 
-                  $total_hr = round($row['morning'] + $row['afternoon'] + $row['graveyard'])  + $libtotal; // total hour
+                  //LATE ATTENDANCE
+                  $lateAtt = "SELECT *, SUM(late_duration) AS attLate FROM attendance WHERE employee_id='$employee_id' AND date BETWEEN '$from' AND '$to'";
+
+                  $lateAttquery = mysqli_query($connection, $lateAtt);
+                  $attrow = mysqli_fetch_assoc($lateAttquery);
+
+                  $lates = $attrow['attLate'];
+                  $decimalValue = $lates; // Replace with your desired decimal value
+                  $hours = floor($decimalValue); // Extract the whole hours
+                  $minutes = ($decimalValue - $hours) * 60; // Calculate the remaining minutes
+                  $totHrsMins = $hours + $minutes;
+                  $hoursLate = ($row['rate'] / 8) * $hours;
+                  $minutesLate = ($row['rate'] / 8) / 60 * $minutes;
+
+                  $totalMinsHrsLate =  $hoursLate + $minutesLate;
+
+
+                  $total_hr = round($row['morning'] + $row['afternoon'] + $row['graveyard'])  + $libtotal + $totHrsMins; // total hour
 
                   $casql = "SELECT *, SUM(amount) AS cashamount FROM cashadvance WHERE employee_id='$employee_id' AND date_advance BETWEEN '$from' AND '$to'";
 
@@ -372,21 +389,7 @@ if (isset($_POST["isChecked"])) {
 
                   $loan = $larow['lashamount'];
 
-                  //LATE ATTENDANCE
-                  $lateAtt = "SELECT *, SUM(late_duration) AS attLate FROM attendance WHERE employee_id='$employee_id' AND date BETWEEN '$from' AND '$to'";
 
-                  $lateAttquery = mysqli_query($connection, $lateAtt);
-                  $attrow = mysqli_fetch_assoc($lateAttquery);
-
-                  $lates = $attrow['attLate'];
-                  $decimalValue = $lates; // Replace with your desired decimal value
-                  $hours = floor($decimalValue); // Extract the whole hours
-                  $minutes = ($decimalValue - $hours) * 60; // Calculate the remaining minutes
-
-                  $hoursLate = ($row['rate'] / 8) * $hours;
-                  $minutesLate = ($row['rate'] / 8) / 60 * $minutes;
-
-                  $totalMinsHrsLate =  $hoursLate + $minutesLate;
 
 
                   $gross = (($row['rate'] / 8) * $total_hr);
@@ -473,7 +476,7 @@ if (isset($_POST["isChecked"])) {
 
                         <tr>
                           <td colspan="4" class="font-w600 text-right">Total Late</td>
-                          <td class="text-right">-<?php echo  number_format($totalMinsHrsLate) ?> PHP</td>
+                          <td class="text-right">-<?php echo  " (" . $totHrsMins . " hrs) " . number_format($totalMinsHrsLate) ?> PHP</td>
                         </tr>
 
                       <?php  }
