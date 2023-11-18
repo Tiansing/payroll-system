@@ -2,16 +2,25 @@
 $model = new Dashboard();
 $connection = $model->TemporaryConnection();
 date_default_timezone_set('Asia/Manila');
+
 if (isset($_POST['apply'])) {
-  $fromDate = $_POST['filterDate'];
+
+  $fromDate = $_POST['filterDateFrom'];
+  $toDate = $_POST['filterDateTo'];
+
   if (isset($_POST['employeeID'])) {
+
     $employeeID = $_POST['employeeID'];
   }
-  if (!empty($fromDate) && !empty($employeeID)) {
-    echo "<script>window.location.href='attendance.php?filter=$fromDate&emid=$employeeID'</script>";
-  } else if (!empty($fromDate)) {
-    echo "<script>window.location.href='attendance.php?filter=$fromDate'</script>";
+
+  if (!empty($fromDate) && !empty($toDate) && !empty($employeeID)) {
+
+    echo "<script>window.location.href='attendance.php?attf=$fromDate&attt=$toDate&emid=$employeeID'</script>";
+  } else if (!empty($fromDate) && !empty($toDate)) {
+
+    echo "<script>window.location.href='attendance.php?attf=$fromDate&attt=$toDate'</script>";
   } else if (!empty($employeeID)) {
+
     echo "<script>window.location.href='attendance.php?emid=$employeeID'</script>";
   }
 }
@@ -51,7 +60,8 @@ if (isset($_POST['apply'])) {
                   <option value="12">December</option>
                 </select> -->
 
-                <input type="text" id="dateIDs" name="filterDate" placeholder="Select Date">
+                <input type="text" id="dateIDFrom" class="date1" name="filterDateFrom" placeholder="Select Date From" required>
+                <input type="text" id="dateIDTo" class="date2" name="filterDateTo" placeholder="Select Date To" required>
 
               </div>
               <div class="form-group" style="padding-right: 15px;">
@@ -139,7 +149,31 @@ if (isset($_POST['apply'])) {
   </div>
 </div>
 <script>
-  $("#dateIDs").datepicker({
+  $("#dateIDFrom").datepicker({
+    dateFormat: 'yy-mm-dd', // Set the date format to YYYY-MM-DD
+
+    beforeShowDay: function(date) {
+      // var dateString = $.datepicker.formatDate('dd-mm-yy', date);
+      // var isVacationLeave = $("#leaveType").val() === "vacation";
+
+      // Disable Saturdays and Sundays by default
+      var dayOfWeek = date.getDay() + 1;
+
+      // You can also add additional conditions as needed
+
+      return [dayOfWeek];
+
+      // Enable if it's a vacation leave and within the next 15 days
+      /*  if (isVacationLeave) {
+           var maxDate = new Date();
+           maxDate.setDate(maxDate.getDate() + 15);
+           isDisabled = isDisabled || date > maxDate;
+       } */
+
+      // return [!isWeekend && isDisabled];
+    }
+  });
+  $("#dateIDTo").datepicker({
     dateFormat: 'yy-mm-dd', // Set the date format to YYYY-MM-DD
 
     beforeShowDay: function(date) {

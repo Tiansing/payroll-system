@@ -9,6 +9,16 @@ if (isset($_GET['filter'])) {
   $today = $_GET['filter'];
 }
 
+$fromDate = '';
+if (isset($_GET['attf'])) {
+  $fromDate = $_GET['attf'];
+}
+
+$toDate = '';
+if (isset($_GET['attt'])) {
+  $toDate = $_GET['attt'];
+}
+
 $employeeID = '';
 if (isset($_GET['emid'])) {
   $employeeID = $_GET['emid'];
@@ -20,10 +30,12 @@ $queryResYest = mysqli_query($connection, $queryYesterday);
 $roy = mysqli_fetch_assoc($queryResYest);
 
 $queryToday = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id WHERE ";
-if (!empty($today) && !empty($employeeID)) {
+if (!empty($fromDate) && !empty($toDate) && !empty($employeeID)) {
 
 
-  $queryToday .= "attendance.date='$today' AND attendance.employee_id ='$employeeID' ";
+  $queryToday .= "attendance.date BETWEEN '$fromDate' AND '$toDate' AND attendance.employee_id ='$employeeID' ";
+} else if (!empty($fromDate) && !empty($toDate)) {
+  $queryToday .= "attendance.date BETWEEN '$fromDate' AND '$toDate' ";
 } else if (!empty($employeeID)) {
   $queryToday .= "attendance.employee_id ='$employeeID' ";
 } else if (!empty($today)) {
@@ -37,8 +49,10 @@ $rot = mysqli_fetch_assoc($queryResTod);
 
 if (isset($roy['time_in_graveyard']) || isset($rot['time_in_graveyard'])) {
   $queryPos = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id WHERE ";
-  if (!empty($today) && !empty($employeeID)) {
-    $queryPos .= "attendance.date='$today' AND attendance.employee_id ='$employeeID' ";
+  if (!empty($fromDate) && !empty($toDate) && !empty($employeeID)) {
+    $queryPos .= "attendance.date BETWEEN '$fromDate' AND '$toDate' AND attendance.employee_id ='$employeeID' ";
+  } else if (!empty($fromDate) && !empty($toDate)) {
+    $queryPos .= "attendance.date BETWEEN '$fromDate' AND '$toDate' ";
   } else if (!empty($employeeID)) {
     $queryPos .= "attendance.employee_id ='$employeeID' ";
   } else if (!empty($today)) {
@@ -54,8 +68,10 @@ if (isset($roy['time_in_graveyard']) || isset($rot['time_in_graveyard'])) {
   if ($dtYesterday == $dtToday1 || $dtToday == $dtToday1) {
 
     $queryPosition = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id WHERE ";
-    if (!empty($today) && !empty($employeeID)) {
-      $queryPosition .= "attendance.date='$today' AND attendance.employee_id ='$employeeID' ";
+    if (!empty($fromDate) && !empty($toDate) && !empty($employeeID)) {
+      $queryPosition .= "attendance.date BETWEEN '$fromDate' AND '$toDate' AND attendance.employee_id ='$employeeID' ";
+    } else if (!empty($fromDate) && !empty($toDate)) {
+      $queryPosition .= "attendance.date BETWEEN '$fromDate' AND '$toDate' ";
     } else if (!empty($employeeID)) {
       $queryPosition .= "attendance.employee_id ='$employeeID' ";
     } else if (!empty($today)) {
@@ -66,8 +82,10 @@ if (isset($roy['time_in_graveyard']) || isset($rot['time_in_graveyard'])) {
   } else {
 
     $queryPosition = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id WHERE ";
-    if (!empty($today) && !empty($employeeID)) {
-      $queryPosition .= "attendance.date='$today' AND attendance.employee_id ='$employeeID' ";
+    if (!empty($fromDate) && !empty($toDate) && !empty($employeeID)) {
+      $queryPosition .= "attendance.date BETWEEN '$fromDate' AND '$toDate' AND attendance.employee_id ='$employeeID' ";
+    } else if (!empty($fromDate) && !empty($toDate)) {
+      $queryPosition .= "attendance.date BETWEEN '$fromDate' AND '$toDate' ";
     } else if (!empty($employeeID)) {
       $queryPosition .= "attendance.employee_id ='$employeeID' ";
     } else if (!empty($today)) {
@@ -80,8 +98,10 @@ if (isset($roy['time_in_graveyard']) || isset($rot['time_in_graveyard'])) {
 
   $queryPosition = "SELECT *, employees.employee_id AS empid, attendance.id AS attid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id WHERE ";
 
-  if (!empty($today) && !empty($employeeID)) {
-    $queryPosition .= "attendance.date='$today' AND attendance.employee_id ='$employeeID' ";
+  if (!empty($fromDate) && !empty($toDate) && !empty($employeeID)) {
+    $queryPosition .= "attendance.date BETWEEN '$fromDate' AND '$toDate' AND attendance.employee_id ='$employeeID' ";
+  } else if (!empty($fromDate) && !empty($toDate)) {
+    $queryPosition .= "attendance.date BETWEEN '$fromDate' AND '$toDate' ";
   } else if (!empty($employeeID)) {
     $queryPosition .= "attendance.employee_id ='$employeeID' ";
   } else if (!empty($today)) {

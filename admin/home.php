@@ -222,9 +222,10 @@ if ($type == "Team Leader") {
                         </tr>
                       </thead>
                       <tbody>
+
                         <?php
                         // Calculating the payroll from SAT - FRI (7 Days)
-                        $sql = "SELECT *, SUM(num_hr_morning) AS morning, SUM(num_hr_afternoon) AS afternoon, attendance.employee_id AS empid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id LEFT JOIN position ON position.id=employees.position_id WHERE date BETWEEN '$from' AND '$to' GROUP BY attendance.employee_id ORDER BY employees.fullname ASC";
+                        $sql = "SELECT *, SUM(num_hr_morning) AS morning, SUM(num_hr_afternoon) AS afternoon, SUM(num_hr_graveyard) AS graveyard, attendance.employee_id AS empid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id LEFT JOIN position ON position.id=employees.position_id WHERE date BETWEEN '$from' AND '$to' GROUP BY attendance.employee_id ORDER BY employees.fullname ASC";
 
                         $sqlPayroll = mysqli_query($connection, $sql);
                         $total = 0;
@@ -235,7 +236,7 @@ if ($type == "Team Leader") {
 
                           $numbers++;
                           $employee_id = $row['empid'];
-                          $total_hr = $row['morning'] + $row['afternoon']; // total hour
+                          $total_hr = $row['morning'] + $row['afternoon'] + $row['graveyard']; // total hour
 
                           $casql = "SELECT *, SUM(amount) AS cashamount FROM cashadvance WHERE employee_id='$employee_id' AND date_advance BETWEEN '$from' AND '$to'";
 

@@ -192,6 +192,7 @@ if (isset($_POST["isChecked"])) {
           <div class="row row-cards">
 
             <?php require_once('modals/modal_filter_date.php') ?>
+
             <script type="text/javascript">
               function printPage() {
                 var printLabel = document.getElementById("printLabel");
@@ -311,7 +312,7 @@ if (isset($_POST["isChecked"])) {
                   }
                 }
 
-                $sql = "SELECT *, SUM(num_hr_morning) AS morning, SUM(num_hr_afternoon) AS afternoon, attendance.employee_id AS empid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id LEFT JOIN position ON position.id=employees.position_id WHERE attendance.employee_id='$myId' AND date BETWEEN '$from' AND '$to' GROUP BY attendance.employee_id ORDER BY employees.fullname ASC";
+                $sql = "SELECT *, SUM(num_hr_morning) AS morning, SUM(num_hr_afternoon) AS afternoon, SUM(num_hr_graveyard) AS graveyard, attendance.employee_id AS empid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id LEFT JOIN position ON position.id=employees.position_id WHERE attendance.employee_id='$myId' AND date BETWEEN '$from' AND '$to' GROUP BY attendance.employee_id ORDER BY employees.fullname ASC";
 
                 $overtime = "SELECT *, SUM(hours) AS hour, SUM(rate_hour) AS rate_h, COUNT(employee_id) AS tot  FROM overtime WHERE overtime.employee_id='$myId' AND ot_status = 1 AND date_overtime BETWEEN '$from' AND '$to';";
                 $otresult = mysqli_query($connection, $overtime);
@@ -354,7 +355,7 @@ if (isset($_POST["isChecked"])) {
                   $libtotal = $daysOfLeave * 8;
                   $libtotal1 = $row['rate'] * $daysOfLeave;
 
-                  $total_hr = round($row['morning'] + $row['afternoon']) + $libtotal; // total hour
+                  $total_hr = round($row['morning'] + $row['afternoon'] + $row['graveyard'])  + $libtotal; // total hour
 
                   $casql = "SELECT *, SUM(amount) AS cashamount FROM cashadvance WHERE employee_id='$employee_id' AND date_advance BETWEEN '$from' AND '$to'";
 
@@ -461,13 +462,14 @@ if (isset($_POST["isChecked"])) {
                       </tr>
 
                       <?php if ($ot != 0) { ?>
+
                         <tr>
                           <td colspan="4" class="font-w600 text-right">Overtime</td>
                           <td class="text-right"><?php echo  number_format($ot) ?> PHP</td>
                         </tr>
 
                       <?php }
-                      if ($cashadvance != 0) {  ?>
+                      if ($totalMinsHrsLate != 0) {  ?>
 
                         <tr>
                           <td colspan="4" class="font-w600 text-right">Total Late</td>

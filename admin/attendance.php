@@ -28,6 +28,8 @@ $create = $admin['created_on'];
 
 $Attendance = '';
 $today = '';
+$attFrom = '';
+$attTo = '';
 $stat = '';
 if (isset($_GET['status'])) {
   $Attendance = $_GET['status'];
@@ -35,6 +37,12 @@ if (isset($_GET['status'])) {
 
 if (isset($_GET['filter'])) {
   $today = $_GET['filter'];
+}
+if (isset($_GET['attf'])) {
+  $attFrom = $_GET['attf'];
+}
+if (isset($_GET['attt'])) {
+  $attTo = $_GET['attt'];
 }
 
 $employeeID = '';
@@ -171,7 +179,10 @@ if ($Attendance == '1') {
                   <h3 class="card-title">Attendance Table for <b>
                       <?php
 
-                      if (!empty($today)) {
+                      if (!empty($attFrom) && !empty($attTo)) {
+
+                        echo date('F d, Y', strtotime($attFrom)) . " - " . date('F d, Y', strtotime($attTo));
+                      } else  if (!empty($today)) {
 
                         echo date('F d, Y', strtotime($today));
                       } else  if (!empty($employeeID)) {
@@ -217,7 +228,9 @@ if ($Attendance == '1') {
 
 
                         while ($row = mysqli_fetch_assoc($queryResult)) {
+
                           $sched_id = $row['schedule_id'];
+
                           $att_id = $row['attendance_id'];
 
                           $lates = $row['late_duration'];
