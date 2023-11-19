@@ -52,7 +52,13 @@ if ($Attendance == '1') {
 
 <head>
   <title>Profiling and Payroll Management System</title>
-
+  <style>
+    @media print {
+      #hideComponent {
+        display: none;
+      }
+    }
+  </style>
 </head>
 
 <body>
@@ -76,10 +82,15 @@ if ($Attendance == '1') {
       </div>
       <script type="text/javascript">
         function printPage() {
+          var printLabel = document.getElementById("hideComponent");
+          printLabel.classList.add("hide-for-print");
           var divElements = document.getElementById('printDataHolder').innerHTML;
           var oldPage = document.body.innerHTML;
           document.body.innerHTML = "<link rel='stylesheet' href='css/common.css' type='text/css' /><body class='bodytext'><div class='padding'><b style='font-size: 16px;'><p class=''>Attendance generated on <?php echo date("m/d/Y") ?> <?php echo date("G:i A") ?> by <?php echo $firstname ?> <?php echo $lastname ?></p></b></div>" + divElements + "</body>";
           window.print();
+
+          // Remove the CSS class after printing
+          printLabel.classList.remove("hide-for-print");
           document.body.innerHTML = oldPage;
         }
       </script>
@@ -150,7 +161,7 @@ if ($Attendance == '1') {
                           <th>Total Time</th>
                           <th>Schedule</th>
                           <th>Timein date</th>
-                          <th>action</th>
+                          <th id="hideComponent">action</th>
 
                         </tr>
                       </thead>
@@ -163,7 +174,7 @@ if ($Attendance == '1') {
                           $sched_id = $row['schedule_id'];
                           $att_id = $row['attendance_id'];
 
-                          $statusMorning = ($row['status_morning']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late</span>';
+                          $statusMorning = ($row['status_morning']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late ' . $row['late_duration'] . '</span>';
 
                           $statusAfternoon = ($row['status_afternoon']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late</span>';
 
@@ -236,7 +247,7 @@ if ($Attendance == '1') {
 
 
                             <td><a class="text-inherit"><?php echo date('M d, Y', strtotime($row['date'])) ?></a></td>
-                            <td>
+                            <td id="hideComponent">
                               <!--    <button class="btn btn-success btn-sm">Edit</button> -->
                               <button class="btn btn-success btn-sm " data-toggle="modal" data-target="#edit-time-<?php echo $row['attendance_id'] ?>">Edit</i></button>
 

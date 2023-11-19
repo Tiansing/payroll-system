@@ -1,14 +1,25 @@
 <?php
+$model = new Dashboard();
+$connection = $model->TemporaryConnection();
 date_default_timezone_set('Asia/Manila');
 if (isset($_POST['apply'])) {
-  $fromDate = $_POST['overtime_year'] . '-' . $_POST['overtime_month'] . '-' . $_POST['overtime_day'];
-
-
-  echo "<script>window.location.href='attendance.php?filter=$fromDate'</script>";
+  $fromDate = $_POST['filterDate'];
+  $employeeID = $_POST['employeeID'];
+  if (!empty($fromDate) && !empty($employeeID)) {
+    echo "<script>window.location.href='attendance.php?filter=$fromDate&emid=$employeeID'</script>";
+  } else if (!empty($fromDate)) {
+    echo "<script>window.location.href='attendance.php?filter=$fromDate'</script>";
+  } else if (!empty($employeeID)) {
+    echo "<script>window.location.href='attendance.php?emid=$employeeID'</script>";
+  }
 }
 
 ?>
 
+<!-- Include Date Picker library -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <div id="modal-filter-attendance" class="modal" data-backdrop="true">
   <div class="modal-dialog modal-md">
@@ -21,8 +32,8 @@ if (isset($_POST['apply'])) {
           <div class="col-md-12">
             <div style="padding-left: 0px;"" class=" row">
               <div class="form-group" style="padding-right: 15px;">
-                <label class="form-label">Filter</label>
-                <select style="padding-right: 50px;" required="" name="overtime_month" class="form-control custom-select">
+                <label class="form-label">Filter By Date:</label>
+                <!-- <select style="padding-right: 50px;" required="" name="overtime_month" class="form-control custom-select">
                   <option class="text-muted" value="">Month</option>
                   <option value="01">January</option>
                   <option value="02">February</option>
@@ -36,9 +47,24 @@ if (isset($_POST['apply'])) {
                   <option value="10">October</option>
                   <option value="11">November</option>
                   <option value="12">December</option>
+                </select> -->
+
+                <input type="text" id="dateIDs" name="filterDate" placeholder="Select Date">
+
+              </div>
+              <div class="form-group" style="padding-right: 15px;">
+                <label class="form-label">Filter By Name:</label>
+                <select name="employeeID">
+                  <option value="0" disabled selected>Select Employee Name</option>
+                  <?php
+                  $query = "SELECT * FROM employees";
+                  $emp_query = mysqli_query($connection, $query);
+                  while ($rws = mysqli_fetch_assoc($emp_query)) { ?>
+                    <option value="<?php echo $rws["id"]; ?>"><?php echo $rws["fullname"]; ?></option>
+                  <?php  } ?>
                 </select>
               </div>
-              <div style="" class="col-md-4">
+              <!-- <div style="" class="col-md-4">
                 <label class="form-label">&nbsp</label>
                 <select required="" name="overtime_day" class="form-control custom-select">
                   <option class="text-muted" value="">Day</option>
@@ -91,22 +117,48 @@ if (isset($_POST['apply'])) {
                     <option value="<?php echo $current_year ?>"><?php echo $current_year ?></option>
                   <?php } ?>
                 </select>
-              </div>
-
+              </div> -->
 
             </div>
-
 
           </div>
 
         </div>
+
         <div class="modal-footer">
           <div style="padding-right: 12px;">
             <button type="button" class="btn dark-white p-x-md" data-dismiss="modal">Close</button>
             <button type="submit" name="apply" class="btn success p-x-md">Apply</button>
           </div>
         </div>
+
       </form>
     </div><!-- /.modal-content -->
   </div>
 </div>
+<script>
+  $("#dateIDs").datepicker({
+    dateFormat: 'yy-mm-dd', // Set the date format to YYYY-MM-DD
+
+    beforeShowDay: function(date) {
+      // var dateString = $.datepicker.formatDate('dd-mm-yy', date);
+      // var isVacationLeave = $("#leaveType").val() === "vacation";
+
+      // Disable Saturdays and Sundays by default
+      var dayOfWeek = date.getDay() + 1;
+
+      // You can also add additional conditions as needed
+
+      return [dayOfWeek];
+
+      // Enable if it's a vacation leave and within the next 15 days
+      /*  if (isVacationLeave) {
+           var maxDate = new Date();
+           maxDate.setDate(maxDate.getDate() + 15);
+           isDisabled = isDisabled || date > maxDate;
+       } */
+
+      // return [!isWeekend && isDisabled];
+    }
+  });
+</script>

@@ -70,7 +70,7 @@ $queryResult2 = mysqli_query($connection, $queryPosition2);
       </div>
       <form action="" method="post">
         <div class="modal-body p-lg">
-          <div class="table-responsive" id="printDataHolder">
+          <div class="table-responsive">
 
             <table class="table table-hover" id="attndTable" cellspacing="5">
               <thead>

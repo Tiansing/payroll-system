@@ -257,7 +257,7 @@ if ($type == "Team Leader") {
 
                             <td><a class="text-inherit"><?php echo $row['fullname'] ?></a></td>
                             <!-- <td><a  class="text-inherit"><?php echo $row['description'] ?></a></td> -->
-                            <td><a class="text-inherit"><?php echo $row['rate'] ?> asdfsadf</a></td>
+                            <td><a class="text-inherit"><?php echo $row['rate'] ?> PHP</a></td>
 
                             <td>
                               <?php echo  number_format($gross) ?>

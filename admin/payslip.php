@@ -200,6 +200,8 @@ if (isset($_POST["isChecked"])) {
                 var oldPage = document.body.innerHTML;
                 document.body.innerHTML = "<link rel='stylesheet' href='css/common.css' type='text/css' /><body class='bodytext'><div class='padding'><b style='font-size: 16px;'><p class=''>Payslip generated on <?php echo date("m/d/Y") ?> <?php echo date("G:i A") ?> by <?php echo $firstname ?> <?php echo $lastname ?></p></b></div>" + divElements + "</body>";
                 window.print();
+
+
                 // Remove the CSS class after printing
                 printLabel.classList.remove("hide-for-print");
                 document.body.innerHTML = oldPage;
@@ -230,7 +232,6 @@ if (isset($_POST["isChecked"])) {
                   if (checkbox.checked) {
                     // Show the row
 
-
                     // Update the state in local storage
                     localStorage.setItem("isChecked", isChecked);
                     // Send an AJAX request to the server to update the PHP variable
@@ -255,12 +256,9 @@ if (isset($_POST["isChecked"])) {
                     // Send the request with the data
                     xhr.send(data);
 
-
                   } else {
 
-
                     // Hide the row
-
 
                     // Update the state in local storage
                     localStorage.setItem("isChecked", isChecked);
@@ -302,9 +300,18 @@ if (isset($_POST["isChecked"])) {
               <div class="card">
                 <?php
                 // Calculating the payroll from SAT - FRI (7 Days)
+                $leave_query = "SELECT SUM(days_of_leave) AS total_days_leave FROM employee_leave WHERE eid = $myId  AND date_of_leave BETWEEN '$from' AND '$to' AND leave_status = 'Approved'";
+                $emp_leave_query = mysqli_query($connection, $leave_query);
+                while ($lrow = mysqli_fetch_assoc($emp_leave_query)) {
+
+                  if ($lrow['total_days_leave'] > 5) {
+                    $daysOfLeave = 5;
+                  } else {
+                    $daysOfLeave = $lrow['total_days_leave'];
+                  }
+                }
 
                 $sql = "SELECT *, SUM(num_hr_morning) AS morning, SUM(num_hr_afternoon) AS afternoon, attendance.employee_id AS empid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id LEFT JOIN position ON position.id=employees.position_id WHERE attendance.employee_id='$myId' AND date BETWEEN '$from' AND '$to' GROUP BY attendance.employee_id ORDER BY employees.fullname ASC";
-
 
                 $overtime = "SELECT *, SUM(hours) AS hour, SUM(rate_hour) AS rate_h, COUNT(employee_id) AS tot  FROM overtime WHERE overtime.employee_id='$myId' AND ot_status = 1 AND date_overtime BETWEEN '$from' AND '$to';";
                 $otresult = mysqli_query($connection, $overtime);
@@ -344,7 +351,10 @@ if (isset($_POST["isChecked"])) {
                   $numbers++;
 
                   $employee_id = $row['empid'];
-                  $total_hr = round($row['morning'] + $row['afternoon']); // total hour
+                  $libtotal = $daysOfLeave * 8;
+                  $libtotal1 = $row['rate'] * $daysOfLeave;
+
+                  $total_hr = round($row['morning'] + $row['afternoon']) + $libtotal; // total hour
 
                   $casql = "SELECT *, SUM(amount) AS cashamount FROM cashadvance WHERE employee_id='$employee_id' AND date_advance BETWEEN '$from' AND '$to'";
 
@@ -353,7 +363,7 @@ if (isset($_POST["isChecked"])) {
 
                   $cashadvance = $carow['cashamount'];
 
-                  $gross = ($row['rate'] / 8) * $total_hr;
+                  $gross = (($row['rate'] / 8) * $total_hr);
 
 
 
@@ -365,40 +375,54 @@ if (isset($_POST["isChecked"])) {
                     $net_pay = $gross - $cashadvance;
                   }
 
-
                 ?>
+
                   <div class="table-responsive push">
+
                     <table class="table table-bordered table-hover">
+
                       <tr>
                         <th colspan="8">LABAVENDO Payslip #<?php echo $number ?></th>
-
                       </tr>
+
                       <tr>
                         <td colspan="4">
                           <p class="font-w600 mb-1">Pay Period</p>
                         </td>
                         <td colspan="4" class="text-right"><b><?php echo date('F d, Y', strtotime($from)) ?> <b>-</b> <?php echo date('F d, Y', strtotime($to)) ?></b></td>
                       </tr>
+
                       <tr>
                         <td colspan="4">
                           <p class="font-w600 mb-1">Employee Name</p>
                         </td>
                         <td colspan="4" class="text-right"><b><?php echo $row['fullname'] ?></b></td>
                       </tr>
+
                       <tr>
                         <td colspan="4">
                           <p class="font-w600 mb-1">Employee Number</p>
                         </td>
                         <td colspan="4" class="text-right"><b>ID <?php echo $row['employee_id'] ?></b></td>
                       </tr>
+
                       <tr>
                         <td colspan="4" class="font-w600 text-right">Rate</td>
-                        <td class="text-right"><?php echo $row['rate'] ?>.00</td>
+                        <td class="text-right"><?php echo $row['rate'] ?>.00 PHP</td>
                       </tr>
+
+                      <?php if ($libtotal != 0) { ?>
+                        <tr>
+                          <td colspan="4" class="font-w600 text-right">Days of Leave Paid</td>
+                          <td class="text-right"><?php echo  $daysOfLeave . " days (+" . $libtotal . " Hours)"; ?></td>
+                        </tr>
+                      <?php } ?>
+
                       <tr>
                         <td colspan="4" class="font-w600 text-right">Total Hours</td>
                         <td class="text-right"><?php echo  round($total_hr, 2) ?> Hours</td>
                       </tr>
+
                       <tr>
                         <td colspan="4" class="font-w600 text-right">Gross Income</td>
                         <td class="text-right"><?php echo  number_format($gross) ?> PHP</td>
@@ -414,11 +438,14 @@ if (isset($_POST["isChecked"])) {
                           <td colspan="4" class="font-w600 text-right">Cash Advance</td>
                           <td class="text-right">-<?php echo  number_format($cashadvance) ?> PHP</td>
                         </tr>
-                      <?php  } ?>
-                      <tr>
-                        <td colspan="4" class="font-w600 text-right">Overtime</td>
-                        <td class="text-right"><?php echo  number_format($ot) ?> PHP</td>
-                      </tr>
+                      <?php  }
+                      if ($ot != 0) { ?>
+
+                        <tr>
+                          <td colspan="4" class="font-w600 text-right">Overtime</td>
+                          <td class="text-right"><?php echo  number_format($ot) ?> PHP</td>
+                        </tr>
+                      <?php } ?>
                       <tr>
                         <td colspan="4" class="font-w600 text-right">Net Income (Gross Income
                           <?php if ($cashadvance != 0) { ?>

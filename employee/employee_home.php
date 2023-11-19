@@ -88,6 +88,7 @@ $userid = $_SESSION['employee_id'];
 $query = "SELECT * FROM `employees` WHERE `id`=$userid";
 $employee_query = mysqli_query($connection, $query);
 while ($row = mysqli_fetch_assoc($employee_query)) {
+
     $employee_id = $row['employee_id'];
     $fullname = $row['fullname'];
     $photo = $row['photo'];
@@ -112,7 +113,7 @@ if (isset($_POST['submit'])) {
         $query1 = "UPDATE employees SET leave_credits = leave_credits - 1 WHERE employee_id = $employee_id";
         mysqli_query($connection, $query1);
     }
-    $query = "INSERT INTO employee_leave (employee_id, date_of_leave, days_of_leave, reason_for_leave, leave_status, date_filed, type_of_leave) VALUES ('$employee_id', '$date_of_leave', '$days_of_leave', '$reason', 'Pending', now(), '$type_of_leave');";
+    $query = "INSERT INTO employee_leave (eid, employee_id, date_of_leave, days_of_leave, reason_for_leave, leave_status, date_filed, type_of_leave) VALUES ('$userid','$employee_id', '$date_of_leave', '$days_of_leave', '$reason', 'Pending', now(), '$type_of_leave');";
     mysqli_query($connection, $query);
 
     echo "<script>window.location.href='employee_home.php'</script>";
@@ -444,9 +445,10 @@ if (isset($_POST['submit'])) {
 
         });
         $("#dateID").datepicker({
+            dateFormat: 'yy-mm-dd', // Set the date format to YYYY-MM-DD
 
             beforeShowDay: function(date) {
-                var dateString = $.datepicker.formatDate('dd-mm-yy', date);
+                // var dateString = $.datepicker.formatDate('dd-mm-yy', date);
                 // var isVacationLeave = $("#leaveType").val() === "vacation";
 
                 // Disable Saturdays and Sundays by default
@@ -479,8 +481,9 @@ if (isset($_POST['submit'])) {
             $("#dateID").datepicker("refresh");
         });
         $("#vacationDateID").datepicker({
+            dateFormat: 'yy-mm-dd',
             beforeShowDay: function(date) {
-                var dateString = $.datepicker.formatDate('dd-mm-yy', date);
+                // var dateString = $.datepicker.formatDate('dd-mm-yy', date);
 
                 // Disable Saturdays and Sundays by default
                 var dayOfWeek = date.getDay();

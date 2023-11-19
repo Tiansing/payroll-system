@@ -57,7 +57,7 @@ if (isset($q)) {
       $id = substr(str_shuffle($numbers), 0, 9);
 
       $date = date("Y-m-d");
-      $time_in = date('H:i:s');
+      $time_in = date('H:i');
       $month = date("F");
       $year = date("Y");
 
@@ -107,15 +107,28 @@ if (isset($q)) {
                 $querySched = mysqli_query($connection, $sched);
                 $schedRow = mysqli_fetch_assoc($querySched);
 
-                $logstatus = ($time_in > $schedRow['time_in_morning']) ? 0 : 1;
+                $logstatus = ($time_in >= $schedRow['time_in_morning']) ? 0 : 1;
+                $start = $schedRow['time_in_morning'];
 
-                $insertAttendance = "INSERT INTO `attendance` (`employee_id`, `attendance_id`, `date`, `time_in_morning`, `time_out_morning`, `time_in_afternoon`, `time_out_afternoon`, `status_morning`, `status_afternoon`, `num_hr_morning`, `num_hr_afternoon`, `month`, `year`) VALUES ('$employee_id', '$id', '$date', '$time_in', null, null, null, '$logstatus', null, null, null, '$month', '$year');";
+                $time_start = new DateTime($start);
+                $time_end = new DateTime($time_in);
+                $interval = $time_start->diff($time_end);
+                $hrs = $interval->format('%h');
+                $mins = $interval->format('%i');
+                $mins = $mins / 60;
+                $lateDur = $hrs + $mins;
+                $decimalValue = $lateDur; // Replace with your desired decimal value
+                $hours = floor($decimalValue); // Extract the whole hours
+                $minutes = ($decimalValue - $hours) * 60; // Calculate the remaining minutes
+                $lateDuration = (($hours == 0 && $minutes == 0) ? NULL : (($hours == 0) ? "$minutes mins" : "$hours" . ($hours > 1 ? "hrs" : "hr") . " and $minutes mins"));
+
+
+                $insertAttendance = "INSERT INTO `attendance` (`employee_id`, `attendance_id`, `date`, `time_in_morning`, `time_out_morning`, `time_in_afternoon`, `time_out_afternoon`, `status_morning`, `status_afternoon`, `num_hr_morning`, `num_hr_afternoon`, `month`, `year`, `late_duration`) VALUES ('$employee_id', '$id', '$date', '$time_in', null, null, null, '$logstatus', null, null, null, '$month', '$year','$lateDuration');";
 
                 $query = mysqli_query($connection, $insertAttendance) or die(mysqli_error($connection) . $insertAttendance);
                 $imageUrl = '<img height="100" width="100" src="image/' . $empImg . '" alt="" > ';
 
-                $insertOT = "INSERT INTO `overtime` (`employee_id`, `overtime_id`) VALUES ('$employee_id', '$id');";
-                $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+
 
 
                 echo $imageUrl;
@@ -135,14 +148,23 @@ if (isset($q)) {
                 $schedRow = mysqli_fetch_assoc($querySched);
 
                 $logstatus = ($time_in >= $schedRow['time_in_afternoon']) ? 0 : 1;
+                $start = $schedRow['time_in_afternoon'];
 
+                $time_start = new DateTime($start);
+                $time_end = new DateTime($time_in);
+                $interval = $time_start->diff($time_end);
+                $hrs = $interval->format('%h');
+                $mins = $interval->format('%i');
+                $mins = $mins / 60;
+                $lateDur = $hrs + $mins;
+                $decimalValue = $lateDur; // Replace with your desired decimal value
+                $hours = floor($decimalValue); // Extract the whole hours
+                $minutes = ($decimalValue - $hours) * 60; // Calculate the remaining minutes
+                $lateDuration = (($hours == 0 && $minutes == 0) ? NULL : (($hours == 0) ? "$minutes mins" : "$hours" . ($hours > 1 ? "hrs" : "hr") . " and $minutes mins"));
 
-                $insertAttendance = "INSERT INTO `attendance` (`employee_id`, `attendance_id`, `date`, `time_in_morning`, `time_out_morning`, `time_in_afternoon`, `time_out_afternoon`, `status_morning`, `status_afternoon`, `num_hr_morning`, `num_hr_afternoon`, `month`, `year`) VALUES ('$employee_id', '$id', '$date', null, null, '$time_in', null, null, '$logstatus', null, null, '$month', '$year');";
+                $insertAttendance = "INSERT INTO `attendance` (`employee_id`, `attendance_id`, `date`, `time_in_morning`, `time_out_morning`, `time_in_afternoon`, `time_out_afternoon`, `status_morning`, `status_afternoon`, `num_hr_morning`, `num_hr_afternoon`, `month`, `year`, `late_duration`) VALUES ('$employee_id', '$id', '$date', null, null, '$time_in', null, null, '$logstatus', null, null, '$month', '$year','$lateDuration');";
 
                 $query = mysqli_query($connection, $insertAttendance) or die(mysqli_error($connection) . $insertAttendance);
-
-                $insertOT2 = "INSERT INTO `overtime` (`employee_id`, `overtime_id`) VALUES ('$employee_id', '$id');";
-                $query2 = mysqli_query($connection, $insertOT2) or die(mysqli_error($connection) . $insertOT2);
 
 
                 $imageUrl = '<img height="100" width="100" src="image/' . $empImg . '" alt="" > ';
@@ -166,11 +188,21 @@ if (isset($q)) {
                 $schedRow = mysqli_fetch_assoc($querySched);
 
                 $logstatus = ($time_in >= $schedRow['time_in_graveyard']) ? 0 : 1;
+                $start = $schedRow['time_in_graveyard'];
 
-                $insertOT = "INSERT INTO `overtime` (`employee_id`, `overtime_id`) VALUES ('$employee_id', '$id');";
-                $query1 = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                $time_start = new DateTime($start);
+                $time_end = new DateTime($time_in);
+                $interval = $time_start->diff($time_end);
+                $hrs = $interval->format('%h');
+                $mins = $interval->format('%i');
+                $mins = $mins / 60;
+                $lateDur = $hrs + $mins;
+                $decimalValue = $lateDur; // Replace with your desired decimal value
+                $hours = floor($decimalValue); // Extract the whole hours
+                $minutes = ($decimalValue - $hours) * 60; // Calculate the remaining minutes
+                $lateDuration = (($hours == 0 && $minutes == 0) ? NULL : (($hours == 0) ? "$minutes mins" : "$hours" . ($hours > 1 ? "hrs" : "hr") . " and $minutes mins"));
 
-                $insertAttendance = "INSERT INTO `attendance` (`employee_id`, `attendance_id`, `date`, `time_in_morning`, `time_out_morning`, `time_in_afternoon`, `time_out_afternoon`, `time_in_graveyard`, `time_out_graveyard`,`status_morning`, `status_afternoon`,`status_graveyard`, `num_hr_morning`, `num_hr_afternoon`,`num_hr_graveyard`, `month`, `year`) VALUES ('$employee_id', '$id', '$date', null, null, null, null, '$time_in', null, null, null, '$logstatus', null, null, null, '$month', '$year');";
+                $insertAttendance = "INSERT INTO `attendance` (`employee_id`, `attendance_id`, `date`, `time_in_morning`, `time_out_morning`, `time_in_afternoon`, `time_out_afternoon`, `time_in_graveyard`, `time_out_graveyard`,`status_morning`, `status_afternoon`,`status_graveyard`, `num_hr_morning`, `num_hr_afternoon`,`num_hr_graveyard`, `month`, `year`, `late_duration`) VALUES ('$employee_id', '$id', '$date', null, null, null, null, '$time_in', null, null, null, '$logstatus', null, null, null, '$month', '$year','$lateDuration');";
 
                 $query = mysqli_query($connection, $insertAttendance) or die(mysqli_error($connection) . $insertAttendance);
 

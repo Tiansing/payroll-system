@@ -56,6 +56,14 @@ if (isset($q)) {
       }
       $id = substr(str_shuffle($numbers), 0, 9);
 
+
+
+      $numbers1 = '';
+      for ($i1 = 0; $i1 < 7; $i1++) {
+        $numbers1 .= $i1;
+      }
+      $otID = substr(str_shuffle($numbers1), 0, 9);
+
       $date = date("Y-m-d");
       $time_in = date('H:i:s');
       $month = date("F");
@@ -98,10 +106,10 @@ if (isset($q)) {
         $rowPos = mysqli_fetch_assoc($queryResPosition);
         $posRate = $rowPos['rate'];
 
-        $queryOT = "SELECT * FROM `overtime` WHERE `employee_id` = '$employee_id';";
-        $queryResOT = mysqli_query($connection, $queryOT);
-        $rowOT = mysqli_fetch_assoc($queryResOT);
-        $otID = $rowOT['overtime_id'];
+        // $queryOT = "SELECT * FROM `overtime` WHERE `employee_id` = '$employee_id';";
+        // $queryResOT = mysqli_query($connection, $queryOT);
+        // $rowOT = mysqli_fetch_assoc($queryResOT);
+        // $otID = $rowOT['overtime_id'];
 
         $sched = "SELECT * FROM `schedules` WHERE `id` = '$schedule_id';";
         $querySched = mysqli_query($connection, $sched);
@@ -149,8 +157,16 @@ if (isset($q)) {
                   $num_hr = "UPDATE `attendance` SET `num_hr_morning` = '$intH' WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
                   $update = mysqli_query($connection, $num_hr) or die(mysqli_error($connection) . $num_hr);
                   if ($hours >= 1) {
-                    $insertOT = "UPDATE `overtime` SET `hours`= '$hours', `rate_hour`= '$posRate', `date_overtime`='$date' WHERE `employee_id`= '$employee_id' AND `overtime_id` = '$otID'";
-                    $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                    $ott = "SELECT * FROM `overtime` WHERE `employee_id` = '$employee_id' AND `date_overtime` = '$date';";
+                    $queryOtt = mysqli_query($connection, $ott);
+                    while ($ottRow = mysqli_fetch_assoc($queryOtt)) {
+                      $otdate = $ottRow['date_overtime'];
+                    }
+
+                    if (empty($otdate)) {
+                      $insertOT = "INSERT INTO `overtime` (`employee_id`,`overtime_id`,`hours`,`rate_hour`,`date_overtime`) VALUES ('$employee_id', '$otID', '$hours', '$posRate','$date');";
+                      $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                    }
                   }
                 } else {
                   $num_hr = "UPDATE `attendance` SET `num_hr_morning` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
@@ -212,8 +228,18 @@ if (isset($q)) {
                     $insert = "UPDATE `attendance` SET `time_out_afternoon` = '$time_in' WHERE `employee_id` = '$employee_id' AND `date` = '$date';";
                     $query = mysqli_query($connection, $insert) or die(mysqli_error($connection) . $insert);
                     if ($hours >= 1) {
-                      $insertOT = "UPDATE `overtime` SET `hours`= '$hours', `rate_hour`= '$posRate', `date_overtime`='$date' WHERE `employee_id`= '$employee_id' AND `overtime_id` = '$otID'";
-                      $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                      // $insertOT = "UPDATE `overtime` SET `hours`= '$hours', `rate_hour`= '$posRate', `date_overtime`='$date' WHERE `employee_id`= '$employee_id' AND `overtime_id` = '$otID'";
+                      // $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                      $ott = "SELECT * FROM `overtime` WHERE `employee_id` = '$employee_id' AND `date_overtime` = '$date';";
+                      $queryOtt = mysqli_query($connection, $ott);
+                      while ($ottRow = mysqli_fetch_assoc($queryOtt)) {
+                        $otdate = $ottRow['date_overtime'];
+                      }
+
+                      if (empty($otdate)) {
+                        $insertOT = "INSERT INTO `overtime` (`employee_id`,`overtime_id`,`hours`,`rate_hour`,`date_overtime`) VALUES ('$employee_id', '$otID', '$hours', '$posRate','$date');";
+                        $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                      }
                     }
                   } else {
                     $num_hr = "UPDATE `attendance` SET `num_hr_afternoon` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
@@ -244,8 +270,18 @@ if (isset($q)) {
                     $insert = "UPDATE `attendance` SET `time_out_afternoon` = '$time_in' WHERE `employee_id` = '$employee_id' AND `date` = '$date';";
                     $query = mysqli_query($connection, $insert) or die(mysqli_error($connection) . $insert);
                     if ($hours >= 1) {
-                      $insertOT = "UPDATE `overtime` SET `hours`= '$hours', `rate_hour`= '$posRate', `date_overtime`='$date' WHERE `employee_id`= '$employee_id' AND `overtime_id` = '$otID'";
-                      $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                      // $insertOT = "UPDATE `overtime` SET `hours`= '$hours', `rate_hour`= '$posRate', `date_overtime`='$date' WHERE `employee_id`= '$employee_id' AND `overtime_id` = '$otID'";
+                      // $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                      $ott = "SELECT * FROM `overtime` WHERE `employee_id` = '$employee_id' AND `date_overtime` = '$date';";
+                      $queryOtt = mysqli_query($connection, $ott);
+                      while ($ottRow = mysqli_fetch_assoc($queryOtt)) {
+                        $otdate = $ottRow['date_overtime'];
+                      }
+
+                      if (empty($otdate)) {
+                        $insertOT = "INSERT INTO `overtime` (`employee_id`,`overtime_id`,`hours`,`rate_hour`,`date_overtime`) VALUES ('$employee_id', '$otID', '$hours', '$posRate','$date');";
+                        $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                      }
                     }
                   } else {
                     $num_hr = "UPDATE `attendance` SET `num_hr_afternoon` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
@@ -285,8 +321,18 @@ if (isset($q)) {
                     $insert = "UPDATE `attendance` SET `time_out_afternoon` = '$time_in' WHERE `employee_id` = '$employee_id' AND `date` = '$datey';";
                     $query = mysqli_query($connection, $insert) or die(mysqli_error($connection) . $insert);
                     if ($hours >= 1) {
-                      $insertOT = "UPDATE `overtime` SET `hours`= '$hours', `rate_hour`= '$posRate', `date_overtime`='$datey' WHERE `employee_id`= '$employee_id' AND `overtime_id` = '$otID'";
-                      $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                      // $insertOT = "UPDATE `overtime` SET `hours`= '$hours', `rate_hour`= '$posRate', `date_overtime`='$datey' WHERE `employee_id`= '$employee_id' AND `overtime_id` = '$otID'";
+                      // $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                      $ott = "SELECT * FROM `overtime` WHERE `employee_id` = '$employee_id' AND `date_overtime` = '$date';";
+                      $queryOtt = mysqli_query($connection, $ott);
+                      while ($ottRow = mysqli_fetch_assoc($queryOtt)) {
+                        $otdate = $ottRow['date_overtime'];
+                      }
+
+                      if (empty($otdate)) {
+                        $insertOT = "INSERT INTO `overtime` (`employee_id`,`overtime_id`,`hours`,`rate_hour`,`date_overtime`) VALUES ('$employee_id', '$otID', '$hours', '$posRate','$date');";
+                        $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                      }
                     }
                   } else {
                     $num_hr = "UPDATE `attendance` SET `num_hr_afternoon` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$datey'";
@@ -358,8 +404,19 @@ if (isset($q)) {
                     $insert = "UPDATE `attendance` SET `time_out_graveyard` = '$time_in' WHERE `employee_id` = '$employee_id' AND `date` = '$date';";
                     $query = mysqli_query($connection, $insert) or die(mysqli_error($connection) . $insert);
                     if ($hours >= 1) {
-                      $insertOT = "UPDATE `overtime` SET `hours`= '$hours', `rate_hour`= '$posRate', `date_overtime`='$date' WHERE `employee_id`= '$employee_id' AND `overtime_id` = '$otID'";
-                      $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                      // $insertOT = "UPDATE `overtime` SET `hours`= '$hours', `rate_hour`= '$posRate', `date_overtime`='$date' WHERE `employee_id`= '$employee_id' AND `overtime_id` = '$otID'";
+                      // $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+
+                      $ott = "SELECT * FROM `overtime` WHERE `employee_id` = '$employee_id' AND `date_overtime` = '$date';";
+                      $queryOtt = mysqli_query($connection, $ott);
+                      while ($ottRow = mysqli_fetch_assoc($queryOtt)) {
+                        $otdate = $ottRow['date_overtime'];
+                      }
+
+                      if (empty($otdate)) {
+                        $insertOT = "INSERT INTO `overtime` (`employee_id`,`overtime_id`,`hours`,`rate_hour`,`date_overtime`) VALUES ('$employee_id', '$otID', '$hours', '$posRate','$date');";
+                        $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                      }
                     }
                   } else {
                     $num_hr = "UPDATE `attendance` SET `num_hr_graveyard` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
@@ -390,8 +447,19 @@ if (isset($q)) {
                     $insert = "UPDATE `attendance` SET `time_out_graveyard` = '$time_in' WHERE `employee_id` = '$employee_id' AND `date` = '$date';";
                     $query = mysqli_query($connection, $insert) or die(mysqli_error($connection) . $insert);
                     if ($hours >= 1) {
-                      $insertOT = "UPDATE `overtime` SET `hours`= '$hours', `rate_hour`= '$posRate', `date_overtime`='$date' WHERE `employee_id`= '$employee_id' AND `overtime_id` = '$otID'";
-                      $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                      // $insertOT = "UPDATE `overtime` SET `hours`= '$hours', `rate_hour`= '$posRate', `date_overtime`='$date' WHERE `employee_id`= '$employee_id' AND `overtime_id` = '$otID'";
+                      // $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+
+                      $ott = "SELECT * FROM `overtime` WHERE `employee_id` = '$employee_id' AND `date_overtime` = '$date';";
+                      $queryOtt = mysqli_query($connection, $ott);
+                      while ($ottRow = mysqli_fetch_assoc($queryOtt)) {
+                        $otdate = $ottRow['date_overtime'];
+                      }
+
+                      if (empty($otdate)) {
+                        $insertOT = "INSERT INTO `overtime` (`employee_id`,`overtime_id`,`hours`,`rate_hour`,`date_overtime`) VALUES ('$employee_id', '$otID', '$hours', '$posRate','$date');";
+                        $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                      }
                     }
                   } else {
                     $num_hr = "UPDATE `attendance` SET `num_hr_graveyard` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$date'";
@@ -431,8 +499,19 @@ if (isset($q)) {
                     $insert = "UPDATE `attendance` SET `time_out_graveyard` = '$time_in' WHERE `employee_id` = '$employee_id' AND `date` = '$datey';";
                     $query = mysqli_query($connection, $insert) or die(mysqli_error($connection) . $insert);
                     if ($hours >= 1) {
-                      $insertOT = "UPDATE `overtime` SET `hours`= '$hours', `rate_hour`= '$posRate', `date_overtime`='$datey' WHERE `employee_id`= '$employee_id' AND `overtime_id` = '$otID'";
-                      $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                      // $insertOT = "UPDATE `overtime` SET `hours`= '$hours', `rate_hour`= '$posRate', `date_overtime`='$datey' WHERE `employee_id`= '$employee_id' AND `overtime_id` = '$otID'";
+                      // $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+
+                      $ott = "SELECT * FROM `overtime` WHERE `employee_id` = '$employee_id' AND `date_overtime` = '$date';";
+                      $queryOtt = mysqli_query($connection, $ott);
+                      while ($ottRow = mysqli_fetch_assoc($queryOtt)) {
+                        $otdate = $ottRow['date_overtime'];
+                      }
+
+                      if (empty($otdate)) {
+                        $insertOT = "INSERT INTO `overtime` (`employee_id`,`overtime_id`,`hours`,`rate_hour`,`date_overtime`) VALUES ('$employee_id', '$otID', '$hours', '$posRate','$date');";
+                        $query = mysqli_query($connection, $insertOT) or die(mysqli_error($connection) . $insertOT);
+                      }
                     }
                   } else {
                     $num_hr = "UPDATE `attendance` SET `num_hr_graveyard` = '$int' WHERE `employee_id` = '$employee_id' AND `date` = '$datey'";
