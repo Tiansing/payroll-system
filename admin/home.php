@@ -114,7 +114,6 @@ if ($type == "Team Leader") {
 
                     $percentage = round(($early / $total) * 100, 2);
 
-
                     ?>                      
                       <h4 class="m-0"><a href="javascript:void(0)"><?php echo $percentage . '%' ?> <small>On Time</small></a></h4>
                       <small class="text-muted">On Time Percentage</small>
@@ -138,7 +137,6 @@ if ($type == "Team Leader") {
                     $query = mysqli_query($connection, $sql);
                     $row = mysqli_fetch_assoc($query);
                     $early = $row['stat'];
-
 
                     ?>                       
                       <h4 class="m-0"><a href="javascript:void(0)"><?php echo $early ?> <small>On Time</small></a></h4>
@@ -197,7 +195,7 @@ if ($type == "Team Leader") {
                 document.body.innerHTML = oldPage;
               }
             </script>
-            <div class="col-12" id="printDataHolder">
+            <div class="col-15" id="printDataHolder">
 
               <div class="card">
                 <div class="card-header py-3">
@@ -216,6 +214,8 @@ if ($type == "Team Leader") {
                           <th>Rate Per Day</th>
                           <th>Gross Income (PHP)</th>
                           <th>Cash Advance (PHP)</th>
+                          <th>Cash Loan (PHP)</th>
+                          <th>Total Late (PHP)</th>
                           <th>Total Hours</th>
                           <th>Net Income (PHP)</th>
                           <th>Payslip</th>
@@ -224,7 +224,6 @@ if ($type == "Team Leader") {
                       <tbody>
                         <?php
                         // Calculating the payroll from SAT - FRI (7 Days)
-
                         $sql = "SELECT *, SUM(num_hr_morning) AS morning, SUM(num_hr_afternoon) AS afternoon, attendance.employee_id AS empid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id LEFT JOIN position ON position.id=employees.position_id WHERE date BETWEEN '$from' AND '$to' GROUP BY attendance.employee_id ORDER BY employees.fullname ASC";
 
                         $sqlPayroll = mysqli_query($connection, $sql);
@@ -235,7 +234,6 @@ if ($type == "Team Leader") {
                         while ($row = mysqli_fetch_assoc($sqlPayroll)) {
 
                           $numbers++;
-
                           $employee_id = $row['empid'];
                           $total_hr = $row['morning'] + $row['afternoon']; // total hour
 
@@ -246,9 +244,34 @@ if ($type == "Team Leader") {
 
                           $cashadvance = $carow['cashamount'];
 
-                          $gross = ($row['rate'] / 8) * $total_hr;
-                          $net_pay = $gross - $cashadvance;
+                          //CASH LOAN
+                          $lasql = "SELECT *, SUM(amount) AS lashamount FROM loan WHERE employee_id='$employee_id' AND date_loan BETWEEN '$from' AND '$to'";
 
+                          $loanquery = mysqli_query($connection, $lasql);
+                          $larow = mysqli_fetch_assoc($loanquery);
+
+                          $loan = $larow['lashamount'];
+
+                          //LATE ATTENDANCE
+                          $lateAtt = "SELECT *, SUM(late_duration) AS attLate FROM attendance WHERE employee_id='$employee_id' AND date BETWEEN '$from' AND '$to'";
+
+                          $lateAttquery = mysqli_query($connection, $lateAtt);
+                          $attrow = mysqli_fetch_assoc($lateAttquery);
+
+                          $lates = $attrow['attLate'];
+                          $decimalValue = $lates; // Replace with your desired decimal value
+                          $hours = floor($decimalValue); // Extract the whole hours
+                          $minutes = ($decimalValue - $hours) * 60; // Calculate the remaining minutes
+
+                          $hoursLate = ($row['rate'] / 8) * $hours;
+                          $minutesLate = ($row['rate'] / 8) / 60 * $minutes;
+
+                          $totalMinsHrsLate =  $hoursLate + $minutesLate;
+                          // $lateDuration = (($hours == 0 && $minutes == 0) ? NULL : (($hours == 0) ? "$minutes mins" : "$hours" . ($hours > 1 ? "hrs" : "hr") . " and $minutes mins"));
+
+
+                          $gross = ($row['rate'] / 8) * $total_hr;
+                          $net_pay = $gross - $cashadvance - $loan - $totalMinsHrsLate;
 
                         ?>
                           <tr>
@@ -262,10 +285,20 @@ if ($type == "Team Leader") {
                             <td>
                               <?php echo  number_format($gross) ?>
                             </td>
+
                             <td>
                               -<?php echo  number_format($cashadvance) ?>
                             </td>
+
+                            <td>
+                              -<?php echo  number_format($loan) ?>
+                            </td>
+                            <td>
+                              -<?php echo number_format($totalMinsHrsLate) ?>
+                            </td>
+
                             <td><?php echo  round($total_hr, 2) ?> Hours</td>
+
                             <td>
                               <strong><?php echo  number_format($net_pay) ?> </strong>
                               <!-- </td>

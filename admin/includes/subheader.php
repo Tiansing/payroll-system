@@ -46,6 +46,7 @@ if ($type == "Administrator") {
     <div class="dropdown-menu dropdown-menu-arrow">
       <a href="overtime.php" class="dropdown-item ">Overtime</a>
       <a href="advance.php" class="dropdown-item ">Cash Advance</a>
+      <a href="loan.php" class="dropdown-item ">Cash Loan</a>
      
     </div>
   </li>

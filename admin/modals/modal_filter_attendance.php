@@ -4,7 +4,9 @@ $connection = $model->TemporaryConnection();
 date_default_timezone_set('Asia/Manila');
 if (isset($_POST['apply'])) {
   $fromDate = $_POST['filterDate'];
-  $employeeID = $_POST['employeeID'];
+  if (isset($_POST['employeeID'])) {
+    $employeeID = $_POST['employeeID'];
+  }
   if (!empty($fromDate) && !empty($employeeID)) {
     echo "<script>window.location.href='attendance.php?filter=$fromDate&emid=$employeeID'</script>";
   } else if (!empty($fromDate)) {

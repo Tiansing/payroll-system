@@ -20,7 +20,7 @@ if (isset($_POST['add'])) {
   $date = $_POST['overtime_year'] . '-' . $_POST['overtime_month'] . '-' . $_POST['overtime_day'];
   $hours = $_POST['hours'] + ($_POST['minutes'] / 60);
 
-  $rate = $_POST['rate'] / 8;
+  $rate = $_POST['rate'];
 
 
   $insert = "INSERT INTO `overtime` (`employee_id`, `overtime_id`, `hours`, `rate_hour`, `date_overtime`) VALUES ('$employee', '$id', '$hours', '$rate', '$date');";

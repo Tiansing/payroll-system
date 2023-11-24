@@ -37,6 +37,11 @@ if (isset($_GET['filter'])) {
   $today = $_GET['filter'];
 }
 
+$employeeID = '';
+if (isset($_GET['emid'])) {
+  $employeeID = $_GET['emid'];
+}
+
 if ($Attendance == '1') {
   $stat = '<div class="alert alert-danger alert-dismissible">
   <button type="button" class="close" data-dismiss="alert"></button>
@@ -84,14 +89,31 @@ if ($Attendance == '1') {
         function printPage() {
           var printLabel = document.getElementById("hideComponent");
           printLabel.classList.add("hide-for-print");
-          var divElements = document.getElementById('printDataHolder').innerHTML;
-          var oldPage = document.body.innerHTML;
-          document.body.innerHTML = "<link rel='stylesheet' href='css/common.css' type='text/css' /><body class='bodytext'><div class='padding'><b style='font-size: 16px;'><p class=''>Attendance generated on <?php echo date("m/d/Y") ?> <?php echo date("G:i A") ?> by <?php echo $firstname ?> <?php echo $lastname ?></p></b></div>" + divElements + "</body>";
-          window.print();
 
-          // Remove the CSS class after printing
-          printLabel.classList.remove("hide-for-print");
-          document.body.innerHTML = oldPage;
+          // Store the current page content
+          var oldPage = document.body.innerHTML;
+
+          // Set up a function to handle the afterprint event
+          function afterPrintHandler() {
+            // Remove the CSS class after printing
+            printLabel.classList.remove("hide-for-print");
+
+            // Remove the afterprint event listener
+            window.removeEventListener('afterprint', afterPrintHandler);
+
+            // Reload the page after printing is canceled
+            location.reload();
+          }
+
+          // Add the afterprint event listener
+          window.addEventListener('afterprint', afterPrintHandler);
+
+          // Customize the content for printing
+          var divElements = document.getElementById('printDataHolder').innerHTML;
+          document.body.innerHTML = "<link rel='stylesheet' href='css/common.css' type='text/css' /><body class='bodytext'><div class='padding'><b style='font-size: 16px;'><p class=''>Attendance generated on <?php echo date("m/d/Y") ?> <?php echo date("G:i A") ?> by <?php echo $firstname ?> <?php echo $lastname ?></p></b></div>" + divElements + "</body>";
+
+          // Initiate the print operation
+          window.print();
         }
       </script>
       <div class="my-3 my-md-5">
@@ -146,7 +168,31 @@ if ($Attendance == '1') {
             <div class="col-12" id="printDataHolder">
               <div class="card">
                 <div class="card-header py-3">
-                  <h3 class="card-title">Attendance Table for <b><?php echo date('F d, Y', strtotime($today)) ?></b></h3>
+                  <h3 class="card-title">Attendance Table for <b>
+                      <?php
+
+                      if (!empty($today)) {
+
+                        echo date('F d, Y', strtotime($today));
+                      } else  if (!empty($employeeID)) {
+
+                        $query = "SELECT * FROM employees WHERE id = $employeeID";
+
+                        $empname_query = mysqli_query($connection, $query);
+
+                        if (!$empname_query) {
+                          $fname = "";
+                        } else {
+                          while ($raws = mysqli_fetch_assoc($empname_query)) {
+                            $fname = $raws['fullname'];
+                          }
+                          echo  $fname;
+                        }
+                      }
+
+
+
+                      ?></b></h3>
                 </div>
                 <?php require_once('modals/modal_add_attendance.php') ?>
                 <div class="card-body">
@@ -174,11 +220,18 @@ if ($Attendance == '1') {
                           $sched_id = $row['schedule_id'];
                           $att_id = $row['attendance_id'];
 
-                          $statusMorning = ($row['status_morning']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late ' . $row['late_duration'] . '</span>';
+                          $lates = $row['late_duration'];
+                          $decimalValue = $lates; // Replace with your desired decimal value
+                          $hours = floor($decimalValue); // Extract the whole hours
+                          $minutes = ($decimalValue - $hours) * 60; // Calculate the remaining minutes        
 
-                          $statusAfternoon = ($row['status_afternoon']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late</span>';
+                          $lateDuration = (($hours == 0 && $minutes == 0) ? NULL : (($hours == 0) ? "$minutes mins" : "$hours" . ($hours > 1 ? "hrs" : "hr") . " and $minutes mins"));
 
-                          $statusGraveyard = ($row['status_graveyard']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late</span>';
+                          $statusMorning = ($row['status_morning']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late ' . $lateDuration . '</span>';
+
+                          $statusAfternoon = ($row['status_afternoon']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late ' . $lateDuration . '</span>';
+
+                          $statusGraveyard = ($row['status_graveyard']) ? '&nbsp&nbsp<span class="badge badge-info">Ontime</span>' : '&nbsp&nbsp<span class="badge badge-warning">Late ' . $lateDuration . '</span>';
 
                         ?>
 
@@ -270,8 +323,8 @@ if ($Attendance == '1') {
                                     $queryResult1 = mysqli_query($connection, $queryPosition1);
                                     while ($row3 = mysqli_fetch_assoc($queryResult1)) {
 
-                                      if (isset($row3['time_in_morning'])) {
-                                    ?>
+                                      if (isset($row3['time_in_morning'])) { ?>
+
                                         <div style="padding-top: 12px;" class="form-group">
                                           <label class="form-label">Timein Morning</label>
                                           <div class="bootstrap-timepicker">

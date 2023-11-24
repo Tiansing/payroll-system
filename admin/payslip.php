@@ -363,16 +363,41 @@ if (isset($_POST["isChecked"])) {
 
                   $cashadvance = $carow['cashamount'];
 
+                  //CASH LOAN
+                  $lasql = "SELECT *, SUM(amount) AS lashamount FROM loan WHERE employee_id='$employee_id' AND date_loan BETWEEN '$from' AND '$to'";
+
+                  $loanquery = mysqli_query($connection, $lasql);
+                  $larow = mysqli_fetch_assoc($loanquery);
+
+                  $loan = $larow['lashamount'];
+
+                  //LATE ATTENDANCE
+                  $lateAtt = "SELECT *, SUM(late_duration) AS attLate FROM attendance WHERE employee_id='$employee_id' AND date BETWEEN '$from' AND '$to'";
+
+                  $lateAttquery = mysqli_query($connection, $lateAtt);
+                  $attrow = mysqli_fetch_assoc($lateAttquery);
+
+                  $lates = $attrow['attLate'];
+                  $decimalValue = $lates; // Replace with your desired decimal value
+                  $hours = floor($decimalValue); // Extract the whole hours
+                  $minutes = ($decimalValue - $hours) * 60; // Calculate the remaining minutes
+
+                  $hoursLate = ($row['rate'] / 8) * $hours;
+                  $minutesLate = ($row['rate'] / 8) / 60 * $minutes;
+
+                  $totalMinsHrsLate =  $hoursLate + $minutesLate;
+
+
                   $gross = (($row['rate'] / 8) * $total_hr);
 
 
 
                   if ($_SESSION["taxDeduct"] == "true") {
                     $totalTaxDeduct = 566.82 + 200.00 + 337.50;
-                    $net_pay = $gross - $cashadvance;
+                    $net_pay = $gross - $cashadvance - $loan - $totalMinsHrsLate;
                     $net_pay = $net_pay - $totalTaxDeduct;
                   } else {
-                    $net_pay = $gross - $cashadvance;
+                    $net_pay = $gross - $cashadvance - $loan - $totalMinsHrsLate;
                   }
 
                 ?>
@@ -427,28 +452,49 @@ if (isset($_POST["isChecked"])) {
                         <td colspan="4" class="font-w600 text-right">Gross Income</td>
                         <td class="text-right"><?php echo  number_format($gross) ?> PHP</td>
                       </tr>
+
                       <tr id="taxDeductions">
                         <td colspan="4" class="font-w600 text-right" style="line-height: 40px;">SSS<br>
                           PHIL HEALTH<br>
                           PAG IBIG</td>
                         <td class="text-right" style="line-height: 40px;">-337.50 PHP <br>-200.00 PHP <br> -566.82 PHP</td>
                       </tr>
-                      <?php if ($cashadvance != 0) { ?>
-                        <tr>
-                          <td colspan="4" class="font-w600 text-right">Cash Advance</td>
-                          <td class="text-right">-<?php echo  number_format($cashadvance) ?> PHP</td>
-                        </tr>
-                      <?php  }
-                      if ($ot != 0) { ?>
 
+                      <?php if ($ot != 0) { ?>
                         <tr>
                           <td colspan="4" class="font-w600 text-right">Overtime</td>
                           <td class="text-right"><?php echo  number_format($ot) ?> PHP</td>
                         </tr>
+
+                      <?php }
+                      if ($cashadvance != 0) {  ?>
+
+                        <tr>
+                          <td colspan="4" class="font-w600 text-right">Total Late</td>
+                          <td class="text-right">-<?php echo  number_format($totalMinsHrsLate) ?> PHP</td>
+                        </tr>
+
+                      <?php  }
+                      if ($cashadvance != 0) { ?>
+                        <tr>
+                          <td colspan="4" class="font-w600 text-right">Cash Advance</td>
+                          <td class="text-right">-<?php echo  number_format($cashadvance) ?> PHP</td>
+                        </tr>
+
+                      <?php }
+                      if ($loan != 0) { ?>
+
+                        <tr>
+                          <td colspan="4" class="font-w600 text-right">Cash Loan</td>
+                          <td class="text-right">-<?php echo  number_format($loan) ?> PHP</td>
+                        </tr>
                       <?php } ?>
                       <tr>
                         <td colspan="4" class="font-w600 text-right">Net Income (Gross Income
-                          <?php if ($cashadvance != 0) { ?>
+                          <?php if ($loan != 0) { ?>
+                            - Cash Loan
+                          <?php }
+                          if ($cashadvance != 0) { ?>
                             - Cash Advance
                           <?php  }
                           if ($_SESSION["taxDeduct"] == "true") { ?>
