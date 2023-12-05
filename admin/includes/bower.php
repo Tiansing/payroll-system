@@ -28,13 +28,19 @@
       'searching': false,
       'ordering': true,
       'info': true,
-      'autoWidth': false
+      'autoWidth': false,
+      "iDisplayLength": 5
     })
     $('#example1').DataTable({
       responsive: true,
       "order": [
         [0, "desc"]
-      ]
+      ],
+      "aLengthMenu": [
+        [5, 25, 50, 75, 100],
+        [5, 25, 50, 75, 100]
+      ],
+      "iDisplayLength": 5
     })
     $('#attndTable').DataTable({
       responsive: true,

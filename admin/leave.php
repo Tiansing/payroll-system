@@ -34,8 +34,8 @@ if (isset($_GET['status'])) {
   $Attendance = $_GET['status'];
 }
 
-if (isset($_GET['filter'])) {
-  $lstat = $_GET['filter'];
+if (isset($_GET['lfilter'])) {
+  $lstat = $_GET['lfilter'];
 }
 
 if ($Attendance == '1') {

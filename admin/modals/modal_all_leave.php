@@ -5,8 +5,8 @@ if (!isset($_SESSION['official_username']) && !isset($_SESSION['official_passwor
 }
 
 
-if (isset($_GET['filter'])) {
-  $lstat = $_GET['filter'];
+if (isset($_GET['lfilter'])) {
+  $lstat = $_GET['lfilter'];
   $query = "SELECT * FROM employee_leave WHERE leave_status = '$lstat' ";
   $emp_leave_req = mysqli_query($connection, $query);
 } else {

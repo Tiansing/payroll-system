@@ -43,13 +43,9 @@ if ($type == "Administrator") {
     <a href="index.php" class="nav-link"><i class="fe fe-home"></i> Payroll</a>
   </li>
 
-  <li class="nav-item dropdown">
-  <a href="javascript:void(0)" class="nav-link" data-toggle="dropdown"><i class="fe fe-user"></i> Attendance / Leave</a>
-  <div class="dropdown-menu dropdown-menu-arrow">
-    <a href="attendance.php?filter=' . $date . '" class="dropdown-item ">Attendance</a>
-    <a href="leave.php" class="dropdown-item ">Leave Requests</a>
-  </div>
-  </li>
+  <li class="nav-item">
+  <a href="attendance.php?filter=' . $date . '" class="nav-link"><i class="fe fe-calendar"></i> Attendance</a>
+</li>
 
 
   <li class="nav-item">
