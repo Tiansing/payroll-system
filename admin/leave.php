@@ -109,24 +109,25 @@ if ($Attendance == '1') {
               <div style="padding-left: 12px;" class="dropdown  ">
                 <button type="button" data-toggle="modal" data-target="#modal-filter-leave" class="btn btn-secondary">
                   <i style="padding-top: 10px;" class="fe fe-filter mr-2"></i> Filter Status</button>
+
                 <?php
                 switch ($lstat) {
 
                   case "Approved":
 
                 ?>
-                    <button type="button" onclick="clearStatus()" class="btn btn-success">
+                    <button type="button" id="clearID" onclick="clearStatus()" class="btn btn-success">
                       <i style="padding-top: 10px;" class="fe fe-x mr-2"></i> Approved</button>
 
                   <?php
                     break;
                   case "Pending":
                   ?>
-                    <button type="button" onclick="clearStatus()" class="btn btn-warning">
+                    <button type="button" id="clearID" onclick="clearStatus()" class="btn btn-warning">
                       <i style="padding-top: 10px;" class="fe fe-x mr-2"></i> Pending</button>
                   <?php break;
                   case "Declined": ?>
-                    <button type="button" onclick="clearStatus()" class="btn btn-danger">
+                    <button type="button" id="clearID" onclick="clearStatus()" class="btn btn-danger">
                       <i style="padding-top: 10px;" class="fe fe-x mr-2"></i> Declined</button>
                 <?php } ?>
               </div>
@@ -339,10 +340,10 @@ if ($Attendance == '1') {
 <script>
   $(document).ready(function() {
 
-
     function clearStatus() {
       window.location.href = "leave.php";
     }
+    document.getElementById("clearID").addEventListener("click", clearStatus);
 
   });
 </script>

@@ -301,7 +301,7 @@ if (isset($_POST["isChecked"])) {
               <div class="card">
                 <?php
                 // Calculating the payroll from SAT - FRI (7 Days)
-                $leave_query = "SELECT SUM(days_of_leave) AS total_days_leave FROM employee_leave WHERE eid = $myId  AND date_of_leave BETWEEN '$from' AND '$to' AND leave_status = 'Approved'";
+                $leave_query = "SELECT SUM(days_of_leave) AS total_days_leave FROM employee_leave WHERE eid = $myId  AND date_of_leave BETWEEN '$from' AND '$to' AND leave_status = 'Approved' AND type_of_leave= 'vacation'";
                 $emp_leave_query = mysqli_query($connection, $leave_query);
                 while ($lrow = mysqli_fetch_assoc($emp_leave_query)) {
 
@@ -439,7 +439,7 @@ if (isset($_POST["isChecked"])) {
 
                       <?php if ($libtotal != 0) { ?>
                         <tr>
-                          <td colspan="4" class="font-w600 text-right">Days of Leave Paid</td>
+                          <td colspan="4" class="font-w600 text-right">Days of Vacation Leave Paid</td>
                           <td class="text-right"><?php echo  $daysOfLeave . " days (+" . $libtotal . " Hours)"; ?></td>
                         </tr>
                       <?php } ?>

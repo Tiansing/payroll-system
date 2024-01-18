@@ -108,28 +108,30 @@ if (isset($q)) {
                 $schedRow = mysqli_fetch_assoc($querySched);
 
                 $logstatus = ($time_in >= $schedRow['time_in_morning']) ? 0 : 1;
-                $start = $schedRow['time_in_morning'];
 
-                $time_start = new DateTime($start);
-                $time_end = new DateTime($time_in);
-                $interval = $time_start->diff($time_end);
-                $hrs = $interval->format('%h');
-                $mins = $interval->format('%i');
-                $mins = $mins / 60;
-                $lateDur = $hrs + $mins;
+                if ($time_in >= $schedRow['time_in_morning']) {
+                  $start = $schedRow['time_in_morning'];
+
+                  $time_start = new DateTime($start);
+                  $time_end = new DateTime($time_in);
+                  $interval = $time_start->diff($time_end);
+                  $hrs = $interval->format('%h');
+                  $mins = $interval->format('%i');
+                  $mins = $mins / 60;
+                  $lateDur = $hrs + $mins;
+                } else {
+                  $lateDur = 0;
+                }
+
                 // $decimalValue = $lateDur; // Replace with your desired decimal value
                 // $hours = floor($decimalValue); // Extract the whole hours
                 // $minutes = ($decimalValue - $hours) * 60; // Calculate the remaining minutes
                 // $lateDuration = (($hours == 0 && $minutes == 0) ? NULL : (($hours == 0) ? "$minutes mins" : "$hours" . ($hours > 1 ? "hrs" : "hr") . " and $minutes mins"));
 
-
                 $insertAttendance = "INSERT INTO `attendance` (`employee_id`, `attendance_id`, `date`, `time_in_morning`, `time_out_morning`, `time_in_afternoon`, `time_out_afternoon`, `status_morning`, `status_afternoon`, `num_hr_morning`, `num_hr_afternoon`, `month`, `year`, `late_duration`) VALUES ('$employee_id', '$id', '$date', '$time_in', null, null, null, '$logstatus', null, null, null, '$month', '$year','$lateDur');";
 
                 $query = mysqli_query($connection, $insertAttendance) or die(mysqli_error($connection) . $insertAttendance);
                 $imageUrl = '<img height="100" width="100" src="image/' . $empImg . '" alt="" > ';
-
-
-
 
                 echo $imageUrl;
                 echo '<div style="margin-top: 10px;" class="alert alert-success"><strong>' . $empName . '</strong> successfully logged in [Morning shift]</div>';
@@ -148,15 +150,21 @@ if (isset($q)) {
                 $schedRow = mysqli_fetch_assoc($querySched);
 
                 $logstatus = ($time_in >= $schedRow['time_in_afternoon']) ? 0 : 1;
-                $start = $schedRow['time_in_afternoon'];
 
-                $time_start = new DateTime($start);
-                $time_end = new DateTime($time_in);
-                $interval = $time_start->diff($time_end);
-                $hrs = $interval->format('%h');
-                $mins = $interval->format('%i');
-                $mins = $mins / 60;
-                $lateDur = $hrs + $mins;
+
+                if ($time_in >= $schedRow['time_in_afternoon']) {
+                  $start = $schedRow['time_in_afternoon'];
+
+                  $time_start = new DateTime($start);
+                  $time_end = new DateTime($time_in);
+                  $interval = $time_start->diff($time_end);
+                  $hrs = $interval->format('%h');
+                  $mins = $interval->format('%i');
+                  $mins = $mins / 60;
+                  $lateDur = $hrs + $mins;
+                } else {
+                  $lateDur = 0;
+                }
                 // $decimalValue = $lateDur; // Replace with your desired decimal value
                 // $hours = floor($decimalValue); // Extract the whole hours
                 // $minutes = ($decimalValue - $hours) * 60; // Calculate the remaining minutes
@@ -188,15 +196,22 @@ if (isset($q)) {
                 $schedRow = mysqli_fetch_assoc($querySched);
 
                 $logstatus = ($time_in >= $schedRow['time_in_graveyard']) ? 0 : 1;
-                $start = $schedRow['time_in_graveyard'];
 
-                $time_start = new DateTime($start);
-                $time_end = new DateTime($time_in);
-                $interval = $time_start->diff($time_end);
-                $hrs = $interval->format('%h');
-                $mins = $interval->format('%i');
-                $mins = $mins / 60;
-                $lateDur = $hrs + $mins;
+
+                if ($time_in >=  $schedRow['time_in_graveyard']) {
+                  $start = $schedRow['time_in_graveyard'];
+
+                  $time_start = new DateTime($start);
+                  $time_end = new DateTime($time_in);
+                  $interval = $time_start->diff($time_end);
+                  $hrs = $interval->format('%h');
+                  $mins = $interval->format('%i');
+                  $mins = $mins / 60;
+                  $lateDur = $hrs + $mins;
+                } else {
+                  $lateDur = 0;
+                }
+
                 // $decimalValue = $lateDur; // Replace with your desired decimal value
                 // $hours = floor($decimalValue); // Extract the whole hours
                 // $minutes = ($decimalValue - $hours) * 60; // Calculate the remaining minutes

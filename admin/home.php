@@ -225,6 +225,8 @@ if ($type == "Team Leader") {
 
                         <?php
                         // Calculating the payroll from SAT - FRI (7 Days)
+
+
                         $sql = "SELECT *, SUM(num_hr_morning) AS morning, SUM(num_hr_afternoon) AS afternoon, SUM(num_hr_graveyard) AS graveyard, attendance.employee_id AS empid FROM attendance LEFT JOIN employees ON employees.id=attendance.employee_id LEFT JOIN position ON position.id=employees.position_id WHERE date BETWEEN '$from' AND '$to' GROUP BY attendance.employee_id ORDER BY employees.fullname ASC";
 
                         $sqlPayroll = mysqli_query($connection, $sql);
@@ -234,9 +236,21 @@ if ($type == "Team Leader") {
 
                         while ($row = mysqli_fetch_assoc($sqlPayroll)) {
 
+
                           $numbers++;
                           $employee_id = $row['empid'];
-                          $total_hr = $row['morning'] + $row['afternoon'] + $row['graveyard']; // total hour
+                          $leave_query = "SELECT SUM(days_of_leave) AS total_days_leave FROM employee_leave WHERE eid = $employee_id  AND date_of_leave BETWEEN '$from' AND '$to' AND leave_status = 'Approved' AND type_of_leave= 'vacation'";
+                          $emp_leave_query = mysqli_query($connection, $leave_query);
+                          while ($lrow = mysqli_fetch_assoc($emp_leave_query)) {
+
+                            if ($lrow['total_days_leave'] > 5) {
+                              $daysOfLeave = 5;
+                            } else {
+                              $daysOfLeave = $lrow['total_days_leave'];
+                            }
+                          }
+                          $libtotal = $daysOfLeave * 8;
+                          $total_hr = $row['morning'] + $row['afternoon'] + $row['graveyard'] + $libtotal; // total hour
 
                           $casql = "SELECT *, SUM(amount) AS cashamount FROM cashadvance WHERE employee_id='$employee_id' AND date_advance BETWEEN '$from' AND '$to'";
 

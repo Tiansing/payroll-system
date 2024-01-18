@@ -137,8 +137,8 @@ if ($Attendance == '1') {
           <div class="row row-cards">
             <div style="padding-left: 12px; padding-bottom: 25px;">
               <div class="dropdown  ">
-                <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
-                  <i style="padding-top: 10px;" class="fe fe-clock mr-2"></i> Add Attendance</button>
+                <!-- <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
+                  <i style="padding-top: 10px;" class="fe fe-clock mr-2"></i> Add Attendance</button> -->
 
                 <div style="padding-top: 10px;" class="dropdown-menu">
                   <button data-toggle="modal" data-target="#modal-add-attendance-in" class="dropdown-item ">Add Time In</button>
@@ -236,7 +236,7 @@ if ($Attendance == '1') {
                           $lates = $row['late_duration'];
                           $decimalValue = $lates; // Replace with your desired decimal value
                           $hours = floor($decimalValue); // Extract the whole hours
-                          $minutes = ($decimalValue - $hours) * 60; // Calculate the remaining minutes        
+                          $minutes = round(($decimalValue - $hours) * 60); // Calculate the remaining minutes        
 
                           $lateDuration = (($hours == 0 && $minutes == 0) ? NULL : (($hours == 0) ? "$minutes mins" : "$hours" . ($hours > 1 ? "hrs" : "hr") . " and $minutes mins"));
 
